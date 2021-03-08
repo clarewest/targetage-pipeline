@@ -12,12 +12,16 @@ from pyspark.sql.functions import col, lit, explode, concat_ws
 
 ## Spark
 sc = pyspark.SparkContext()
-spark = SparkSession.builder.getOrCreate()
+spark = SparkSession.builder \
+           .master('local[*]') \
+           .getOrCreate()
 
 ## Data paths
-datapath = "data/"
-ot_platform = datapath+"OT_platform/21.02/"
-ot_genetics = datapath+"data/OT_genetics/ftp.ebi.ac.uk/pub/databases/opentargets/genetics/20022712/"
+data_path = "data/"
+ot_platform = data_path+"OT_platform/21.02/"
+ot_genetics = data_path+"OT_genetics/ftp.ebi.ac.uk/pub/databases/opentargets/genetics/20022712/"
+targetage = data_path+"targetage/"
+
 
 ## Read Open Targets data 
 diseases = (spark.read.parquet(ot_platform+"ETL_parquet/diseases/", header=True)
@@ -31,15 +35,21 @@ targets = (spark.read.parquet(ot_platform+"ETL_parquet/targets/")
            )
 evidences = spark.read.parquet(ot_platform+"ETL_parquet/evidences/succeeded")
 knowndrugs = spark.read.parquet(ot_platform+"ETL_parquet/knownDrugs")
+
+# NB otg_evidence has already filtered out evidence with a score < 0.05
 otg_evidences = spark.read.parquet(ot_platform+"ETL_parquet/evidences/succeeded/sourceId\=ot_genetics_portal/")
 
 ## Genetic data
 coloc = spark.read.json(ot_genetics+"v2d_coloc/")
+v2d = spark.read.json(ot_genetics+"v2d/")
 #variants = spark.read.json("lut/variant-index/")
 studies = spark.read.json(ot_genetics+"lut/study-index/")
+overlap = spark.read.json(ot_genetics+"lut/overlap-index/")
 
 ## Age-related diseases (ARDs)
-ards = spark.read.csv(datapath+"disease_list.csv")
+ards = spark.read.csv(data_path+"disease_list.csv")
+ards = spark.read.csv(data_pathpath+"disease_list.csv")
+ards = spark.read.csv("data/disease_list.csv")
 ards = ards.toDF(*["diseaseId", "morbidity"]).filter(~col("diseaseId").contains("#"))
 ardiseases = (ards.join(diseases, "diseaseId", "left")
               .select("morbidity","diseaseId","children", "description", "diseaseName", "therapeuticAreas", "descendants")
@@ -82,6 +92,7 @@ ard_associations.groupBy("morbidity").count().show()
 ard_targets = ard_associations.join(targets, ["targetId", "targetSymbol", "targetName"])
 
 
+## Get GWAS evidence
 otg_evidence_cols = ["morbidity",
                      "specificDiseaseId", "specificDiseaseName", 
                      "diseaseId", "diseaseName", 
@@ -108,17 +119,118 @@ ard_otg_evidences = (all_ardiseases.drop("therapeuticAreas", "description")
                     .select(otg_evidence_cols)
                     )
 
-ards_studies = (ard_otg_evidences
-                .select("morbidity", "studyId", "diseaseName")
+ard_studies = (ard_otg_evidences
+                .select("morbidity", "studyId", "diseaseId", "diseaseName", "specificDiseaseId", "specificDiseaseName")
                 .distinct()
-                .join(studies.select(col("study_id").alias("studyId"), "has_sumstats","trait_reported"), "studyId")
+                .join(studies.select(col("study_id").alias("studyId")), "studyId")
                 )
+
+#ard_v2d = ard_studies.join(v2d.withColumnRenamed("study_id", "studyId"), "studyId")
+#ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
+ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
+
+
+## Get all lead variants for these studies (we aren't interested in tag variants, at the moment)
+ard_leads = (ard_v2d.select("studyId", 
+                              "morbidity", 
+                              "diseaseId",
+                              "diseaseName",
+                              "specificDiseaseId",
+                              "specificDiseaseName", 
+                              "has_sumstats", 
+                              "trait_reported", 
+                              "n_cases",
+#                              "n_initial",
+#                              "n_replication",
+                              "num_assoc_loci",
+                              "odds_ratio",
+                              "oddsr_ci_lower",
+                              "oddsr_ci_upper",
+#                              "overall_r2",
+                              "beta", 
+                              "beta_ci_lower",
+                              "beta_ci_upper",
+                              "direction",
+                              "lead_alt",
+                              "lead_chrom",
+                              "lead_pos",
+                              "lead_ref",
+#                              "log10_ABF",
+                              "pval",
+#                              "pval_exponent"
+                            )
+             .distinct()
+             .withColumn("lead_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
+                         )
+
                 
 # variant ID = chromosome_position_reference_alternative
-coloc_studies = (coloc
-                 .join(ards_studies, "left_study")
-                 .withColumn("variantId", concat_ws("_", col("left_chrom"), col("left_pos"), col("left_ref"), col("left_alt")))
-                 .withColumn("right_variantId", concat_ws("_", col("right_chrom"), col("right_pos"), col("right_ref"), col("right_alt")))
-                 )
 
+## Where sumstats are available, we can use colocalisation data
+## COLOCALISATION
+coloc_studies = (coloc
+                 .filter(col("coloc_h4")>=0.8)
+                 .filter(col("left_var_right_study_pval")<=5e-8)
+                 .withColumn("left_variantId", concat_ws("_", col("left_chrom"), col("left_pos"), col("left_ref"), col("left_alt")))
+                 .withColumn("right_variantId", concat_ws("_", col("right_chrom"), col("right_pos"), col("right_ref"), col("right_alt")))
+                 .withColumnRenamed("left_study", "left_studyId")
+                 .withColumnRenamed("right_study", "right_studyId")
+                 )
+coloc_studies = coloc_studies.toDF(*(c.replace("left_", "lead_") for c in coloc_studies.columns))
+
+## Question - does coloc include all tag variants too? Around half seem to not be genome-wide significant
+
+## Otherwise, we can use overlap data
+# AB overlap - how many variants in possible variants overlap
+# A_distinct and B_distinct - how many are distinct to variant A and B
+# How should we decide? OT gen says they overlap if at least one overlaps
+# In some cases all will overlap 
+# I checked and overlap includes both directions so we only have to join on the left 
+## OVERLAP
+overlap_left = (overlap.withColumn("lead_variantId", concat_ws("_", col("A_chrom"), col("A_pos"), col("A_ref"), col("A_alt")))
+                .withColumn("right_variantId", concat_ws("_", col("B_chrom"), col("B_pos"), col("B_ref"), col("B_alt")))
+                .withColumnRenamed("AB_overlap", "LR_overlap")
+                .withColumnRenamed("A_study_id", "lead_studyId")
+                .withColumnRenamed("B_study_id", "right_studyId")
+                )
+
+overlap_left = overlap_left.toDF(*(c.replace('A_', 'lead_') for c in overlap_left.columns))
+overlap_left = overlap_left.toDF(*(c.replace('B_', 'right_') for c in overlap_left.columns))
+
+
+## Join with ARD lead variants
+cols_to_join = ["studyId", "lead_variantId", "lead_chrom", "lead_pos", "lead_ref", "lead_alt"]
+
+def get_edges(all_method_edges, ard_lead_variants, all_studies):
+    ard_edges = (ard_lead_variants
+                   .join(all_method_edges.withColumnRenamed("lead_studyId", "studyId"), cols_to_join)
+                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported")), "right_studyId", "left")  # Get the trait reported
+                   .join(ard_lead_variants.select(col("studyId").alias("right_studyId"), col("morbidity").alias("right_morbidity")), "right_studyId", "left")       # see if it's in our ARD list
+                   )
+    return ard_edges
+
+
+coloc_ard_leads = get_edges(coloc_studies, ard_leads, studies)
+coloc_ard_leads = (coloc_ard_leads
+                   .join(v2d.
+                         withColumn("right_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
+                         .select(col("study_id").alias("right_studyId"), "right_variantId")
+                         .distinct()
+                         .withColumn("right_is_lead", lit(True)), 
+                         ["right_studyId", "right_variantId"], 
+                         "left")
+                   )
+
+overlap_ard_leads = get_edges(overlap_left, ard_leads, studies)
+
+
+## write to parquet
+coloc_ard_leads.write.parquet(targetage+"coloc_ard_leads.parquet")
+overlap_ard_leads.write.parquet(targetage+"overlap_ard_leads.parquet")
+ard_leads.write.parquet(targetage+"ard_leads.parquet")
+
+
+
+
+                     
 
