@@ -63,12 +63,12 @@ As we don't know the causal variant for each trait-associated locus, we have to 
 
 1. Colocalisation
 
-
 Where study 1 and study 2 both have summary statistics available, they can be compared using colocalisation analysis. For each loci, this method integrates over evidence from all variants in each study to evaluate which of these four hypothesis is most likely: no association with either trait (H0), association only with trait 1 (H1), association only with trait 2 (H2), association with both traits via two independent SNPs (H3), or association with both traits through a shared causal SNP (H4). We use a cut-off of H4>0.8 to define the association for study 1 and study 2 as sharing the same causal variant. Note that this methodology is used to compare two disease traits, or to compare a disease study with a molecular trait (e.g. eQTL or pQTL). 
 
 2. Tag variant overlap
 
 Where only the lead variants (not full summary statistics) are available for one or both studies, colocalisation analysis cannot be performed, and tag variant overlap is used instead. A trait-associated lead variant, SNP1, is considered to be part of the same signal as another lead variant, SNP2, if they are within 5MB of each other and any of the LD-defined tag variants are shared. 
+
 
 
 \[<b id="f1">1</b>\] Ochoa et al., Open Targets Platform: supporting systematic drug–target identification and prioritisation, Nucleic Acids Research (2021) https://doi.org/10.1093/nar/gkaa1027 [↩](#a1)

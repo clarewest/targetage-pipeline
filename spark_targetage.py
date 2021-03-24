@@ -13,7 +13,6 @@ from pyspark.sql.functions import col, lit, explode, concat_ws
 ## Spark
 sc = pyspark.SparkContext()
 spark = SparkSession.builder \
-           .master('local[*]') \
            .getOrCreate()
 
 ## Data paths
@@ -48,7 +47,7 @@ overlap = spark.read.json(ot_genetics+"lut/overlap-index/")
 
 ## Age-related diseases (ARDs)
 ards = spark.read.csv(data_path+"disease_list.csv")
-ards = spark.read.csv(data_pathpath+"disease_list.csv")
+ards = spark.read.csv(data_path+"disease_list.csv")
 ards = spark.read.csv("data/disease_list.csv")
 ards = ards.toDF(*["diseaseId", "morbidity"]).filter(~col("diseaseId").contains("#"))
 ardiseases = (ards.join(diseases, "diseaseId", "left")
@@ -120,7 +119,7 @@ ard_otg_evidences = (all_ardiseases.drop("therapeuticAreas", "description")
                     )
 
 ard_studies = (ard_otg_evidences
-                .select("morbidity", "studyId", "diseaseId", "diseaseName", "specificDiseaseId", "specificDiseaseName")
+                .select("morbidity", "studyId", "diseaseId", "diseaseName", "specificDiseaseId", "specificDiseaseName", "studySampleSize", "studyCases")
                 .distinct()
                 .join(studies.select(col("study_id").alias("studyId")), "studyId")
                 )
@@ -140,8 +139,10 @@ ard_leads = (ard_v2d.select("studyId",
                               "has_sumstats", 
                               "trait_reported", 
                               "n_cases",
-#                              "n_initial",
-#                              "n_replication",
+                              "n_initial",
+                              "n_replication",
+                              "ancestry_initial",
+                              "ancestry_replication",
                               "num_assoc_loci",
                               "odds_ratio",
                               "oddsr_ci_lower",
@@ -203,16 +204,15 @@ cols_to_join = ["studyId", "lead_variantId", "lead_chrom", "lead_pos", "lead_ref
 
 def get_edges(all_method_edges, ard_lead_variants, all_studies):
     ard_edges = (ard_lead_variants
-                   .join(all_method_edges.withColumnRenamed("lead_studyId", "studyId"), cols_to_join)
-                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported")), "right_studyId", "left")  # Get the trait reported
-                   .join(ard_lead_variants.select(col("studyId").alias("right_studyId"), col("morbidity").alias("right_morbidity")), "right_studyId", "left")       # see if it's in our ARD list
+                   .join(all_method_edges.withColumnRenamed("lead_studyId", "studyId"), cols_to_join)   # Get edges just for ARD lead variants 
+                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported")), "right_studyId", "left")  # Add the trait reported
+                   .join(ard_lead_variants.select(col("studyId").alias("right_studyId"), col("morbidity").alias("right_morbidity")).distinct(), "right_studyId", "left")       # see if it's in our ARD list
                    )
     return ard_edges
 
-
-coloc_ard_leads = get_edges(coloc_studies, ard_leads, studies)
-coloc_ard_leads = (coloc_ard_leads
-                   .join(v2d.
+def is_right_lead(method_edges, all_v2d):
+    is_right = (method_edges 
+                       .join(all_v2d.
                          withColumn("right_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
                          .select(col("study_id").alias("right_studyId"), "right_variantId")
                          .distinct()
@@ -220,14 +220,20 @@ coloc_ard_leads = (coloc_ard_leads
                          ["right_studyId", "right_variantId"], 
                          "left")
                    )
+    return is_right
+
+
+coloc_ard_leads = get_edges(coloc_studies, ard_leads, studies)
+coloc_ard_leads = is_right_lead(coloc_ard_leads, v2d)
+
 
 overlap_ard_leads = get_edges(overlap_left, ard_leads, studies)
-
+overlap_ard_leads = is_right_lead(overlap_ard_leads, v2d)
 
 ## write to parquet
-coloc_ard_leads.write.parquet(targetage+"coloc_ard_leads.parquet")
-overlap_ard_leads.write.parquet(targetage+"overlap_ard_leads.parquet")
-ard_leads.write.parquet(targetage+"ard_leads.parquet")
+coloc_ard_leads.repartition(1).write.parquet(targetage+"coloc_ard_leads.parquet")
+overlap_ard_leads.repartition(1).write.parquet(targetage+"overlap_ard_leads.parquet")
+ard_leads.repartition(1).write.parquet(targetage+"ard_leads.parquet")
 
 
 
