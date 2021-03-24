@@ -1,0 +1,339 @@
+---
+title: "Colocalisation/overlap analysis for age-related diseases (ARDs)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(arrow)
+library(data.table)  # got some giant dataframes
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+```
+
+### Colocalisation/overlap analysis for age-related diseases (ARDs)
+
+I got this data using the Open Targets Platform and Genetics data downloads and PySpark by doing the following:
+
+1. Get all the targets with genetic association with the ARDs
+2. Get all the GWAS studies contributing to that evidence
+3. Get all *lead* variants from those GWAS studies
+4. For these variants, get all colocalisation signals with h4>=0.8 and pval< 5e-8 (`coloc`)
+5. For these variants, get all overlapping variants (`overlap`)
+
+
+#### Data 
+
+In OT Platform, they use `n_initial` from OT Genetics as the `studySampleSize`, so that's what I'll use. 
+
+```{r}
+min_n_cases = 2000    ## min n cases for case control studies
+min_n_initial = 2000  ## min sample size for continuous traits
+
+### All lead variant data for ARDs
+ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-7496dcae-5235-49d6-be27-f95e16752228-c000.snappy.parquet")
+ard_leads <- filter(ard_leads_all, (n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases))
+
+### Colocalisation data 
+coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-f4073bf5-fa31-4917-a5f7-25c7eb183552-c000.snappy.parquet", as_tibble=TRUE)
+coloc <- coloc %>% 
+  filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
+    filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases))
+
+### Overlap data
+overlap <- arrow::read_parquet("data/targetage/overlap_ard_leads.parquet/part-00000-6b914f48-ab51-40b0-bc50-48df7da59f84-c000.snappy.parquet",as_data_frame = TRUE)
+overlap <-   overlap %>% 
+  filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
+  filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases)) %>%
+  as.data.table() 
+
+## All the colocalisation where the right hand variant is the lead variant (so we have one node per associated locus)
+lead_coloc <- coloc %>% filter(right_is_lead == TRUE)
+
+## All the colocalisation hits where the right hand study is an xQTL study, for later
+qtl_coloc <- coloc %>% filter(right_type %in% c("eqtl", "pqtl"))
+
+## All the hits within the ARDs (i.e. both studies are for ARDs)
+coloc_within <- lead_coloc %>% filter(!is.na(right_morbidity))
+overlap_within <- overlap[!is.na(right_morbidity)] %>% as.data.frame()
+
+## All the hits with traits other than our ARDs of interest
+coloc_without <- lead_coloc %>% filter(is.na(right_morbidity))
+overlap_without <- overlap[is.na(right_morbidity)] %>% as.data.frame()
+
+
+```
+
+#### Some background 
+
+The list of ARDs, number of GWAS studies, and number of (lead) variants;
+
+```{r echo=FALSE}
+ard_leads %>% group_by(morbidity, studyId) %>% summarise(n_variants = length(studyId)) %>% ungroup() %>% group_by(morbidity) %>% summarise(n_gwas_studies = length(morbidity), n_variants = sum(n_variants)) %>% knitr::kable()
+
+```
+
+The vast majority of studies don't have summary statistics:
+
+```{r, echo = FALSE}
+ard_leads_all %>% select(morbidity, studyId, has_sumstats) %>% group_by(morbidity) %>% mutate(n=length(unique(studyId))) %>% unique() %>% ggplot(., aes(y=reorder(morbidity, n))) + geom_bar(aes(fill=has_sumstats)) + theme_bw() + labs(x="Number of GWAS studies") + geom_text(data = . %>% select(morbidity, n) %>% unique(), aes(label = n, x = n), hjust = 0, nudge_x = 5) + theme(panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), axis.title.y = element_blank())
+```
+
+Exclude GWAS with <2000 n_cases
+
+```{r, echo = FALSE}
+
+ard_leads_all %>% 
+  select(studyId, morbidity, n_cases) %>% 
+  unique() %>% 
+  group_by(morbidity) %>% 
+  mutate(max = max(n_cases, na.rm = TRUE)) %>% 
+  ggplot(., aes(x =n_cases, y = reorder(morbidity, max))) + 
+    geom_vline(xintercept = 2000, colour = "orange") + 
+    geom_boxplot() + 
+    theme_bw() + 
+    theme(panel.grid.major.y = element_blank(),
+          axis.title.y = element_blank())
+
+ard_leads_all %>% 
+  select(studyId, morbidity, n_cases) %>% 
+  unique() %>% 
+  ggplot(., aes(y = morbidity, fill = n_cases >= 2000)) + 
+  geom_bar() + 
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.title.y = element_blank())
+
+```
+TODO: Can we determine how much extra information colocalisation gives us compared to overlap, when we have full summary statistics? I.e. does it add any or discard any that we would have considered overlapping anyway?
+
+#### Graphs 
+
+Make a graph to visualise the variants and to determine the number of independent genetic signals (i.e. number of disconnected communities) for each ARD. Then we can determine the extent of overlap between ARDs - how many signals are shared compared to the total number of signals. 
+
+
+```{r}
+library(visNetwork)
+library(igraph)
+
+## Just to get nice colours
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+## Makes the graph for a given ARD(s)
+gwas_graph <- function(curr_morbidities,curr_variants,curr_coloc,curr_overlap, plot = TRUE) {
+  
+  g <- list()
+  
+  # Different colours for ARDs
+  g$colours <-
+    data.frame(color = gg_color_hue(length(curr_morbidities)), morbidity = curr_morbidities)
+  # Get variants and overlaps just for the ARD(s) of interest
+  m_variants <- curr_variants %>% filter(morbidity %in% curr_morbidities)
+  m_overlap <-
+    curr_overlap %>% filter(morbidity %in% curr_morbidities &
+                         right_morbidity %in% curr_morbidities)
+  m_coloc <-
+    curr_coloc %>% filter(morbidity %in% curr_morbidities &
+                       right_morbidity %in% curr_morbidities)
+  
+  # Edges: where two studyId+variantId have at least one overlapping tag variant
+  g$edges <-
+    m_overlap %>%
+    mutate(
+      from = paste(studyId, lead_variantId, sep = "."),
+      to = paste(right_studyId, right_variantId, sep = ".")
+    ) %>%
+    filter(from != to) %>%
+    select(from, to, morbidity) %>%
+    left_join(g$colours, by = "morbidity")
+  
+
+  # Edges: where two studyId+variantId are colocalised (edges in black)
+  g$coloc_edges <-
+    m_coloc %>%
+    mutate(
+      from = paste(studyId, lead_variantId, sep = "."),
+      to = paste(right_studyId, right_variantId, sep = ".")
+    ) %>%
+    filter(from != to) %>%
+    select(from, to, morbidity) %>%
+    mutate(color = "black")
+  
+  # Each node is a studyId+variantId
+  # Make a label with the variant, reported trait, and n_cases
+  g$nodes <- m_variants %>%
+    mutate(id = paste(studyId, lead_variantId, sep = ".")) %>%
+    select(id,
+           studyId,
+           lead_variantId,
+           morbidity,
+           has_sumstats,
+           n_cases,
+           trait_reported) %>%
+    unique() %>%
+    left_join(g$colours, by = "morbidity") %>%
+    mutate(label = paste0(lead_variantId, "\n", trait_reported, " (", n_cases, ")")) %>%
+    group_by(id) %>%
+    mutate(n=length(morbidity)) %>% 
+    mutate(morbidity = paste0(morbidity, collapse=",")) %>%
+    mutate(color = ifelse(n==1, color, "black")) %>%
+    slice(1) %>%
+    select(-n)
+  
+  if (plot){
+      # Make the plot
+  g$plot <-
+    visNetwork(
+      g$nodes,
+      bind_rows(g$edges, g$coloc_edges),
+      main = curr_morbidities,
+      height = "1000px",
+      width = "100%"
+    ) %>% 
+    visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+    visIgraphLayout()
+  }
+
+  
+  return(g)
+  
+}
+
+```
+
+
+Example graphs:
+
+```{r}
+
+graph <- gwas_graph(c("alzheimers disease", "age-related macular degeneration"), ard_leads, coloc_within, overlap_within)
+graph <- gwas_graph(c("type 2 diabetes"), ard_leads, coloc_within, overlap_within)
+graph <- gwas_graph(c("osteoarthritis", "chronic pain"), ard_leads, coloc_within, overlap_within)
+
+graph
+
+#visSave(graph$plot, "ad_md_graph.html", selfcontained = TRUE, background = "white")
+graph <- gwas_graph(d[5:6], ard_leads, coloc_within, overlap_within)
+
+
+```
+
+Community detection:
+
+```{r}
+d <- ard_leads$morbidity %>% unique()
+
+m <- d
+g <- gwas_graph(m, ard_leads, coloc_within, overlap_within, plot = FALSE)
+
+# Make an igraph graph
+ig <- graph_from_data_frame(g$edges, directed = FALSE)
+
+# assign nodes to clusters
+clusters <- clusters(ig)
+V(ig)$cluster <- clusters$membership
+
+## add cluster ID, cluster size, and n_morbidities to nodes dataframe
+n <- get.data.frame(ig, what="vertices")
+cn <- g$nodes %>% 
+  left_join(n, by = c("id" = "name")) %>% 
+  group_by(cluster) %>% 
+  mutate(c_size = ifelse(is.na(cluster), NA, length(id)),
+         n_morbidities = length(unique(morbidity)))
+
+```
+
+There are `clusters$no` clusters, and `sum(is.na(cn$cluster))` nodes are not in a cluster (i.e. not replicated in another study). 
+
+`length(unique(filter(cn, n_morbidities>1)$cluster))` clusters involve more than one morbidity.
+
+Largest cluster has `max(cn$c_size, na.rm = TRUE)` nodes and includes `unique(filter(cn, c_size == max(cn$c_size, na.rm = TRUE))$morbidity)`
+
+How many nodes are in each cluster, and how many morbidities?
+
+```{r}
+cluster_attributes <- cn %>% filter(!is.na(cluster)) %>% select(cluster, c_size, n_morbidities) %>% unique() %>% pivot_longer(-cluster, names_to = "attribute", values_to = "n") 
+
+ggplot(cluster_attributes, aes(x=n, fill = attribute)) + geom_histogram(binwidth = 1) + facet_wrap(~attribute, nrow = 2, scales = "free") + theme_bw() + guides(fill = FALSE)
+
+ggplot(cluster_attributes, aes(x=n)) + geom_boxplot() + facet_wrap(~attribute, nrow = 2, scales = "free_x") + theme_bw() + guides(fill = FALSE)
+
+cn %>% filter(!is.na(cluster)) %>% select(cluster, c_size, n_morbidities) %>% unique() %>% ggplot(., aes(x=c_size, y=n_morbidities)) + geom_point(alpha=0.7) + theme_bw()
+
+```
+
+```{r}
+## all nodes that are in a cluster
+clustered_nodes <- cn %>% filter(!is.na(cluster))
+
+## nodes in a cluster that includes more than one morbidity
+mm_clustered_nodes <- clustered_nodes %>% filter(n_morbidities>1)
+
+view_cluster <- function(nodes, g, curr_cluster){
+  cluster_nodes <- nodes %>% filter(cluster == curr_cluster)
+  cluster_edges <- g$edges %>% 
+  filter(from %in% cluster_nodes$id) %>%
+  filter(to %in% cluster_nodes$id)
+  vn <- 
+    visNetwork(
+      cluster_nodes,
+      cluster_edges,
+      height = "1000px",
+      width = "100%"
+    ) %>% 
+#    visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+    visIgraphLayout()
+  return(vn)
+}
+
+view_morbidity <- function(nodes, g, curr_morbidity){
+  cluster_nodes <- nodes %>% filter(cluster %in% filter(nodes, morbidity==curr_morbidity)$cluster)
+  cluster_edges <- g$edges %>% 
+  filter(from %in% cluster_nodes$id) %>%
+  filter(to %in% cluster_nodes$id)
+  vn <- 
+    visNetwork(
+      cluster_nodes,
+      cluster_edges,
+      height = "1000px",
+      width = "100%"
+    ) %>% 
+#    visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+    visIgraphLayout()
+  return(vn)
+}
+  
+library(UpSetR)
+mm_mat <- mm_clusters %>% select(cluster, morbidity, n)  %>% pivot_wider(names_from = morbidity, values_from = n, values_fill = list(n=0)) %>% data.frame()
+
+mm_mat2 <- as.matrix(mm_mat[,-1])
+rownames(mm_mat2) <- mm_mat$cluster
+
+upset(mm_mat)
+
+
+
+mat <- cn %>% filter(!is.na(cluster)) %>% ungroup() %>% select(cluster, morbidity) %>% group_by(cluster, morbidity) %>% count() %>% pivot_wider(names_from = morbidity, values_from = n)
+mat[is.na(mat)] <- 0
+
+tmat <- cn %>% filter(!is.na(cluster)) %>% ungroup() %>% select(cluster, morbidity) %>% group_by(cluster, morbidity) %>% count()
+
+
+cmat <- as.matrix(mat[,-1])
+rownames(cmat) <- mat$cluster
+
+```
+
+Number of clusters: 871
+
+```{r}
+
+
+
+n_morbs_per_cluster %>% select(cluster, n_morbs) %>% unique() %>% ggplot(., aes(x = n_morbs)) + geom_histogram() + theme_bw()
+
+```
