@@ -1,0 +1,278 @@
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+library(shiny)
+library(shiny)
+library(shinyjs)
+library(shinyWidgets)
+library(shinydashboard)
+library(tidyverse)
+library(DT)
+library(reactable)
+library(targetage)
+library(plotly)
+library(ggtext)
+library(visNetwork)
+library(igraph)
+
+#### Data ####
+load("ltg_all.Rda")
+load("graph_all_morbidities.Rda")
+load("ard_leads_filtered.Rda")
+
+top_l2g <- l2g_all_joined %>%
+    group_by(studyId, lead_variantId) %>% 
+    top_n(1,yProbaModel ) %>% ## need to remove duplicates for 5 variants 
+    select(studyId, lead_variantId, gene.symbol, gene.id, L2G = yProbaModel, hasColoc, distanceToLocus)
+
+top_genes <- top_l2g %>%
+    mutate(gene.symbol = ifelse(hasColoc == TRUE, paste0('atop(bold("',gene.symbol,'")'), gene.symbol)) %>%
+    top_n(1, L2G) %>%
+    summarise(gene.symbol = paste0(gene.symbol, collapse = ", "),
+              L2G = max(L2G))
+
+
+tbl <- g_all$cn %>%
+    select(id, cluster, n_morbidities, morbidity, has_sumstats, everything(), -color, -label, -c_size) %>% 
+    filter(!is.na(cluster)) %>% 
+    filter(n_morbidities > 1) %>% 
+    arrange(-n_morbidities, cluster) %>%
+    left_join(top_l2g)
+
+groups <- bind_rows(g_all$coloc_edges, g_all$edges)  %>% rownames_to_column("group") %>%  pivot_longer(c("from", "to"), values_to = "id")
+
+
+
+tbl_leads <- tbl %>%
+    left_join(ard_leads)
+
+tbl_genes <- tbl_leads  %>% 
+    left_join(top_l2g) 
+
+## Custom JS aggregate function for reactable that drops NA
+uniqueDropNA <- JS("function(values) {
+      const isNotNA = function(x) { return x != null && x !== 'NA' }
+      let uniqueValues = [...new Set(values)]
+      return uniqueValues.filter(isNotNA).join(', ')  
+    }")
+
+#### A function to view visNetwork graph of genetic association cluster
+view_cluster <- function(nodes, g, curr_cluster){
+    cluster_nodes <- nodes %>% filter(cluster %in% curr_cluster)
+    cluster_edges <- g$edges %>% 
+        filter(from %in% cluster_nodes$id) %>%
+        filter(to %in% cluster_nodes$id)
+    vn <- 
+        visNetwork(
+            cluster_nodes,
+            cluster_edges,
+            height = "1000px",
+            width = "100%"
+        ) %>% 
+        #    visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+        visIgraphLayout()
+    return(vn)
+}
+
+## Function to plot OR/beta for each variant in a cluster
+plot_forest <- function(leads, curr_cluster){
+   # labels <- leads %>% filter(cluster == curr_cluster) %>% select(cluster, id, lead_variantId, gene.symbol, lead_variantId, L2G) %>% mutate(labels = ifelse(is.na(gene.symbol), lead_variantId, paste0(gene.symbol, " (", round(L2G, 2), ")    ", lead_variantId))) 
+    cols <- g_all$colours
+    labels <- leads %>% 
+        filter(cluster == curr_cluster) %>% 
+        select(cluster, id, lead_variantId, gene.symbol, lead_variantId, L2G, hasColoc) %>% 
+        mutate(bestGene = ifelse(is.na(gene.symbol), lead_variantId, paste0(gene.symbol, " (", round(L2G, 2), ")"))) %>%
+     #   mutate(labels = ifelse(is.na(gene.symbol), lead_variantId, paste0(gene.symbol, " (", round(L2G, 2), ")    ", lead_variantId)))  %>%
+        mutate(name = ifelse(hasColoc == TRUE, glue::glue("<b>{bestGene}</b>   ({lead_variantId})"), glue::glue("{bestGene} ({lead_variantId})")))
+    plot_data <- 
+        leads %>% 
+        filter(cluster == curr_cluster) %>% 
+        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, trait_reported, gene.symbol) %>% 
+        rename(oddsr = odds_ratio) %>% 
+        unique() %>%  ### duplicates arise where a single gwas is mapped to two EFO codes e.g. "OA of hip or knee"
+        pivot_longer(contains("_ci_"), names_to = c("measure", "ci"), names_sep = "_ci_")  %>% 
+        mutate(score = ifelse(measure=="beta", beta, oddsr)) %>% 
+        pivot_wider(names_from = "ci", values_from = "value") %>%
+        filter(!is.na(score)) %>%
+     #   droplevels() %>%
+        left_join(labels) %>%
+        mutate(morbidity = factor(morbidity, levels = g_all$colours$morbidity))
+    origin = data.frame(measure = c("beta", "oddsr"), intercept = c(0, 1)) %>%
+        filter(measure %in% plot_data$measure)
+    
+    main_plot <- plot_data %>% 
+        ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity)) + 
+        geom_point() + 
+        geom_errorbarh(height = 0.1) + 
+        theme_bw() + 
+        geom_vline(data = origin, aes(xintercept = intercept)) + 
+        scale_y_discrete(breaks = labels$id, labels = labels$name) + 
+        scale_colour_manual(values = cols$color, breaks = cols$morbidity) + 
+        ggforce::facet_col(~measure, space = "free", scales = "free", strip.position = "right") + 
+        theme(axis.title.y = element_blank(), 
+              axis.title.x = element_blank(),
+              panel.grid.minor = element_blank(),
+              axis.ticks.y = element_blank(),
+              axis.text.y = ggtext::element_markdown(),
+              legend.position = "bottom",
+              legend.title = element_blank()) 
+}
+
+## UI
+ui <- dashboardPage(
+    
+    dashboardHeader(title = "TargetAgeGenetics"),
+    dashboardSidebar(disable = T),
+    
+    # Dashboard ----
+    dashboardBody(useShinyjs(),
+                  # Row containing target table and details ----
+                  fluidRow(
+                      # Main panel column ----
+                      column(width = 6,
+                             # Box for table output
+                             box(
+                                 width = 12,
+                                 reactable::reactableOutput("cluster_table"),
+                             )
+                      ), # end of column
+                      column(width = 6,
+                             # Box for table output
+                             box(
+                                 width = 12,
+                                 visNetworkOutput("cluster_graph")
+                             ),
+                             box(
+                                 width = 12,
+                                 plotOutput("forest_plot", height = "auto")
+                             )
+                      ) # end of column
+            ) # end of fluidRow
+    ) # end of dashboard body
+) # end of UI
+
+
+# Define server logic 
+server <- function(input, output) {
+    
+    sticky_style <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
+                         borderRight = "1px solid #eee")
+    
+    output$cluster_table <- reactable::renderReactable({
+        tbl %>% 
+            select(-id) %>% 
+            mutate(hasColoc = ifelse(hasColoc == TRUE, 'Yes', NA)) %>% 
+            mutate(has_sumstats = ifelse(has_sumstats == TRUE, 'Yes', NA)) %>% 
+            select(cluster, n_morbidities, morbidity, gene.symbol, L2G, hasColoc, distanceToLocus, everything()) %>% 
+            reactable(groupBy = "cluster", 
+                      # paginateSubRows = FALSE,
+                      columns = list(
+                          ## Make cluster id sticky
+                          cluster = colDef(      
+                              style = sticky_style,
+                              maxWidth = 90,
+                              headerStyle = sticky_style),
+                          ## Aggregate comma-separated list of morbidities
+                          morbidity = colDef(
+                              name = "Morbidities",
+                              aggregate = "unique",
+                              width = 225),
+                          ## Summarise the number of morbidities
+                          n_morbidities = colDef(name = "", 
+                                                 aggregate = "unique",
+                                                 format = list(
+                                                     aggregated = colFormat(suffix = " morbidities")
+                                                 )),
+                          distanceToLocus = colDef(name = "Distance to Locus",
+                                                   format = colFormat(separators = TRUE)),
+                          ## Summarise whether any of the GWAS have summary statistics
+                          has_sumstats = colDef(name = "Has SumStats",
+                                                aggregate = uniqueDropNA),
+                          ## Summarise whether there is colocalisation
+                          hasColoc = colDef(name = "Evidence of colocalisation", 
+                                            aggregate = uniqueDropNA),
+                          ## Round L2G
+                          L2G = colDef(aggregate = "max",
+                                       format = colFormat(digits = 2)), 
+                          ## Link to study page
+                          studyId = colDef(html = TRUE,
+                                                  cell = JS("
+    function(cellInfo) {
+      // Render as a link
+      var url = 'https://genetics.opentargets.org/study/'+ cellInfo.value
+      return '<a href=\"' + url + '\" target=\"_blank\">' + cellInfo.value + '</a>'
+    }
+  ")),
+                          ## Link to gene prioritisation page for the study+variant
+                          lead_variantId = colDef(html = TRUE,
+                                                  cell = JS("
+    function(cellInfo) {
+      // Render as a link
+      var url = 'https://genetics.opentargets.org/variant/' + cellInfo.value
+      return '<a href=\"' + url + '\" target=\"_blank\">' + cellInfo.value + '</a>'
+    }
+  ")),
+                          ## Summarise the mapped genes and number of variants
+                          gene.symbol = colDef(name = "Top Gene", 
+                                               aggregate = "frequency",
+                                               html = TRUE,
+
+                                               cell = JS("
+    function(cellInfo) {
+      // Render as a link
+      var url = 'https://genetics.opentargets.org/study-locus/'+ cellInfo.row['studyId'] + '/' + cellInfo.row['lead_variantId']
+      return '<a href=\"' + url + '\" target=\"_blank\">' + cellInfo.value + '</a>'
+    }
+  ")
+                                               )
+                      ),
+                      selection = "multiple", onClick = "select",
+                      #      defaultSelected = 1,
+                      theme = reactableTheme(
+                          rowSelectedStyle = list(backgroundColor = "#eee", boxShadow = "inset 2px 0 0 0 #ffa62d")
+                      ))
+    })
+    
+    selected <- reactiveValues()
+    observe({
+        selected$plot_height = 1000
+        selected$rows <- getReactableState("cluster_table", "selected")
+        if (!is.null(selected$rows)){
+            selected$clusters <- unique(tbl$cluster[selected$rows])
+            selected$n_variants <- tbl_leads %>% 
+                filter(cluster == selected$clusters[length(selected$clusters)]) %>% 
+                select(cluster, id, lead_variantId) %>%
+                nrow()
+            req(!is.null(selected$rows))
+            selected$forest_plot <- plot_forest(tbl_genes, selected$clusters[length(selected$clusters)])
+            ## get number of variants on y axis to scale the figure size
+            selected$n_breaks <- length(ggplot_build(selected$forest_plot)$layout$panel_scales_y[[1]]$breaks)
+            selected$plot_height <- (selected$n_breaks * 15) + 100
+        }
+    })
+    
+    output$cluster_graph <- renderVisNetwork({
+        if (!is.null(selected$rows)){
+            view_cluster(g_all$cn, g_all, selected$clusters)
+        }
+    })
+    
+    
+    observe({output$forest_plot <- renderPlot({
+        if (length(selected$rows)>0){
+            selected$forest_plot
+        }
+    }, 
+    height = selected$plot_height)
+})
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
