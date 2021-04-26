@@ -41,14 +41,12 @@ otg_evidences = spark.read.parquet(ot_platform+"ETL_parquet/evidences/succeeded/
 ## Genetic data
 coloc = spark.read.json(ot_genetics+"v2d_coloc/")
 v2d = spark.read.json(ot_genetics+"v2d/")
-#variants = spark.read.json("lut/variant-index/")
+#variants = spark.read.json(ot_genetics+"lut/variant-index/")
 studies = spark.read.json(ot_genetics+"lut/study-index/")
 overlap = spark.read.json(ot_genetics+"lut/overlap-index/")
 
 ## Age-related diseases (ARDs)
 ards = spark.read.csv(data_path+"disease_list.csv")
-ards = spark.read.csv(data_path+"disease_list.csv")
-ards = spark.read.csv("data/disease_list.csv")
 ards = ards.toDF(*["diseaseId", "morbidity"]).filter(~col("diseaseId").contains("#"))
 ardiseases = (ards.join(diseases, "diseaseId", "left")
               .select("morbidity","diseaseId","children", "description", "diseaseName", "therapeuticAreas", "descendants")
@@ -74,6 +72,7 @@ parent_ardiseases = (ardiseases
                      )
 
 all_ardiseases = parent_ardiseases.union(descendant_ardiseases)
+#all_ardiseases.toPandas().to_csv(data_path+"full_disease_list.csv", index=False)
 
 
 ## Association data 
@@ -128,6 +127,16 @@ ard_studies = (ard_otg_evidences
 #ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
 ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
 
+## get variant details for ard_v2d variants
+#ard_variants = (ard_v2d
+#                .select("lead_chrom", "lead_pos", "lead_ref", "lead_alt")
+#                .join(variants.select(col("chr_id").alias("lead_chrom"), 
+#                                      col("position").alias("lead_pos"), 
+#                                      col("ref_allele").alias("lead_ref"), 
+#                                      col("alt_allele").alias("lead_alt"))
+#                      )
+#                )
+ 
 
 ## Get all lead variants for these studies (we aren't interested in tag variants, at the moment)
 ard_leads = (ard_v2d.select("studyId", 
@@ -205,7 +214,7 @@ cols_to_join = ["studyId", "lead_variantId", "lead_chrom", "lead_pos", "lead_ref
 def get_edges(all_method_edges, ard_lead_variants, all_studies):
     ard_edges = (ard_lead_variants
                    .join(all_method_edges.withColumnRenamed("lead_studyId", "studyId"), cols_to_join)   # Get edges just for ARD lead variants 
-                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported")), "right_studyId", "left")  # Add the trait reported
+                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported"), col("n_cases").alias("right_n_cases"), col("n_initial").alias("right_n_initial")), "right_studyId", "left")  # Add the trait reported
                    .join(ard_lead_variants.select(col("studyId").alias("right_studyId"), col("morbidity").alias("right_morbidity")).distinct(), "right_studyId", "left")       # see if it's in our ARD list
                    )
     return ard_edges
@@ -229,6 +238,7 @@ coloc_ard_leads = is_right_lead(coloc_ard_leads, v2d)
 
 overlap_ard_leads = get_edges(overlap_left, ard_leads, studies)
 overlap_ard_leads = is_right_lead(overlap_ard_leads, v2d)
+
 
 ## write to parquet
 coloc_ard_leads.repartition(1).write.parquet(targetage+"coloc_ard_leads.parquet")
