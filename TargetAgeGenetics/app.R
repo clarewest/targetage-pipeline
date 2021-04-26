@@ -66,10 +66,14 @@ uniqueDropNA <- JS("function(values) {
 
 #### A function to view visNetwork graph of genetic association cluster
 view_cluster <- function(nodes, g, curr_cluster){
-    cluster_nodes <- nodes %>% filter(cluster %in% curr_cluster)
-    cluster_edges <- g$edges %>% 
+    cluster_nodes <- nodes %>% filter(cluster %in% curr_cluster) %>%
+      mutate(color = ifelse(color == "black", "#5E4B56", color)) %>% 
+      mutate(color.background = ifelse(has_sumstats == TRUE, color, paste0(color, "90"))) %>%
+      rename(color.border = color, background.opacity = 10)
+    cluster_edges <- bind_rows(g$edges %>% mutate(width = 1), g$coloc_edges %>% mutate(width = 3)) %>% 
         filter(from %in% cluster_nodes$id) %>%
-        filter(to %in% cluster_nodes$id)
+        filter(to %in% cluster_nodes$id) 
+      
     vn <- 
         visNetwork(
             cluster_nodes,
@@ -95,7 +99,7 @@ plot_forest <- function(leads, curr_cluster){
     plot_data <- 
         leads %>% 
         filter(cluster == curr_cluster) %>% 
-        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, specificDiseaseName, trait_reported, gene.symbol) %>% 
+        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, specificDiseaseName, trait_reported, gene.symbol, has_sumstats) %>% 
         rename(oddsr = odds_ratio) %>% 
         unique() %>%  ### duplicates arise where a single gwas is mapped to two EFO codes e.g. "OA of hip or knee"
         pivot_longer(contains("_ci_"), names_to = c("measure", "ci"), names_sep = "_ci_")  %>% 
@@ -110,10 +114,10 @@ plot_forest <- function(leads, curr_cluster){
     
     main_plot <- plot_data %>% 
         ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity)) + 
-        geom_point_interactive(aes(tooltip = trait_reported)) + 
+        geom_vline(data = origin, aes(xintercept = intercept)) + 
+        geom_point_interactive(aes(tooltip = trait_reported), shape = 21 ) + 
         geom_errorbarh(height = 0.1) + 
         theme_bw() + 
-        geom_vline(data = origin, aes(xintercept = intercept)) + 
         scale_y_discrete(breaks = labels$id, labels = labels$name) + 
         scale_colour_manual(values = cols$color, breaks = cols$morbidity) + 
         ggforce::facet_col(~measure, space = "free", scales = "free", strip.position = "right") + 
