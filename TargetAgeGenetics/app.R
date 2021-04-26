@@ -43,10 +43,10 @@ tbl <- g_all$cn %>%
     filter(!is.na(cluster)) %>% 
     filter(n_morbidities > 1) %>% 
     arrange(-n_morbidities, cluster) %>%
-    left_join(top_l2g)
+    left_join(top_l2g) %>%
+    left_join(ard_leads %>% select(studyId, lead_variantId, morbidity, specificDiseaseName))
 
 groups <- bind_rows(g_all$coloc_edges, g_all$edges)  %>% rownames_to_column("group") %>%  pivot_longer(c("from", "to"), values_to = "id")
-
 
 
 tbl_leads <- tbl %>%
@@ -169,7 +169,7 @@ server <- function(input, output) {
             select(-id) %>% 
             mutate(hasColoc = ifelse(hasColoc == TRUE, 'Yes', NA)) %>% 
             mutate(has_sumstats = ifelse(has_sumstats == TRUE, 'Yes', NA)) %>% 
-            select(cluster, n_morbidities, morbidity, gene.symbol, L2G, hasColoc, distanceToLocus, everything()) %>% 
+            select(cluster, n_morbidities, morbidity, specificDiseaseName, gene.symbol, L2G, hasColoc, distanceToLocus, everything()) %>% 
             reactable(groupBy = "cluster", 
                       # paginateSubRows = FALSE,
                       columns = list(
