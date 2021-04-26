@@ -110,7 +110,7 @@ plot_forest <- function(leads, curr_cluster){
     
     main_plot <- plot_data %>% 
         ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity)) + 
-        geom_point_interactive(aes(tooltip = specificDiseaseName)) + 
+        geom_point_interactive(aes(tooltip = trait_reported)) + 
         geom_errorbarh(height = 0.1) + 
         theme_bw() + 
         geom_vline(data = origin, aes(xintercept = intercept)) + 
