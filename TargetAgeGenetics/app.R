@@ -8,16 +8,14 @@
 #
 
 library(shiny)
-library(shiny)
 library(shinyjs)
 library(shinyWidgets)
 library(shinydashboard)
 library(tidyverse)
 library(DT)
 library(reactable)
-library(targetage)
-library(plotly)
 library(ggtext)
+library(ggiraph)
 library(visNetwork)
 library(igraph)
 
@@ -26,6 +24,11 @@ load("ltg_all.Rda")
 load("graph_all_morbidities.Rda")
 load("ard_leads_filtered.Rda")
 
+ard_leads <- ard_leads %>% 
+  mutate(specificDiseaseName = recode(specificDiseaseName, 
+                                      `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
+                                      `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
+                                      `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement"))
 top_l2g <- l2g_all_joined %>%
     group_by(studyId, lead_variantId) %>% 
     top_n(1,yProbaModel ) %>% ## need to remove duplicates for 5 variants 
@@ -36,7 +39,6 @@ top_genes <- top_l2g %>%
     top_n(1, L2G) %>%
     summarise(gene.symbol = paste0(gene.symbol, collapse = ", "),
               L2G = max(L2G))
-
 
 tbl <- g_all$cn %>%
     select(id, cluster, n_morbidities, morbidity, has_sumstats, everything(), -color, -label, -c_size) %>% 
@@ -93,7 +95,7 @@ plot_forest <- function(leads, curr_cluster){
     plot_data <- 
         leads %>% 
         filter(cluster == curr_cluster) %>% 
-        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, trait_reported, gene.symbol) %>% 
+        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, specificDiseaseName, trait_reported, gene.symbol) %>% 
         rename(oddsr = odds_ratio) %>% 
         unique() %>%  ### duplicates arise where a single gwas is mapped to two EFO codes e.g. "OA of hip or knee"
         pivot_longer(contains("_ci_"), names_to = c("measure", "ci"), names_sep = "_ci_")  %>% 
@@ -108,7 +110,7 @@ plot_forest <- function(leads, curr_cluster){
     
     main_plot <- plot_data %>% 
         ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity)) + 
-        geom_point() + 
+        geom_point_interactive(aes(tooltip = specificDiseaseName)) + 
         geom_errorbarh(height = 0.1) + 
         theme_bw() + 
         geom_vline(data = origin, aes(xintercept = intercept)) + 
@@ -122,7 +124,7 @@ plot_forest <- function(leads, curr_cluster){
               axis.text.y = ggtext::element_markdown(),
               legend.position = "bottom",
               legend.title = element_blank()) 
-}
+    }
 
 ## UI
 ui <- dashboardPage(
@@ -150,7 +152,7 @@ ui <- dashboardPage(
                              ),
                              box(
                                  width = 12,
-                                 plotOutput("forest_plot", height = "auto")
+                                 girafeOutput("forest_plot", height = "auto")
                              )
                       ) # end of column
             ) # end of fluidRow
@@ -253,7 +255,9 @@ server <- function(input, output) {
             selected$forest_plot <- plot_forest(tbl_genes, selected$clusters[length(selected$clusters)])
             ## get number of variants on y axis to scale the figure size
             selected$n_breaks <- length(ggplot_build(selected$forest_plot)$layout$panel_scales_y[[1]]$breaks)
-            selected$plot_height <- (selected$n_breaks * 15) + 100
+            selected$plot_height <- (selected$n_breaks * 0.25) + 0.75
+            selected$forest_plot_interactive <- girafe(ggobj = selected$forest_plot,
+                                                       height_svg = selected$plot_height)
         }
     })
     
@@ -264,12 +268,12 @@ server <- function(input, output) {
     })
     
     
-    observe({output$forest_plot <- renderPlot({
+    observe({output$forest_plot <- renderGirafe({
         if (length(selected$rows)>0){
-            selected$forest_plot
+            selected$forest_plot_interactive
         }
-    }, 
-    height = selected$plot_height)
+    })
+    
 })
 
 }
