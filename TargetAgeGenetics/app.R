@@ -28,7 +28,9 @@ ard_leads <- ard_leads %>%
   mutate(specificDiseaseName = recode(specificDiseaseName, 
                                       `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
                                       `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
-                                      `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement"))
+                                      `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement",
+                                      `type II diabetes mellitus` = "type 2 diabetes")) %>%
+  mutate(specificDiseaseName = ifelse(specificDiseaseName != morbidity, specificDiseaseName, NA))
 top_l2g <- l2g_all_joined %>%
     group_by(studyId, lead_variantId) %>% 
     top_n(1,yProbaModel ) %>% ## need to remove duplicates for 5 variants 
@@ -115,8 +117,8 @@ plot_forest <- function(leads, curr_cluster){
     main_plot <- plot_data %>% 
         ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity)) + 
         geom_vline(data = origin, aes(xintercept = intercept)) + 
-        geom_point_interactive(aes(tooltip = trait_reported), shape = 21 ) + 
-        geom_errorbarh(height = 0.1) + 
+        geom_point_interactive(aes(tooltip = trait_reported)) + 
+        geom_errorbarh_interactive(aes(tooltip = trait_reported),height = 0.1) + 
         theme_bw() + 
         scale_y_discrete(breaks = labels$id, labels = labels$name) + 
         scale_colour_manual(values = cols$color, breaks = cols$morbidity) + 
@@ -178,6 +180,7 @@ server <- function(input, output) {
             select(cluster, n_morbidities, morbidity, specificDiseaseName, gene.symbol, L2G, hasColoc, distanceToLocus, everything()) %>% 
             reactable(groupBy = "cluster", 
                       # paginateSubRows = FALSE,
+                      searchable = TRUE,
                       columns = list(
                           ## Make cluster id sticky
                           cluster = colDef(      
@@ -189,6 +192,8 @@ server <- function(input, output) {
                               name = "Morbidities",
                               aggregate = "unique",
                               width = 225),
+                          ## Specific disease name
+                          specificDiseaseName = colDef(name = "EFO disease label"),
                           ## Summarise the number of morbidities
                           n_morbidities = colDef(name = "", 
                                                  aggregate = "unique",
@@ -196,7 +201,10 @@ server <- function(input, output) {
                                                      aggregated = colFormat(suffix = " morbidities")
                                                  )),
                           distanceToLocus = colDef(name = "Distance to Locus",
-                                                   format = colFormat(separators = TRUE)),
+                                                   aggregate = "min",
+                                                   format = list(cell = colFormat(separators = TRUE),
+                                                                 aggregated = colFormat(prefix = "min ",
+                                                                                        separators = TRUE))),
                           ## Summarise whether any of the GWAS have summary statistics
                           has_sumstats = colDef(name = "Has SumStats",
                                                 aggregate = uniqueDropNA),
