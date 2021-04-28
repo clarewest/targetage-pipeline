@@ -31,15 +31,15 @@ min_n_cases = 2000    ## min n cases for case control studies
 min_n_initial = 2000  ## min sample size for continuous traits
 
 ### All lead variant data for ARDs
-ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-7496dcae-5235-49d6-be27-f95e16752228-c000.snappy.parquet")
+ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-a28f4864-1968-4929-9e4b-99b6f6c25ec5-c000.snappy.parquet")
 ard_leads <- filter(ard_leads_all, (n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases))
 #save(ard_leads, file = "ard_leads_filtered.Rda")
 
 ### Colocalisation data 
-coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-f4073bf5-fa31-4917-a5f7-25c7eb183552-c000.snappy.parquet", as_tibble=TRUE)
+coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-31d4d431-a725-448d-8486-6c7ea9eeff55-c000.snappy.parquet", as_tibble=TRUE)
 
 ### Overlap data
-overlap <- arrow::read_parquet("data/targetage/overlap_ard_leads.parquet/part-00000-6b914f48-ab51-40b0-bc50-48df7da59f84-c000.snappy.parquet",as_data_frame = TRUE)
+overlap <- arrow::read_parquet("data/targetage/overlap_ard_leads.parquet/part-00000-9fd1e8a0-6c9d-43fe-ac26-f4f8c53005a6-c000.snappy.parquet",as_data_frame = TRUE)
 overlap <-   overlap %>% 
   filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
   filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases)) %>%
@@ -64,6 +64,9 @@ coloc_without <- lead_coloc %>% filter(is.na(right_morbidity)) %>%
     filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases))
 overlap_without <- overlap[is.na(right_morbidity)] %>% as.data.frame()
 
+## Overlap/LD where both have sumstats
+overlap_within_sumstats <- overlap_within %>% filter(has_sumstats == TRUE & right_has_sumstats == TRUE)
+overlap_within_nosumstats <- overlap_within %>% filter(has_sumstats == FALSE | right_has_sumstats == FALSE)
 
 ```
 
@@ -139,6 +142,21 @@ sapply(tags, summary)
 
 TODO: Can we determine how much extra information colocalisation gives us compared to overlap, when we have full summary statistics? I.e. does it add any or discard any that we would have considered overlapping anyway?
 
+```{r}
+
+coloc <- g_all$coloc_edges
+ld <- g_all$edges
+ss_studies <- ard_leads %>% mutate(studyId = paste0(studyId, ".", lead_variantId)) %>% select(studyId, has_sumstats) %>% unique()
+ldj <- ld %>% left_join(ss_studies %>% select(from = studyId, from_has_sumstats = has_sumstats)) %>% left_join(ss_studies %>% select(to = studyId, to_has_sumstats = has_sumstats))
+colocj <- coloc %>% left_join(ss_studies %>% select(from = studyId, from_has_sumstats = has_sumstats)) %>% left_join(ss_studies %>% select(to = studyId, to_has_sumstats = has_sumstats))
+ld_ss <- ldj %>% select(-color, -from_has_sumstats, -to_has_sumstats) %>% mutate(LD = TRUE)
+coloc_ss <- colocj %>% select(-color, -from_has_sumstats, -to_has_sumstats) %>% mutate(coloc_ss = TRUE)
+tmp <- full_join(coloc_ss, ld_ss)
+tmp %>% count(morbidity, coloc_ss, LD) %>% View()
+tmp %>% count(coloc_ss, LD)
+
+```
+
 #### Graphs 
 
 Make a graph to visualise the variants and to determine the number of independent genetic signals (i.e. number of disconnected communities) for each ARD. Then we can determine the extent of overlap between ARDs - how many signals are shared compared to the total number of signals. 
@@ -179,8 +197,9 @@ gwas_graph <- function(curr_morbidities,curr_variants,curr_coloc,curr_overlap, p
       to = paste(right_studyId, right_variantId, sep = ".")
     ) %>%
     filter(from != to) %>%
-    select(from, to, morbidity) %>%
-    left_join(g$colours, by = "morbidity")
+    mutate(dashes = ifelse(has_sumstats == TRUE & right_has_sumstats, TRUE, FALSE)) %>%
+    select(from, to, morbidity, dashes) %>%
+    left_join(g$colours, by = "morbidity") 
   
 
   # Edges: where two studyId+variantId are colocalised (edges in black)

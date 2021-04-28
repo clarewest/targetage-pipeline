@@ -70,8 +70,11 @@ uniqueDropNA <- JS("function(values) {
 view_cluster <- function(nodes, g, curr_cluster){
     cluster_nodes <- nodes %>% filter(cluster %in% curr_cluster) %>%
       mutate(color = ifelse(color == "black", "#5E4B56", color)) %>% 
-      mutate(color.background = ifelse(has_sumstats == TRUE, color, paste0(color, "90"))) %>%
-      rename(color.border = color, background.opacity = 10)
+  #    mutate(color.background = ifelse(has_sumstats == TRUE, color, paste0(color, "90"))) %>%   ### make transparent if no sumstats
+      mutate(color.border = ifelse(has_sumstats == TRUE, "black", color),
+             borderWidth = 2) %>%
+      rename(color.background = color) 
+      
     cluster_edges <- bind_rows(g$edges %>% mutate(width = 1), g$coloc_edges %>% mutate(width = 3)) %>% 
         filter(from %in% cluster_nodes$id) %>%
         filter(to %in% cluster_nodes$id) 
@@ -98,12 +101,17 @@ plot_forest <- function(leads, curr_cluster){
         mutate(bestGene = ifelse(is.na(gene.symbol), lead_variantId, paste0(gene.symbol, " (", round(L2G, 2), ")"))) %>%
      #   mutate(labels = ifelse(is.na(gene.symbol), lead_variantId, paste0(gene.symbol, " (", round(L2G, 2), ")    ", lead_variantId)))  %>%
         mutate(name = ifelse(hasColoc == TRUE, glue::glue("<b>{bestGene}</b>   ({lead_variantId})"), glue::glue("{bestGene} ({lead_variantId})")))
+    harmonise_oddsr <- function(x) (ifelse(x<1, 1/x, x))
+    harmonise_beta <- function(x) (abs(x))
+    
     plot_data <- 
-        leads %>% 
+        tbl_genes %>% 
         filter(cluster == curr_cluster) %>% 
-        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, specificDiseaseName, trait_reported, gene.symbol, has_sumstats) %>% 
+        select(id, cluster, lead_variantId, beta, odds_ratio, contains("_ci_"), morbidity, specificDiseaseName, trait_reported, gene.symbol, has_sumstats, direction) %>% 
         rename(oddsr = odds_ratio) %>% 
         unique() %>%  ### duplicates arise where a single gwas is mapped to two EFO codes e.g. "OA of hip or knee"
+        mutate_at(vars(contains("oddsr")), harmonise_oddsr) %>%
+        mutate_at(vars(contains("beta")), harmonise_beta) %>%
         pivot_longer(contains("_ci_"), names_to = c("measure", "ci"), names_sep = "_ci_")  %>% 
         mutate(score = ifelse(measure=="beta", beta, oddsr)) %>% 
         pivot_wider(names_from = "ci", values_from = "value") %>%
@@ -115,13 +123,17 @@ plot_forest <- function(leads, curr_cluster){
         filter(measure %in% plot_data$measure)
     
     main_plot <- plot_data %>% 
-        ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity)) + 
+      
+        ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity, fill = morbidity, shape = direction)) + 
         geom_vline(data = origin, aes(xintercept = intercept)) + 
-        geom_point_interactive(aes(tooltip = trait_reported)) + 
-        geom_errorbarh_interactive(aes(tooltip = trait_reported),height = 0.1) + 
+      geom_errorbarh_interactive(aes(tooltip = trait_reported, data_id = lead_variantId), height = 0.1) + 
+        geom_point_interactive(aes(tooltip = trait_reported, data_id = lead_variantId)) + 
+      geom_point_interactive(data = subset(plot_data, has_sumstats == TRUE), aes(tooltip = trait_reported, data_id = lead_variantId), colour = "black") + 
         theme_bw() + 
         scale_y_discrete(breaks = labels$id, labels = labels$name) + 
         scale_colour_manual(values = cols$color, breaks = cols$morbidity) + 
+        scale_fill_manual(values = cols$color, breaks = cols$morbidity) + 
+        scale_shape_manual(values = c(24, 25), breaks = c("+" ,"-"), labels = c("Positive", "Negative")) + 
         ggforce::facet_col(~measure, space = "free", scales = "free", strip.position = "right") + 
         theme(axis.title.y = element_blank(), 
               axis.title.x = element_blank(),
