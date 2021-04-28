@@ -139,7 +139,11 @@ ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
  
 
 ## Get all lead variants for these studies (we aren't interested in tag variants, at the moment)
-ard_leads = (ard_v2d.select("studyId", 
+## Filter to where lead variant ID == tag variant ID so we can include beta/OR/pval for just the lead
+ard_leads = (ard_v2d.withColumn("lead_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
+             .filter(col("lead_variantId") == concat_ws("_", col("tag_chrom"), col("tag_pos"), col("tag_ref"), col("tag_alt")))
+             .select("studyId", 
+                     "lead_variantId",
                               "morbidity", 
                               "diseaseId",
                               "diseaseName",
@@ -156,7 +160,7 @@ ard_leads = (ard_v2d.select("studyId",
                               "odds_ratio",
                               "oddsr_ci_lower",
                               "oddsr_ci_upper",
-#                              "overall_r2",
+                         #     "overall_r2",
                               "beta", 
                               "beta_ci_lower",
                               "beta_ci_upper",
@@ -165,13 +169,14 @@ ard_leads = (ard_v2d.select("studyId",
                               "lead_chrom",
                               "lead_pos",
                               "lead_ref",
-#                              "log10_ABF",
+                         #     "log10_ABF",   
                               "pval",
-#                              "pval_exponent"
+                         #     "pval_exponent"
                             )
              .distinct()
-             .withColumn("lead_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
-                         )
+             )
+
+                         
 
                 
 # variant ID = chromosome_position_reference_alternative
@@ -214,7 +219,7 @@ cols_to_join = ["studyId", "lead_variantId", "lead_chrom", "lead_pos", "lead_ref
 def get_edges(all_method_edges, ard_lead_variants, all_studies):
     ard_edges = (ard_lead_variants
                    .join(all_method_edges.withColumnRenamed("lead_studyId", "studyId"), cols_to_join)   # Get edges just for ARD lead variants 
-                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported"), col("n_cases").alias("right_n_cases"), col("n_initial").alias("right_n_initial")), "right_studyId", "left")  # Add the trait reported
+                   .join(all_studies.select(col("study_id").alias("right_studyId"), col("trait_reported").alias("right_trait_reported"), col("n_cases").alias("right_n_cases"), col("n_initial").alias("right_n_initial"), col("has_sumstats").alias("right_has_sumstats")), "right_studyId", "left")  # Add the trait reported
                    .join(ard_lead_variants.select(col("studyId").alias("right_studyId"), col("morbidity").alias("right_morbidity")).distinct(), "right_studyId", "left")       # see if it's in our ARD list
                    )
     return ard_edges
