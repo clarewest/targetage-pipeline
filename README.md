@@ -49,7 +49,7 @@ Get EFO terms and names (`specificDiseaseId` and `specificDiseaseName`) for each
 
 `otg_evidences` is all the evidence from Open Targets Genetics (i.e. human genome-wide association evidence)
 
-`ard_otg_evidences` is all the Open Targets Genetics evidence for our ARDs. Each "evidence" is a genome-wide significant trait-associated locus mapped to a target (gene) with an L2G score of at least 0.5. Note that a single trait-associated locus may be mapped to more than one target, so an individual GWAS associations may be represented more than once as evidence for different targets. 
+`ard_otg_evidences` is all the Open Targets Genetics evidence for our ARDs. Each "evidence" is a genome-wide significant trait-associated locus mapped to a target (gene) with an L2G score of at least 0.05. Note that a single trait-associated locus may be mapped to more than one target, so an individual GWAS associations may be represented more than once as evidence for different targets. 
 
 `ard_studies` is all the unique GWAS studies (`studyId`) that we are interested in for our ARDs, the trait studied (`trait_reported`), the ARD (`diseaseName`) and specific disease (`specificDiseaseName`) to which this trait was mapped, and whether the study has summary statistics available (`has_sum_stats`).
 
