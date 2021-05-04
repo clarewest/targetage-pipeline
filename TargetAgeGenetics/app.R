@@ -54,7 +54,7 @@ groups <- bind_rows(g_all$coloc_edges, g_all$edges)  %>% rownames_to_column("gro
 
 
 tbl_leads <- tbl %>%
-    left_join(ard_leads)
+    left_join(ard_leads %>% select(-c("morbidity", "diseaseId", "diseaseName", "specificDiseaseId",   "specificDiseaseName")) %>% unique())
 
 tbl_genes <- tbl_leads  %>% 
     left_join(top_l2g) 
@@ -94,7 +94,7 @@ view_cluster <- function(nodes, g, curr_cluster){
 ## Function to plot OR/beta for each variant in a cluster
 plot_forest <- function(leads, curr_cluster){
    # labels <- leads %>% filter(cluster == curr_cluster) %>% select(cluster, id, lead_variantId, gene.symbol, lead_variantId, L2G) %>% mutate(labels = ifelse(is.na(gene.symbol), lead_variantId, paste0(gene.symbol, " (", round(L2G, 2), ")    ", lead_variantId))) 
-    cols <- g_all$colours
+    cols <- bind_rows(g_all$colours, c(color = "#5E4B56", morbidity = "combination"))
     labels <- leads %>% 
         filter(cluster == curr_cluster) %>% 
         select(cluster, id, lead_variantId, gene.symbol, lead_variantId, L2G, hasColoc) %>% 
@@ -118,7 +118,8 @@ plot_forest <- function(leads, curr_cluster){
         filter(!is.na(score)) %>%
      #   droplevels() %>%
         left_join(labels) %>%
-        mutate(morbidity = factor(morbidity, levels = g_all$colours$morbidity))
+        mutate(morbidity = ifelse(str_detect(morbidity, "\\+"), "combination", morbidity)) %>%
+        mutate(morbidity = factor(morbidity, levels = cols$morbidity))
     origin = data.frame(measure = c("beta", "oddsr"), intercept = c(0, 1)) %>%
         filter(measure %in% plot_data$measure)
     
@@ -141,7 +142,8 @@ plot_forest <- function(leads, curr_cluster){
               axis.ticks.y = element_blank(),
               axis.text.y = ggtext::element_markdown(),
               legend.position = "bottom",
-              legend.title = element_blank()) 
+              legend.title = element_blank(),
+              legend.box="vertical") 
     }
 
 ## UI
@@ -215,8 +217,7 @@ server <- function(input, output) {
                           distanceToLocus = colDef(name = "Distance to Locus",
                                                    aggregate = "min",
                                                    format = list(cell = colFormat(separators = TRUE),
-                                                                 aggregated = colFormat(prefix = "min ",
-                                                                                        separators = TRUE))),
+                                                                 aggregated = colFormat(separators = TRUE))),
                           ## Summarise whether any of the GWAS have summary statistics
                           has_sumstats = colDef(name = "Has SumStats",
                                                 aggregate = uniqueDropNA),

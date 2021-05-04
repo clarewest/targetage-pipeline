@@ -5,8 +5,8 @@ account: targetage
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4001899
-bundleId: 4511818
+bundleId: 4532298
 url: https://targetage.shinyapps.io/TargetAgeGenetics/
-when: 1619218298.96634
+when: 1619649111.80033
 asMultiple: FALSE
 asStatic: FALSE
