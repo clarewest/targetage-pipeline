@@ -72,7 +72,6 @@ parent_ardiseases = (ardiseases
                      )
 
 all_ardiseases = parent_ardiseases.union(descendant_ardiseases)
-#all_ardiseases.toPandas().to_csv(data_path+"full_disease_list.csv", index=False)
 
 
 ## Association data 
@@ -87,8 +86,13 @@ ard_associations.groupBy("morbidity").count().show()
 # are direct associations included in indirect associations?
 
 ## Get annotations for all targets implicated
-ard_targets = ard_associations.join(targets, ["targetId", "targetSymbol", "targetName"])
-
+ard_targets = (ard_associations
+               .select("targetId")
+               .distinct()
+               .join(targets, ["targetId"])
+               .drop("hallMarks", "genomicLocation")
+               )
+   
 
 ## Get GWAS evidence
 otg_evidence_cols = ["morbidity",
@@ -124,7 +128,7 @@ ard_studies = (ard_otg_evidences
                 )
 
 #ard_v2d = ard_studies.join(v2d.withColumnRenamed("study_id", "studyId"), "studyId")
-#ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
+
 ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
 
 ## get variant details for ard_v2d variants
@@ -137,6 +141,7 @@ ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
 #                      )
 #                )
  
+
 
 ## Get all lead variants for these studies (we aren't interested in tag variants, at the moment)
 ## Filter to where lead variant ID == tag variant ID so we can include beta/OR/pval for just the lead
@@ -213,6 +218,54 @@ overlap_left = overlap_left.toDF(*(c.replace('A_', 'lead_') for c in overlap_lef
 overlap_left = overlap_left.toDF(*(c.replace('B_', 'right_') for c in overlap_left.columns))
 
 
+#### Need to calculate overlap myself
+# if alt/ref are reversed should we count them?
+
+## First find out which combinations have an overlap to minimise contribution
+overlapping = overlap.select(col("A_study_id"), col("B_study_id")).distinct()
+
+## Variants from studies with summary stats (UKBB) will have `posterior_prob` that variant is causal
+## Those without summary stats will just have `overall_r2`, the LD between tag and lead
+## Using a cutoff of 0.8, the mean number of tag variants per hit decreases from 71.2 (std=135.9) to 32.7 (std=108.6)
+## Total number of variants decreases from 1,034,480 to 464,182 (44.9%)
+gw_signif_pval = 5e-8
+LD_cutoff = 0.5
+ard_hits = (ard_v2d
+            .withColumn("lead_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
+            .withColumn("tag_variantId", concat_ws("_", col("tag_chrom"), col("tag_pos"), col("tag_ref"), col("tag_alt")))
+            .select("studyId", "lead_variantId", "tag_variantId", "overall_r2", "posterior_prob")
+            .distinct()
+     #       .filter(col("lead_variantId") == col("tag_variantId"))
+            .filter(col("overall_r2")>=LD_cutoff)
+            .filter(col("pval") <= gw_signif_pval)    ## only drops 51 variants (0.01%)
+            .arrange()
+            )
+
+ard_hits_count = ard_hits.groupBy("studyId", "lead_variantId").count()
+
+def prefix_columns(old_df, prefix, id_col = None):    
+    columns = old_df.columns
+    new_columns = [prefix + c if c != id_col else c for c in columns] 
+    column_mapping = [[o, n] for o, n in zip(columns, new_columns)]
+    new_df = old_df.select(list(map(lambda old, new: col(old).alias(new),*zip(*column_mapping))))
+    return(new_df)
+
+ard_hits_overlap_full = (
+    prefix_columns(ard_hits, "A_", "tag_variantId")
+    .join(prefix_columns(ard_hits, "B_", "tag_variantId"), "tag_variantId", "inner")
+    )
+
+ard_hits_overlap = (
+    ard_hits_overlap_full
+    .groupBy(["A_studyId", "A_lead_variantId", "B_studyId", "B_lead_variantId"])
+    .count()
+    .withColumnRenamed("count", "AB_overlap")
+    .join(prefix_columns(ard_hits_count, "A_"), ["A_studyId", "A_lead_variantId"])
+    .join(prefix_columns(ard_hits_count, "B_"), ["B_studyId", "B_lead_variantId"])
+    .withColumn("A_distinct", col("A_count") - col("AB_overlap"))
+    .withColumn("B_distinct", col("B_count") - col("AB_overlap")) 
+)
+
 ## Join with ARD lead variants
 cols_to_join = ["studyId", "lead_variantId", "lead_chrom", "lead_pos", "lead_ref", "lead_alt"]
 
@@ -245,10 +298,26 @@ overlap_ard_leads = get_edges(overlap_left, ard_leads, studies)
 overlap_ard_leads = is_right_lead(overlap_ard_leads, v2d)
 
 
-## write to parquet
-coloc_ard_leads.repartition(1).write.parquet(targetage+"coloc_ard_leads.parquet")
-overlap_ard_leads.repartition(1).write.parquet(targetage+"overlap_ard_leads.parquet")
-ard_leads.repartition(1).write.parquet(targetage+"ard_leads.parquet")
+## Save output
+if (0):
+    # All diseases
+    all_ardiseases.toPandas().to_csv(data_path+"full_disease_list.csv", index=False)
+    
+    # V2D
+#    ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
+    
+    # ARD associations
+    ard_associations.write.parquet(data_path+"targetage/ard_associations.parquet")
+    
+    # ARD annotations
+    ard_targets.write.parquet(data_path+"targetage/ard_annotations.parquet")
+
+    # colocalisation details
+    coloc_ard_leads.repartition(1).write.parquet(targetage+"coloc_ard_leads.parquet")
+    overlap_ard_leads.repartition(1).write.parquet(targetage+"overlap_ard_leads.parquet")
+    ard_leads.repartition(1).write.parquet(targetage+"ard_leads.parquet")
+
+
 
 
 
