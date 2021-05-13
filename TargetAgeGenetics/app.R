@@ -6,7 +6,6 @@
 #
 #    http://shiny.rstudio.com/
 #
-
 library(shiny)
 library(shinyjs)
 library(shinyWidgets)
@@ -124,11 +123,10 @@ plot_forest <- function(leads, curr_cluster){
         filter(measure %in% plot_data$measure)
     
     main_plot <- plot_data %>% 
-      
-        ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, colour = morbidity, fill = morbidity, shape = direction)) + 
+        ggplot(., aes(y = id, x=score, xmin = lower, xmax = upper, shape = direction)) + 
         geom_vline(data = origin, aes(xintercept = intercept)) + 
-      geom_errorbarh_interactive(aes(tooltip = trait_reported, data_id = lead_variantId), height = 0.1) + 
-        geom_point_interactive(aes(tooltip = trait_reported, data_id = lead_variantId)) + 
+      geom_errorbarh_interactive(aes(colour = morbidity, tooltip = trait_reported, data_id = lead_variantId), height = 0.1) + 
+        geom_point_interactive(aes(colour = morbidity, fill = morbidity, tooltip = trait_reported, data_id = lead_variantId)) + 
       geom_point_interactive(data = subset(plot_data, has_sumstats == TRUE), aes(tooltip = trait_reported, data_id = lead_variantId), colour = "black") + 
         theme_bw() + 
         scale_y_discrete(breaks = labels$id, labels = labels$name) + 
@@ -145,6 +143,41 @@ plot_forest <- function(leads, curr_cluster){
               legend.title = element_blank(),
               legend.box="vertical") 
     }
+
+
+## Regional association plot
+plot_regional <- function(tbl, curr_cluster){
+  cols <- bind_rows(g_all$colours, c(color = "#5E4B56", morbidity = "combination"))
+  plot_data <- tbl %>%
+#    plot_data <- tmp %>%
+    filter(cluster == curr_cluster) %>% 
+    separate(lead_variantId, into = c("lead_chrom", "lead_pos", "lead_ref", "lead_alt"), remove = FALSE) %>%
+    mutate(direction = NA) %>% 
+    mutate(direction = ifelse(is.na(beta), direction, ifelse(beta<0, "-", "+"))) %>% 
+    mutate(direction = ifelse(is.na(odds_ratio), direction, ifelse(odds_ratio<1, "-", "+"))) %>%
+    mutate(lead_pos = as.numeric(lead_pos))
+  
+  limits = c(round((min(as.numeric(plot_data$lead_pos))-250000),-3),
+             round((max(as.numeric(plot_data$lead_pos))+250000),-3))
+  
+  plot_data %>%  
+    ggplot(., aes(x = lead_pos, y = -log(pval), shape = direction)) + 
+    geom_point_interactive(aes(fill = morbidity, colour = morbidity, tooltip = trait_reported, data_id = lead_variantId), alpha = 0.7) + 
+    geom_point_interactive(data = subset(plot_data, has_sumstats == TRUE), aes(tooltip = trait_reported, data_id = lead_variantId), colour = "black") + 
+    scale_colour_manual(values = cols$color, breaks = cols$morbidity) + 
+    scale_fill_manual(values = cols$color, breaks = cols$morbidity) + 
+    scale_shape_manual(values = c(24, 25), breaks = c("+" ,"-"), labels = c("Positive", "Negative")) + 
+    theme_bw() + 
+    scale_x_continuous(limits = limits, breaks = scales::breaks_width(250000), labels = scales::label_number(scale = 1/1000000, suffix = "Mb", accuracy = 0.01)) + 
+    scale_y_continuous(limits = c(0, NA)) + 
+    labs(x = paste("Position on chromosome", unique(plot_data$lead_chrom)),
+         y = expression(-log[10]("p-value"))) +
+    theme(panel.grid = element_blank(),
+          legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.box="vertical")
+  }
+
 
 ## UI
 ui <- dashboardPage(
@@ -173,6 +206,10 @@ ui <- dashboardPage(
                              box(
                                  width = 12,
                                  girafeOutput("forest_plot", height = "auto")
+                             ),
+                             box(
+                               width = 12,
+                               girafeOutput("regional_plot", height = "auto")
                              )
                       ) # end of column
             ) # end of fluidRow
@@ -278,11 +315,13 @@ server <- function(input, output) {
                 nrow()
             req(!is.null(selected$rows))
             selected$forest_plot <- plot_forest(tbl_genes, selected$clusters[length(selected$clusters)])
+            selected$regional_plot <- plot_regional(tbl_genes, selected$clusters[length(selected$clusters)])
             ## get number of variants on y axis to scale the figure size
             selected$n_breaks <- length(ggplot_build(selected$forest_plot)$layout$panel_scales_y[[1]]$breaks)
             selected$plot_height <- (selected$n_breaks * 0.25) + 0.75
             selected$forest_plot_interactive <- girafe(ggobj = selected$forest_plot,
                                                        height_svg = selected$plot_height)
+            selected$regional_plot_interactive <- girafe(ggobj = selected$regional_plot)
         }
     })
     
@@ -297,6 +336,13 @@ server <- function(input, output) {
         if (length(selected$rows)>0){
             selected$forest_plot_interactive
         }
+    })
+    })
+    
+    observe({output$regional_plot <- renderGirafe({
+      if (length(selected$rows)>0){
+        selected$regional_plot_interactive
+      }
     })
     
 })
