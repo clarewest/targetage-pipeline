@@ -8,7 +8,7 @@ Created on Sun Feb 28 20:07:01 2021
 
 import pyspark
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, explode, concat_ws
+from pyspark.sql.functions import col, lit, explode, concat_ws, array_contains
 
 ## Spark
 sc = pyspark.SparkContext()
@@ -41,6 +41,7 @@ otg_evidences = spark.read.parquet(ot_platform+"ETL_parquet/evidences/succeeded/
 ## Genetic data
 coloc = spark.read.json(ot_genetics+"v2d_coloc/")
 v2d = spark.read.json(ot_genetics+"v2d/")
+cs = spark.read.json(ot_genetics+"v2d_credset")
 #variants = spark.read.json(ot_genetics+"lut/variant-index/")
 studies = spark.read.json(ot_genetics+"lut/study-index/")
 overlap = spark.read.json(ot_genetics+"lut/overlap-index/")
@@ -51,6 +52,9 @@ ards = ards.toDF(*["diseaseId", "morbidity"]).filter(~col("diseaseId").contains(
 ardiseases = (ards.join(diseases, "diseaseId", "left")
               .select("morbidity","diseaseId","children", "description", "diseaseName", "therapeuticAreas", "descendants")
               )
+
+# Therapeutic areas to exclude
+excluded_tas = ["OTAR_0000018", "OTAR_0000014"]
 
 # Get EFO codes etc for descendant diseases
 descendant_ardiseases = (
@@ -69,6 +73,8 @@ parent_ardiseases = (ardiseases
                              col("diseaseName").alias("specificDiseaseName"),
                              "therapeuticAreas",
                              "description")
+                     .filter(array_contains(col("therapeuticAreas"), excluded_tas[1]))
+                     .filter(array_contains(col("therapeuticAreas"), excluded_tas[2]))
                      )
 
 all_ardiseases = parent_ardiseases.union(descendant_ardiseases)
@@ -226,22 +232,25 @@ overlapping = overlap.select(col("A_study_id"), col("B_study_id")).distinct()
 
 ## Variants from studies with summary stats (UKBB) will have `posterior_prob` that variant is causal
 ## Those without summary stats will just have `overall_r2`, the LD between tag and lead
+## Where there are no summary statistics we want to use the LD cutoff
+## Where there are summary statistics we want posterior_prob > 0 (use finemapping instead)
 ## Using a cutoff of 0.8, the mean number of tag variants per hit decreases from 71.2 (std=135.9) to 32.7 (std=108.6)
 ## Total number of variants decreases from 1,034,480 to 464,182 (44.9%)
+
 gw_signif_pval = 5e-8
-LD_cutoff = 0.5
+LD_cutoff = 0.7
 ard_hits = (ard_v2d
             .withColumn("lead_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
             .withColumn("tag_variantId", concat_ws("_", col("tag_chrom"), col("tag_pos"), col("tag_ref"), col("tag_alt")))
-            .select("studyId", "lead_variantId", "tag_variantId", "overall_r2", "posterior_prob")
+            .select("studyId", "lead_variantId", "tag_variantId", "overall_r2", "posterior_prob", "has_sumstats")
             .distinct()
+            .filter(((col("has_sumstats") == True) & (col("posterior_prob") > 0)) | ((col("has_sumstats") == False) & (col("overall_r2") > LD_cutoff)))
      #       .filter(col("lead_variantId") == col("tag_variantId"))
-            .filter(col("overall_r2")>=LD_cutoff)
+     #       .filter(col("overall_r2")>=LD_cutoff)    ## If we don't want to use finemapping
             .filter(col("pval") <= gw_signif_pval)    ## only drops 51 variants (0.01%)
-            .arrange()
             )
 
-ard_hits_count = ard_hits.groupBy("studyId", "lead_variantId").count()
+ard_hits_count = ard_hits.groupBy("studyId", "has_sumstats", "lead_variantId").count()
 
 def prefix_columns(old_df, prefix, id_col = None):    
     columns = old_df.columns

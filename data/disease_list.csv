@@ -1,0 +1,43 @@
+Orphanet_79389,premature ageing
+EFO_0000768,idiopathic pulmonary fibrosis
+#EFO_0000270,asthma
+EFO_1002011,adult onset asthma
+EFO_0000341,chronic obstructive pulmonary disease
+#EFO_0003086,kidney disease
+EFO_0003884,chronic kidney disease
+#EFO_0005856,athritis
+EFO_0002506,osteoarthritis
+EFO_0000685,rheumatoid arthritis
+EFO_0003777,heart disease
+EFO_0003914,atherosclerosis
+EFO_0000537,hypertension
+EFO_0001073,obesity
+HP_0002180,neurodegeneration
+#EFO_0005772,neurodegenerative disease
+EFO_0000249,alzheimers disease
+EFO_0002508,parkinsons disease
+EFO_0004300,longevity
+#EFO_0007568,ageing
+EFO_0006792,lewy body dementia
+EFO_1000653,sarcopenia
+EFO_0001365,age-related macular degeneration
+EFO_0000516,glaucoma
+EFO_0001360,type 2 diabetes
+EFO_0003882,osteoporosis
+EFO_0000712,stroke
+EFO_0000195,metabolic syndrome
+#EFO_0003761,depression
+#EFO_0005230,anxiety
+EFO_0009267,delirium
+HP_0012532,chronic pain
+#HP_0003418,back pain
+#HP_0030833,neck pain
+EFO_0004502,adiponectin measurement
+EFO_0007710,cognitive decline measurement
+EFO_0009885,frailty measurement
+EFO_0007680,gait measurement
+EFO_0006941,grip strength measurement
+EFO_0004529,lipid measurement
+EFO_0009762,healthspan
+EFO_0007873,cartilage thickness measurement
+EFO_0009270,heel bone mineral density
