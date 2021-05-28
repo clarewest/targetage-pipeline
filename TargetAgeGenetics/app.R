@@ -168,7 +168,7 @@ plot_regional <- function(tbl, curr_cluster){
     scale_fill_manual(values = cols$color, breaks = cols$morbidity) + 
     scale_shape_manual(values = c(24, 25), breaks = c("+" ,"-"), labels = c("Positive", "Negative")) + 
     theme_bw() + 
-    scale_x_continuous(limits = limits, breaks = scales::breaks_width(250000), labels = scales::label_number(scale = 1/1000000, suffix = "Mb", accuracy = 0.01)) + 
+    scale_x_continuous(limits = limits, labels = scales::label_number(scale = 1/1000000, suffix = "Mb", accuracy = 0.01)) + 
     scale_y_continuous(limits = c(0, NA)) + 
     labs(x = paste("Position on chromosome", unique(plot_data$lead_chrom)),
          y = expression(-log[10]("p-value"))) +
