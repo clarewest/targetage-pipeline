@@ -8,7 +8,7 @@ Created on Sun Feb 28 20:07:01 2021
 
 import pyspark
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, explode, concat_ws, array_contains
+from pyspark.sql.functions import col, lit, explode, concat_ws, array_contains, collect_set
 
 ## Spark
 sc = pyspark.SparkContext()
@@ -54,7 +54,7 @@ ardiseases = (ards.join(diseases, "diseaseId", "left")
               )
 
 # Therapeutic areas to exclude
-excluded_tas = ["OTAR_0000018", "OTAR_0000014"]
+excluded_tas = ["OTAR_0000018", "OTAR_0000014", "MONDO_0045024"]
 
 # Get EFO codes etc for descendant diseases
 descendant_ardiseases = (
@@ -63,6 +63,10 @@ descendant_ardiseases = (
     .join(diseases.withColumnRenamed("diseaseId", "specificDiseaseId").withColumnRenamed("diseaseName", "specificDiseaseName"), ["specificDiseaseId"])   
     .join(ards, "diseaseId")
     .select("morbidity", "diseaseId", "diseaseName", "specificDiseaseId", "specificDiseaseName", "therapeuticAreas", "description")
+    .filter(~array_contains(col("therapeuticAreas"), excluded_tas[0]))
+    .filter(~array_contains(col("therapeuticAreas"), excluded_tas[1]))
+    .filter(~array_contains(col("therapeuticAreas"), excluded_tas[2]))
+
 )
 
 parent_ardiseases = (ardiseases
@@ -73,8 +77,6 @@ parent_ardiseases = (ardiseases
                              col("diseaseName").alias("specificDiseaseName"),
                              "therapeuticAreas",
                              "description")
-                     .filter(array_contains(col("therapeuticAreas"), excluded_tas[1]))
-                     .filter(array_contains(col("therapeuticAreas"), excluded_tas[2]))
                      )
 
 all_ardiseases = parent_ardiseases.union(descendant_ardiseases)
@@ -82,14 +84,18 @@ all_ardiseases = parent_ardiseases.union(descendant_ardiseases)
 
 ## Association data 
 overall_associations = spark.read.parquet(ot_platform+"ETL_parquet/associations/indirect/byOverall/")
+
 associations = spark.read.parquet(ot_platform+"ETL_parquet/associations/indirect/byDatatype/")
 gen_associations = associations.filter(col("datatypeId")=="genetic_association")
 
 
 ## Targets with genetic associations 
-ard_associations = (ards.join(gen_associations,"diseaseId", "inner"))
+ard_associations = (ards
+                    # get targets with genetic associations
+                    .join(gen_associations,"diseaseId", "inner")   
+                    # add the scores for other datatypes, for later 
+                    .join(overall_associations, ["diseaseId", "targetId", "diseaseLabel", "targetName", "targetSymbol"]))
 ard_associations.groupBy("morbidity").count().show()
-# are direct associations included in indirect associations?
 
 ## Get annotations for all targets implicated
 ard_targets = (ard_associations
@@ -125,6 +131,9 @@ ard_otg_evidences = (all_ardiseases.drop("therapeuticAreas", "description")
                              .withColumnRenamed("diseaseLabel", "specificDiseaseName"), 
                              ["specificDiseaseId", "specificDiseaseName"], "inner")
                     .select(otg_evidence_cols)
+                    .groupBy([ col for col in otg_evidence_cols if col != "variantFunctionalConsequenceId"]).agg(collect_set("variantFunctionalConsequenceId").alias("variantFunctionalConsequenceIds"))
+                    .drop("variantFunctionalConsequenceId")
+                    .distinct()
                     )
 
 ard_studies = (ard_otg_evidences
@@ -133,9 +142,9 @@ ard_studies = (ard_otg_evidences
                 .join(studies.select(col("study_id").alias("studyId")), "studyId")
                 )
 
-#ard_v2d = ard_studies.join(v2d.withColumnRenamed("study_id", "studyId"), "studyId")
+ard_v2d = ard_studies.join(v2d.withColumnRenamed("study_id", "studyId"), "studyId")
 
-ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
+#ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
 
 ## get variant details for ard_v2d variants
 #ard_variants = (ard_v2d
@@ -188,8 +197,6 @@ ard_leads = (ard_v2d.withColumn("lead_variantId", concat_ws("_", col("lead_chrom
              )
 
                          
-
-                
 # variant ID = chromosome_position_reference_alternative
 
 ## Where sumstats are available, we can use colocalisation data
@@ -204,7 +211,6 @@ coloc_studies = (coloc
                  )
 coloc_studies = coloc_studies.toDF(*(c.replace("left_", "lead_") for c in coloc_studies.columns))
 
-## Question - does coloc include all tag variants too? Around half seem to not be genome-wide significant
 
 ## Otherwise, we can use overlap data
 # AB overlap - how many variants in possible variants overlap
@@ -224,10 +230,9 @@ overlap_left = overlap_left.toDF(*(c.replace('A_', 'lead_') for c in overlap_lef
 overlap_left = overlap_left.toDF(*(c.replace('B_', 'right_') for c in overlap_left.columns))
 
 
-#### Need to calculate overlap myself
-# if alt/ref are reversed should we count them?
+#### Need to calculate overlap myself if we want to change the LD cutoff 
 
-## First find out which combinations have an overlap to minimise contribution
+## First find out which combinations have an overlap to minimise computation
 overlapping = overlap.select(col("A_study_id"), col("B_study_id")).distinct()
 
 ## Variants from studies with summary stats (UKBB) will have `posterior_prob` that variant is causal
@@ -308,18 +313,18 @@ overlap_ard_leads = is_right_lead(overlap_ard_leads, v2d)
 
 
 ## Save output
-if (0):
+if (1):
     # All diseases
     all_ardiseases.toPandas().to_csv(data_path+"full_disease_list.csv", index=False)
     
     # V2D
-#    ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
+    ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
     
     # ARD associations
     ard_associations.write.parquet(data_path+"targetage/ard_associations.parquet")
     
     # ARD annotations
-    ard_targets.write.parquet(data_path+"targetage/ard_annotations.parquet")
+    ard_targets.repartition(1).write.parquet(data_path+"targetage/ard_annotations.parquet")
 
     # colocalisation details
     coloc_ard_leads.repartition(1).write.parquet(targetage+"coloc_ard_leads.parquet")
