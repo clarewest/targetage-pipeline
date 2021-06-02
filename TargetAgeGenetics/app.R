@@ -43,11 +43,15 @@ top_genes <- top_l2g %>%
 
 tbl <- g_all$cn %>%
     select(id, cluster, n_morbidities, morbidity, has_sumstats, everything(), -color, -label, -c_size) %>% 
+  group_by(cluster) %>% 
+  mutate(communities = length(unique(community))) %>% 
+  ungroup() %>%
     filter(!is.na(cluster)) %>% 
     filter(n_morbidities > 1) %>% 
-    arrange(-n_morbidities, cluster) %>%
     left_join(top_l2g) %>%
-    left_join(ard_leads %>% select(studyId, lead_variantId, morbidity, specificDiseaseName))
+    left_join(ard_leads %>% select(studyId, lead_variantId, morbidity, specificDiseaseName)) %>%
+    arrange(communities, -n_morbidities, cluster) 
+  
 
 groups <- bind_rows(g_all$coloc_edges, g_all$edges)  %>% rownames_to_column("group") %>%  pivot_longer(c("from", "to"), values_to = "id")
 
@@ -75,9 +79,7 @@ view_cluster <- function(nodes, g, curr_cluster){
       rename(color.background = color) 
       
     cluster_edges <- bind_rows(g$edges %>% mutate(width = 1), g$coloc_edges %>% mutate(width = 3)) %>% 
-        filter(from %in% cluster_nodes$id) %>%
-        filter(to %in% cluster_nodes$id) 
-      
+        filter((from %in% cluster_nodes$id) & (to %in% cluster_nodes$id)) 
     vn <- 
         visNetwork(
             cluster_nodes,
@@ -238,6 +240,10 @@ server <- function(input, output) {
                               style = sticky_style,
                               maxWidth = 90,
                               headerStyle = sticky_style),
+                          ## Aggregate number of communities in the cluster subgraph 
+                          communities = colDef(
+                            aggregate = "max"
+                          ),
                           ## Aggregate comma-separated list of morbidities
                           morbidity = colDef(
                               name = "Morbidities",
@@ -298,6 +304,7 @@ server <- function(input, output) {
                       ),
                       selection = "multiple", onClick = "select",
                       #      defaultSelected = 1,
+                      defaultSorted = list(communities = "asc", n_morbidities = "desc"),
                       theme = reactableTheme(
                           rowSelectedStyle = list(backgroundColor = "#eee", boxShadow = "inset 2px 0 0 0 #ffa62d")
                       ))
