@@ -144,19 +144,6 @@ ard_studies = (ard_otg_evidences
 
 ard_v2d = ard_studies.join(v2d.withColumnRenamed("study_id", "studyId"), "studyId")
 
-#ard_v2d = spark.read.parquet(data_path+"targetage/ard_v2d.parquet")
-
-## get variant details for ard_v2d variants
-#ard_variants = (ard_v2d
-#                .select("lead_chrom", "lead_pos", "lead_ref", "lead_alt")
-#                .join(variants.select(col("chr_id").alias("lead_chrom"), 
-#                                      col("position").alias("lead_pos"), 
-#                                      col("ref_allele").alias("lead_ref"), 
-#                                      col("alt_allele").alias("lead_alt"))
-#                      )
-#                )
- 
-
 
 ## Get all lead variants for these studies (we aren't interested in tag variants, at the moment)
 ## Filter to where lead variant ID == tag variant ID so we can include beta/OR/pval for just the lead
@@ -243,7 +230,7 @@ overlapping = overlap.select(col("A_study_id"), col("B_study_id")).distinct()
 ## Total number of variants decreases from 1,034,480 to 464,182 (44.9%)
 
 gw_signif_pval = 5e-8
-LD_cutoff = 0.7
+LD_cutoff = 0.8
 ard_hits = (ard_v2d
             .withColumn("lead_variantId", concat_ws("_", col("lead_chrom"), col("lead_pos"), col("lead_ref"), col("lead_alt")))
             .withColumn("tag_variantId", concat_ws("_", col("tag_chrom"), col("tag_pos"), col("tag_ref"), col("tag_alt")))
@@ -308,20 +295,24 @@ coloc_ard_leads = get_edges(coloc_studies, ard_leads, studies)
 coloc_ard_leads = is_right_lead(coloc_ard_leads, v2d)
 
 
+## If we are using OTG overlap datatable
 overlap_ard_leads = get_edges(overlap_left, ard_leads, studies)
 overlap_ard_leads = is_right_lead(overlap_ard_leads, v2d)
 
+## If we are using our overlap datatable with a higher LD cutoff
+
+
 
 ## Save output
-if (1):
+if (0):
     # All diseases
     all_ardiseases.toPandas().to_csv(data_path+"full_disease_list.csv", index=False)
     
     # V2D
-    ard_v2d.write.parquet(data_path+"targetage/ard_v2d.parquet")
+    ard_v2d.repartition(1).write.parquet(data_path+"targetage/ard_v2d.parquet")
     
     # ARD associations
-    ard_associations.write.parquet(data_path+"targetage/ard_associations.parquet")
+    ard_associations.repartition(1).write.parquet(data_path+"targetage/ard_associations.parquet")
     
     # ARD annotations
     ard_targets.repartition(1).write.parquet(data_path+"targetage/ard_annotations.parquet")

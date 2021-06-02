@@ -34,15 +34,15 @@ min_n_initial = 2000  ## min sample size for continuous traits
 diseases <- read.csv("data/full_disease_list.csv")
 
 ### All lead variant data for ARDs
-ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-fe4dda29-bf31-4682-95c2-b00f360cd7e5-c000.snappy.parquet")
+ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-847cd340-cf61-47da-a25d-9d36d195ef39-c000.snappy.parquet")
 ard_leads <- filter(ard_leads_all, (n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases))
 #save(ard_leads, file = "ard_leads_filtered.Rda")
 
 ### Colocalisation data 
-coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-5e043bb2-db78-4b0f-adc7-67eaa46d4442-c000.snappy.parquet", as_tibble=TRUE)
+coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-7408f34e-85ab-43bb-a12f-f5e78b7d314d-c000.snappy.parquet", as_tibble=TRUE)
 
 ### Overlap data
-overlap <- arrow::read_parquet("data/targetage/overlap_ard_leads.parquet/part-00000-6b669906-0f0d-4b79-93f4-615c3c409705-c000.snappy.parquet",as_data_frame = TRUE)
+overlap <- arrow::read_parquet("data/targetage/overlap_ard_leads.parquet/part-00000-968f5e84-1221-4b35-8a99-69fccda34afb-c000.snappy.parquet",as_data_frame = TRUE)
 
 overlap <- overlap %>% 
   filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
@@ -73,7 +73,7 @@ overlap_within_sumstats <- overlap_within %>% filter(has_sumstats == TRUE & righ
 overlap_within_nosumstats <- overlap_within %>% filter(has_sumstats == FALSE | right_has_sumstats == FALSE)
 
 ## Target details
-targets <- arrow::read_parquet("data/targetage/another_superceded/ard_annotations.parquet/part-00000-cd091641-e16f-4e10-9795-687386baabe0-c000.snappy.parquet", as_tibble=TRUE)
+targets <- arrow::read_parquet("data/targetage/ard_annotations.parquet/part-00000-2d7e85c7-0644-4728-9921-dbdf119c427d-c000.snappy.parquet", as_tibble=TRUE)
 
 ```
 
@@ -122,7 +122,7 @@ ard_leads_all %>%
 
 ```
 
-TODO: Should we use a tag variant number or jaccard index cutoff?
+Should we use a tag variant number or jaccard index cutoff?
 
 What is the distribution of overlapping variants?
 
@@ -132,31 +132,59 @@ Eg https://genetics.opentargets.org/study/GCST007091 17_45961419_A_G (LD set siz
 
 ```{r}
 
-tags <- overlap %>% 
-  select(morbidity, LR_overlap, lead_distinct, right_distinct) %>% 
+tags_pairs <- overlap_within %>% 
+  select(studyId, lead_variantId, right_studyId, right_variantId, LR_overlap, lead_distinct, right_distinct, has_sumstats) %>% 
+  unique() %>% 
   mutate(lead_total = lead_distinct + LR_overlap,
          right_total = right_distinct + LR_overlap,
          jaccard = LR_overlap / (lead_distinct + right_distinct + LR_overlap)) 
 
-tags %>% 
+tags_pairs %>% 
     select(-lead_distinct, -right_distinct) %>% 
-     pivot_longer(-morbidity) %>%
-     ggplot(., aes(x = value)) + geom_density() + facet_wrap(~name, scales = "free") + theme_bw()
+     pivot_longer(-c("morbidity", "has_sumstats")) %>%
+     ggplot(., aes(x = value, colour = has_sumstats)) + geom_density() + facet_wrap(~name, scales = "free") + theme_bw()
 
 
-sapply(tags, summary)
+
+sapply(tags_pairs, summary)
+
+coloc_within_pairs <-  coloc_within %>%
+  select(studyId, lead_variantId, right_studyId, right_variantId, coloc_h4) %>% 
+  unique() 
+
+coloc_vs_tag_overlap <- full_join(tags_pairs, coloc_within_pairs) 
+
+coloc_vs_tag_overlap_scan <- coloc_vs_tag_overlap %>% 
+  uncount(11, .id = "min_jaccard") %>% 
+  mutate(min_jaccard = (1/10)* (min_jaccard - 1)) %>%
+  mutate(LD_edge = jaccard >= min_jaccard, coloc_edge = !is.na(coloc_h4)) %>% 
+  mutate(coloc_edge = ifelse(has_sumstats == TRUE, coloc_edge, NA))
+
+coloc_vs_tag_overlap_scan_long <- coloc_vs_tag_overlap_scan %>% pivot_longer(c("LD_edge", "coloc_edge"))
+
+ggplot(coloc_vs_tag_overlap_scan_long, aes(x=name, fill = value)) + geom_bar() + facet_grid(has_sumstats ~ min_jaccard) + theme_bw()
   
+ggplot(subset(coloc_vs_tag_overlap_scan, has_sumstats == TRUE), aes(x = min_jaccard, fill = LD_edge == coloc_edge)) + geom_bar()+ theme_bw()
+coloc_vs_tag_overlap_scan %>% filter(has_sumstats==TRUE, LD_edge == TRUE) %>% ggplot(., aes(x = min_jaccard, fill = LD_edge == coloc_edge)) + geom_bar() + theme_bw()
+
 ```
 
 TODO: Can we determine how much extra information colocalisation gives us compared to overlap, when we have full summary statistics? I.e. does it add any or discard any that we would have considered overlapping anyway?
 
 ```{r}
 
-coloc <- g_all$coloc_edges
-ld <- g_all$edges
+tag_variants_ss <- overlap_within %>% filter(has_sumstats == TRUE) ## this is actually finemapping, not LD, as there is SS
+
+```
+
+
+```{r}
+
+coloc_edges <- g_all$coloc_edges
+ld_edges <- g_all$edges
 ss_studies <- ard_leads %>% mutate(studyId = paste0(studyId, ".", lead_variantId)) %>% select(studyId, has_sumstats) %>% unique()
-ldj <- ld %>% left_join(ss_studies %>% select(from = studyId, from_has_sumstats = has_sumstats)) %>% left_join(ss_studies %>% select(to = studyId, to_has_sumstats = has_sumstats))
-colocj <- coloc %>% left_join(ss_studies %>% select(from = studyId, from_has_sumstats = has_sumstats)) %>% left_join(ss_studies %>% select(to = studyId, to_has_sumstats = has_sumstats))
+ldj <- ld_edges %>% left_join(ss_studies %>% select(from = studyId, from_has_sumstats = has_sumstats)) %>% left_join(ss_studies %>% select(to = studyId, to_has_sumstats = has_sumstats))
+colocj <- coloc_edges %>% left_join(ss_studies %>% select(from = studyId, from_has_sumstats = has_sumstats)) %>% left_join(ss_studies %>% select(to = studyId, to_has_sumstats = has_sumstats))
 ld_ss <- ldj %>% select(-color, -from_has_sumstats, -to_has_sumstats) %>% mutate(LD = TRUE)
 coloc_ss <- colocj %>% select(-color, -from_has_sumstats, -to_has_sumstats) %>% mutate(coloc_ss = TRUE)
 tmp <- full_join(coloc_ss, ld_ss)
@@ -164,6 +192,7 @@ tmp %>% count(morbidity, coloc_ss, LD) %>% View()
 tmp %>% count(coloc_ss, LD)
 
 ```
+
 
 #### Graphs 
 
@@ -181,7 +210,7 @@ gg_color_hue <- function(n) {
 }
 
 ## Makes the graph for a given ARD(s)
-gwas_graph <- function(curr_morbidities,curr_variants,curr_coloc,curr_overlap, plot = TRUE) {
+gwas_graph <- function(curr_morbidities,curr_variants,curr_coloc,curr_overlap, min_jaccard = 0, plot = TRUE) {
   
   g <- list()
   
@@ -200,6 +229,7 @@ gwas_graph <- function(curr_morbidities,curr_variants,curr_coloc,curr_overlap, p
   # Edges: where two studyId+variantId have at least one overlapping tag variant
   g$edges <-
     m_overlap %>%
+    filter((LR_overlap / (right_distinct + lead_distinct + LR_overlap)) >= min_jaccard) %>% 
     mutate(
       from = paste(studyId, lead_variantId, sep = "."),
       to = paste(right_studyId, right_variantId, sep = ".")
@@ -219,7 +249,7 @@ gwas_graph <- function(curr_morbidities,curr_variants,curr_coloc,curr_overlap, p
     ) %>%
     filter(from != to) %>%
     select(from, to, morbidity) %>%
-    mutate(color = "black")
+    mutate(color = "black", dashes = FALSE)
   
   # Each node is a studyId+variantId
   # Make a label with the variant, reported trait, and n_cases
@@ -288,56 +318,90 @@ Community detection:
 
 d <- ard_leads$morbidity %>% unique()
 
-count_communities <- function(curr_morbidities, ...){
+count_communities <- function(curr_morbidities, detect_subgraph_communities = FALSE, ...) {
   ## get relevant edges and nodes
   g <- gwas_graph(curr_morbidities, ...)
-  if (nrow(g$edges)>0){
+  if (nrow(g$edges) > 0) {
     ## make an igraph object
-    g$ig <- graph_from_data_frame(g$edges, directed = FALSE)
+    g$ig <- graph_from_data_frame(
+      #bind_rows(g$edges, g$coloc_edges),
+                                       bind_rows(
+                                          subset(g$edges, dashes == FALSE),  ## overlap edges one or both studies don't have sumstats
+                                          g$coloc_edges),                    ## colocalisation edges otherwise (both have sumstats)
+                                  directed = FALSE)
     ## get clusters
     clusters <- clusters(g$ig)
+    overall_communities <- cluster_louvain(g$ig, weights = NA)
     V(g$ig)$cluster <- clusters$membership
-    ## add cluster ID, cluster size, and n_morbidities to nodes dataframe
-    n <- get.data.frame(g$ig, what="vertices")
-    g$cn <- g$nodes %>% 
-      left_join(n, by = c("id" = "name")) %>% 
-      group_by(cluster) %>% 
+    V(g$ig)$overall_community <- overall_communities$membership
+    
+    # detect communities in connected component subgraphs
+    if (detect_subgraph_communities == TRUE){
+            V(g$ig)$community = 0
+      for (component in unique(clusters$membership)) {
+        g_component_subgraph <-
+          induced_subgraph(g$ig, which(clusters$membership == component))
+        m <- cluster_louvain(g_component_subgraph)
+        V(g$ig)[V(g_component_subgraph)$name]$community = m$membership + max(V(g$ig)$community)
+      }
+    }
+
+      
+          ## add cluster ID, cluster size, and n_morbidities to nodes dataframe
+    n <- get.data.frame(g$ig, what = "vertices")
+    g$cn <- g$nodes %>%
+      left_join(n, by = c("id" = "name")) %>%
+      group_by(cluster) %>%
       mutate(c_size = ifelse(is.na(cluster), NA, length(id)),
-            n_morbidities = length(unique(morbidity)))
-    g$clusters <- g$cn %>% group_by(cluster, n_morbidities, morbidity) %>% count() %>% pivot_wider(names_from = "morbidity", values_from = n)
-    if (length(curr_morbidities) == 2){
+             n_morbidities = length(unique(morbidity)))
+    g$clusters <-
+      g$cn %>% group_by(cluster, n_morbidities, morbidity) %>% count() %>% pivot_wider(names_from = "morbidity", values_from = n)
+    if (length(curr_morbidities) == 2) {
       ## remove nodes with both morbidity
       ## get number of nodes for each morbidity in each cluster
-      tmp <- g$cn %>% filter(str_detect(morbidity, "\\+", negate = TRUE)) %>% group_by(cluster, n_morbidities, morbidity) %>% count()
+      tmp <-
+        g$cn %>% filter(str_detect(morbidity, "\\+", negate = TRUE)) %>% group_by(cluster, n_morbidities, morbidity) %>% count()
       ## how many nodes aren't in a cluster i.e. don't overlap with any other nodes (i.e. unreplicated) for each morbidity
-      singles <- tmp %>% ungroup() %>% filter(is.na(cluster)) %>% select(morbidity, single = n)
+      singles <-
+        tmp %>% ungroup() %>% filter(is.na(cluster)) %>% select(morbidity, single = n)
       ## for clusters, how many consist of just one morbidity (distinct) and how many contain both (shared)
-      shared <- tmp %>% 
+      shared <- tmp %>%
         filter(!is.na(cluster)) %>% # remove single nodes (accounted for in `singles` above)
-        select(-n) %>% 
+        select(-n) %>%
         mutate(n_morbidities = ifelse(n_morbidities > 1, 2, n_morbidities)) %>% # clusters with more than 2 morbidities include nodes from GWAS studies involving both morbidity A and B together, so treat these as 2 (i.e. `shared`)
-        group_by(morbidity, n_morbidities) %>% 
-        count() %>% 
-        mutate(n_morbidities = recode(n_morbidities, `1` = "distinct", `2` = "shared")) %>% pivot_wider(names_from = n_morbidities, values_from = n) %>%  
-        full_join(singles) 
-      if (nrow(shared)==0){
-          shared <- data.frame(morbidity = curr_morbidities) %>% mutate(distinct = 0, shared = 0) %>% left_join(singles)
+        group_by(morbidity, n_morbidities) %>%
+        count() %>%
+        mutate(n_morbidities = recode(n_morbidities, `1` = "distinct", `2` = "shared")) %>% pivot_wider(names_from = n_morbidities, values_from = n) %>%
+        full_join(singles)
+      if (nrow(shared) == 0) {
+        shared <-
+          data.frame(morbidity = curr_morbidities) %>% mutate(distinct = 0, shared = 0) %>% left_join(singles)
       }
-      g$overlap <- shared %>% 
-        ungroup() %>% 
-        rename(morbidity_A = morbidity) %>% 
+      g$overlap <- shared %>%
+        ungroup() %>%
+        rename(morbidity_A = morbidity) %>%
         mutate(morbidity_B = rev(.$morbidity_A)) %>%
-        inner_join(shared %>% rename(morbidity_B = morbidity), by = "morbidity_B", suffix = c("_A", "_B"))
+        inner_join(
+          shared %>% rename(morbidity_B = morbidity),
+          by = "morbidity_B",
+          suffix = c("_A", "_B")
+        )
     }
   } else {
-      if (length(curr_morbidities) == 2){
-        singles <- g$nodes %>% group_by(morbidity) %>% count(name = "single")
-        shared <- data.frame(morbidity = curr_morbidities) %>% mutate(distinct = 0, shared = 0) %>% left_join(singles)
-        g$overlap <- shared %>% 
-          rename(morbidity_A = morbidity) %>% 
-          mutate(morbidity_B = rev(.$morbidity_A)) %>%
-          inner_join(shared %>% rename(morbidity_B = morbidity), by = "morbidity_B", suffix = c("_A", "_B"))
-      }
+    if (length(curr_morbidities) == 2) {
+      singles <-
+        g$nodes %>% group_by(morbidity) %>% count(name = "single")
+      shared <-
+        data.frame(morbidity = curr_morbidities) %>% mutate(distinct = 0, shared = 0) %>% left_join(singles)
+      g$overlap <- shared %>%
+        rename(morbidity_A = morbidity) %>%
+        mutate(morbidity_B = rev(.$morbidity_A)) %>%
+        inner_join(
+          shared %>% rename(morbidity_B = morbidity),
+          by = "morbidity_B",
+          suffix = c("_A", "_B")
+        )
+    }
   }
   return(g)
 }
@@ -345,7 +409,7 @@ count_communities <- function(curr_morbidities, ...){
 ####
 
 if (0){
-  g_all <- count_communities(d, ard_leads, coloc_within, overlap_within, plot = FALSE)
+  g_all <- count_communities(d, ard_leads, coloc_within, overlap_within, min_jaccard = 0, detect_subgraph_communities = TRUE, plot = FALSE)
   save(g_all, file = "graph_all_morbidities.Rda")
 } else {
   load("graph_all_morbidities.Rda")
@@ -353,6 +417,80 @@ if (0){
 
 ```
 
+
+How sensitive should we be - varying jaccard index for edge definition
+
+```{r}
+
+if (0){
+  
+
+jaccard_communities_results <- data.frame()
+
+for (curr_min_jaccard in seq(0, 1, 0.1)){
+  print(curr_min_jaccard)
+  g_jaccard <- count_communities(d, ard_leads, coloc_within, overlap_within, min_jaccard = curr_min_jaccard, detect_subgraph_communities = TRUE, plot = FALSE)
+  jaccard_communities_results <- bind_rows(g_jaccard$cn %>% mutate(min_jaccard = curr_min_jaccard), jaccard_communities_results)
+}
+  save(jaccard_communities_results, file = "jaccard_communities.Rda")
+} else {
+  load("jaccard_communities.Rda")
+}
+
+if(0){
+jaccard_communities_results_coloc <- data.frame()
+
+for (curr_min_jaccard in seq(0, 1, 0.1)){
+  print(curr_min_jaccard)
+  g_jaccard <- count_communities(d, ard_leads, coloc_within, overlap_within, min_jaccard = curr_min_jaccard, detect_subgraph_communities = TRUE, plot = FALSE)
+  jaccard_communities_results_coloc <- bind_rows(g_jaccard$cn %>% mutate(min_jaccard = curr_min_jaccard), jaccard_communities_results_coloc)
+}
+  save(jaccard_communities_results_coloc, file = "jaccard_communities_coloc.Rda")
+} else {
+  load("jaccard_communities_coloc.Rda")
+}
+  
+jaccard_communities_results <- jaccard_communities_results %>% mutate(edges = "finemapping") 
+jaccard_communities_results_coloc <- jaccard_communities_results_coloc %>% mutate(edges = "coloc only")
+jaccard_communities_results <- bind_rows(jaccard_communities_results, jaccard_communities_results_coloc)
+
+ ji_n_clusters_comp <-  jaccard_communities_results_all  %>% mutate(type = "all") %>% bind_rows(jaccard_communities_results %>% filter(n_morbidities > 1) %>% mutate(type = ">1 morbidity"))  %>% group_by(edges, type, min_jaccard) %>% summarise(n_clusters = length(unique(cluster))) %>% ggplot(., aes(x=min_jaccard, y = n_clusters, colour = edges)) + geom_line() + geom_point() + facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + theme_bw() + labs(x = "Jaccard index threshold", y = "Number of disconnected components (clusters)", subtitle = "Number of communities detected with varying overlap stringency")
+ 
+  ji_n_clusters <-  jaccard_communities_results_all  %>% filter(edges == "coloc only") %>% mutate(type = "all") %>% bind_rows(jaccard_communities_results %>% filter(edges == "coloc only", n_morbidities > 1) %>% mutate(type = ">1 morbidity"))  %>% group_by(edges, type, min_jaccard) %>% summarise(n_clusters = length(unique(cluster))) %>% ggplot(., aes(x=min_jaccard, y = n_clusters)) + geom_line() + geom_point() + facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + theme_bw() + labs(x = "Jaccard index threshold", y = "Number of disconnected components (clusters)", subtitle = "Number of clusters detected with varying overlap stringency") + theme(panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + scale_x_continuous(breaks = seq(0, 1, 0.2)) + scale_y_continuous(limits = c(0, 3500), expand = c(0, NA)) 
+
+  ji_n_communities <-  jaccard_communities_results %>% 
+    filter(edges == "coloc only") %>% 
+    mutate(type = "all") %>% 
+    bind_rows(jaccard_communities_results %>% 
+                filter(n_morbidities > 1, edges == "coloc only") %>% 
+                mutate(type = ">1 morbidity")) %>%  
+    group_by(edges, type, min_jaccard, cluster) %>% 
+    summarise(communities = length(unique(community))) %>% 
+    ggplot(., aes(y= as.character(min_jaccard), x = communities)) + 
+    geom_boxplot() + 
+    theme_bw()  + 
+    labs(x = "Number of communities per disconnected component (cluster)", y = "Jaccard index threshold", subtitle = "Number of communities detected in each cluster with varying overlap stringency") +
+    facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + 
+    theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + scale_x_continuous(breaks = seq(2,10,2))
+  
+  ji_si_figure <- ji_n_clusters / ji_n_communities + plot_annotation(tag_levels = 'a')
+  
+  ggsave(ji_si_figure, file = "si_jaccard_index.png", width = 8, height = 7.5, dpi = 300)
+  
+  chosen <- jaccard_communities_results %>% filter(edges == "coloc only", min_jaccard == 0)
+  
+  N_clusters_with_communities <- chosen %>% 
+    mutate(type = "all") %>% 
+    bind_rows(chosen %>% filter(n_morbidities > 1) %>% mutate(type = ">1 morbidity")) %>% 
+    group_by(type, cluster) %>% 
+    summarise(communities = length(unique(community))) %>% 
+    ungroup() %>% 
+    group_by(type,communities) %>% 
+    count() %>% 
+    ungroup() %>% 
+    group_by(type) %>% 
+    mutate(total = sum(n), proportion = round((n/total)*100,2))
+```
 There are `length(unique(g_all$cn$cluster))` clusters, and `sum(is.na(g_all$cn$cluster))` nodes are not in a cluster (i.e. not replicated in another study). 
 
 `length(unique(filter(g_all$cn, n_morbidities>1)$cluster))` clusters involve more than one morbidity.
@@ -482,6 +620,16 @@ gs4_create("gwas_specific_table", sheets = full_gwas_tbl)
 
 
 ```
+
+Studies and ancestry
+
+```{r}
+ancestries <- ard_leads %>% select(studyId, ancestry_initial) %>% unique() %>% unnest(ancestry_initial) %>% separate(ancestry_initial, into = c("ancestry", "n"), sep = "=") %>% group_by(studyId) %>% mutate(n = as.numeric(n), total = sum(n), proportion = n/total)
+
+ancestries %>% filter(proportion == 1) %>% ungroup() %>% count(ancestry) %>% mutate(p = n/sum(n)*100)
+
+```
+
 
 Looking pairwise between diseases:
 
@@ -613,8 +761,7 @@ mm_clustered_nodes <- clustered_nodes %>% filter(n_morbidities>1)
 view_cluster <- function(nodes, g, curr_cluster){
   cluster_nodes <- nodes %>% filter(cluster %in% curr_cluster)
   cluster_edges <- g$edges %>% 
-  filter(from %in% cluster_nodes$id) %>%
-  filter(to %in% cluster_nodes$id)
+  filter((from %in% cluster_nodes$id) & (to %in% cluster_nodes$id)) 
   vn <- 
     visNetwork(
       cluster_nodes,
