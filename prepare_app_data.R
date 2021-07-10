@@ -98,6 +98,7 @@ add_details_column <- function(df){
       "Druggable Genome" = tractability.smallmolecule.small_molecule_genome_member,
       "ChEMBL compounds" = tractability.smallmolecule.high_quality_compounds,
       "Chemical probes" = details.probes,
+      "Target Enabling Package" = details.tep,
       check.names = FALSE)) %>% 
     ungroup() %>%
       select(-starts_with("details."))
@@ -265,7 +266,7 @@ add_teps_probes <- function(df){
     group_by(targetId, chemicalprobe ) %>%
     summarise(details.probe_link = paste0("(",paste(details.probe, collapse = ", "),")")) %>%
     unite(details.probe_link, c(chemicalprobe, details.probe_link), sep = " ", remove = TRUE) %>% 
-    summarise(details.probes = paste(details.probe_link, collapse = "; "))
+    summarise(details.probes = paste(details.probe_link, collapse = "; \n"))
   
   ## add icons and details to dataframe 
       df %>% 
@@ -278,7 +279,11 @@ add_teps_probes <- function(df){
                           NA)),
                tep = ifelse(!is.na(tep.uri), "<span class=\"badge badge-dark\">TEP</span>", NA)) %>%
     unite("icon.tep_probe", c("tep", "probe"), sep = " ", remove = TRUE, na.rm = TRUE) %>%
-    left_join(probes, by = "targetId" ) 
+    left_join(probes, by = "targetId" ) %>%
+        mutate(details.tep = ifelse(
+          !is.na(tep.uri), 
+          paste0("<a href=\"", tep.uri, "\"><span class=\"badge badge-dark\">", tep.name, "</span></a>"), 
+          NA))
 }
 
 add_tractability <- function(df){
