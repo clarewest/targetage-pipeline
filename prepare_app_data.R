@@ -1,3 +1,4 @@
+library(tidyverse)
 load("data/analysis/target_annotations.Rda")             # Target annotations
 
 ### Functions
@@ -185,16 +186,24 @@ load("data/analysis/ard_leads_filtered.Rda")
 load("data/analysis/top_l2g.Rda")
 
 
+# Format specific disease names 
+format_specific_diseases <- function(df){
+  df %>% 
+    mutate(specificDiseaseName = recode(specificDiseaseName, 
+                                        `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
+                                        `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
+                                        `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement",
+                                        `type II diabetes mellitus` = "type 2 diabetes")) %>%
+    mutate(specificDiseaseName = ifelse(specificDiseaseName != morbidity, specificDiseaseName, NA))
+}
 
-ard_leads <- ard_leads %>% 
-  mutate(specificDiseaseName = recode(specificDiseaseName, 
-                                      `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
-                                      `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
-                                      `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement",
-                                      `type II diabetes mellitus` = "type 2 diabetes")) %>%
-  mutate(specificDiseaseName = ifelse(specificDiseaseName != morbidity, specificDiseaseName, NA))
 
+ard_leads %>% 
+  format_specific_diseases()
 
+get_cluster_tbl <- function(g){
+  g$cn %>% 
+}
 
 
 # top_genes <- top_l2g %>% 
@@ -352,4 +361,55 @@ add_safety <- function(df){
 save(tbl_targets, file = "TargetAge/data/prepared_table.Rda")
 load(file = "data/analysis/targetage_geneids.Rda")
 save(targetage, file = "TargetAge/data/targetage_geneids.Rda")
+
+
+## Genetics data 
+load("data/analysis/ltg_all.Rda")
+load("data/analysis/graph_all_morbidities.Rda")
+load("data/analysis/ard_leads_filtered.Rda")
+
+ard_leads <- ard_leads %>% 
+  mutate(specificDiseaseName = recode(specificDiseaseName, 
+                                      `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
+                                      `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
+                                      `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement",
+                                      `type II diabetes mellitus` = "type 2 diabetes")) %>%
+  mutate(specificDiseaseName = ifelse(specificDiseaseName != morbidity, specificDiseaseName, NA))
+
+top_l2g <- l2g_all_joined %>%
+  group_by(studyId, lead_variantId) %>% 
+  top_n(1,yProbaModel ) %>% ## need to remove duplicates for 5 variants 
+  select(studyId, lead_variantId, gene.symbol, gene.id, L2G = yProbaModel, hasColoc, distanceToLocus)
+
+top_genes <- top_l2g %>%
+  mutate(gene.symbol = ifelse(hasColoc == TRUE, paste0('atop(bold("',gene.symbol,'")'), gene.symbol)) %>%
+  top_n(1, L2G) %>%
+  summarise(gene.symbol = paste0(gene.symbol, collapse = ", "),
+            L2G = max(L2G))
+
+cluster_tbl <- g_all$cn %>%
+  select(id, cluster, n_morbidities, morbidity, has_sumstats, everything(), -color, -label, -c_size) %>% 
+  group_by(cluster) %>% 
+  mutate(communities = length(unique(community))) %>% 
+  ungroup() %>%
+  filter(!is.na(cluster)) %>% 
+  filter(n_morbidities > 1) %>% 
+  left_join(top_l2g) %>%
+  left_join(ard_leads %>% select(studyId, lead_variantId, morbidity, specificDiseaseName)) %>%
+  group_by(cluster) %>% 
+  mutate(targetIds = paste(unique(gene.id), collapse = ";"),
+         targetSymbols = paste(unique(gene.symbol), collapse = ";")) %>% 
+  arrange(communities, -n_morbidities, cluster) 
+
+tbl_leads <- cluster_tbl %>%
+  left_join(ard_leads %>% 
+              select(-c("morbidity", "diseaseId", "diseaseName", "specificDiseaseId",   "specificDiseaseName")) %>% 
+              unique())
+
+tbl_genes <- tbl_leads  %>% 
+  left_join(top_l2g) 
+
+save(tbl_genes, file = "TargetAge/data/genetics_table.Rda")
+save(g_all, file = "TargetAge/data/graph_all_morbidities.Rda")
+
 
