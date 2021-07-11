@@ -99,6 +99,7 @@ add_details_column <- function(df){
       "ChEMBL compounds" = tractability.smallmolecule.high_quality_compounds,
       "Chemical probes" = details.probes,
       "Target Enabling Package" = details.tep,
+      "Safety Warnings" = details.safety_warnings,
       check.names = FALSE)) %>% 
     ungroup() %>%
       select(-starts_with("details."))
@@ -244,6 +245,7 @@ tbl_targets <- target_annotations %>%
   add_tractability() %>% 
   add_teps_probes() %>% 
   add_overall_mm(diseases = d, minscore = 0.05) %>%
+  add_safety() %>% 
   add_details_column()
 
 add_overall_mm <- function(df, diseases, minscore = 0.05){
@@ -294,6 +296,57 @@ add_tractability <- function(df){
       NA ~ NA_character_)
     ) %>%
     mutate(icon.tractability = ifelse(is.na(icon.tractability), NA, paste0("<span class=\"badge badge-pill badge-dark\">", icon.tractability, "</span>"))) 
+}
+
+add_safety <- function(df){
+  safety_liability <- df %>% 
+    filter(!is.na(safety.safety_risk_info)) %>% 
+    select(targetId, safety.safety_risk_info) %>% 
+    unnest(safety.safety_risk_info) %>%
+    unnest(references) %>%
+    select(targetId, safety_liability, ref_label) %>%
+    group_by(targetId, safety_liability) %>% 
+    summarise(ref_label = paste(ref_label, collapse = "/")) %>%
+    mutate(safety_liability = paste0(safety_liability, " [", ref_label, "].")) %>% 
+    unique() %>% 
+    group_by(targetId) %>% 
+    summarise(safety_liability = paste(safety_liability, collapse = " "))
+  
+  experimental_toxicity <- df %>% 
+    filter(!is.na(safety.experimental_toxicity)) %>% 
+    select(targetId, safety.experimental_toxicity) %>% 
+    unnest(safety.experimental_toxicity) %>% 
+    reduce(data.frame) %>%
+    mutate(summary = paste0("Experimental toxicity in ", assay_format_type, " ", cell_short_name, tissue, " assay [", elt, "].")) %>% 
+    select(targetId = out, summary) %>% 
+    unique() %>% 
+    group_by(targetId) %>% 
+    summarise(experimental_toxicity = paste0(summary, collapse = " "))
+  
+  adverse_effects <- df %>% 
+    filter(!is.na(safety.adverse_effects)) %>% 
+    select(targetId, safety.adverse_effects) %>% 
+    unnest(safety.adverse_effects) %>% 
+    unnest(organs_systems_affected) %>% 
+    unnest(references) %>% 
+    select(targetId, mapped_term, ref_label) %>% 
+    unique() %>% 
+    mutate(effect = paste0(mapped_term, " [", ref_label, "]")) %>% 
+    unique() %>% 
+    group_by(targetId) %>% 
+    summarise(adverse_effects = paste0(effect, collapse = " and ")) %>% 
+    mutate(adverse_effects = paste0("Reported adverse effects affecting the ", adverse_effects, ".")) 
+  
+  safety <- safety_liability %>% 
+    full_join(experimental_toxicity, by = "targetId") %>% 
+    full_join(adverse_effects, by = "targetId") %>% 
+    mutate(icon.safety_warning = as.character(
+      shiny::icon("exclamation-triangle", lib = "font-awesome")
+    )) %>% 
+    unite(details.safety_warnings, c(safety_liability, experimental_toxicity, adverse_effects), sep = " ", na.rm = TRUE)
+  
+  df %>% left_join(safety, by = "targetId")
+  
 }
 
 save(tbl_targets, file = "TargetAge/data/prepared_table.Rda")
