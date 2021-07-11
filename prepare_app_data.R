@@ -23,7 +23,7 @@ add_go_hallmarks <- function(df){
       "></i>",
       paste0(
         " data-toggle=\"tooltip\" data-placement=\"right\" title=\"",
-        goHallmarkTerms,
+        goHallmarks,
         "\"></i>"
       )
     )) 
@@ -297,4 +297,6 @@ add_tractability <- function(df){
 }
 
 save(tbl_targets, file = "TargetAge/data/prepared_table.Rda")
+load(file = "data/analysis/targetage_geneids.Rda")
+save(targetage, file = "TargetAge/data/targetage_geneids.Rda")
 
