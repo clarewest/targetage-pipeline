@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 .httr-oauth
-./TargetAge/
+TargetAge/
 *~
-./TargetAgeGenetics/
+TargetAgeGenetics/
+data/targetDB/targetage_targetdb.zip
