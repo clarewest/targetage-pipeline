@@ -1,0 +1,18 @@
+GO:0006281,DNA instability,DNA repair
+GO:0090398,Cellular senescence,cellular senescence
+GO:0006457,Proteostasis,protein folding
+GO:0050821,Proteostasis,protein stabilization
+GO:0030163,Proteostasis,protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation
+GO:0061684,Proteostasis,chaperone-mediated autophagy
+GO:0061077,Proteostasis,chaperone-mediated protein folding
+GO:0000723,Telomere maintenance,telomere maintenance
+GO:0031667,Nutrient signalling,response to nutrient levels
+GO:0009594,Nutrient signalling,detection of nutrient
+GO:0048009,Nutrient signalling,IGF receptor signaling pathway
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation
+GO:0016570,Epigenetic alteration,histone modification
+GO:0006338,Epigenetic alteration,chromatin remodeling
+GO:0006954,Inflammation,inflammatory response
+GO:0006955,Immune response,immune response

@@ -1,0 +1,1636 @@
+goHallmarkId,goHallmark,goHallmarkTerm,goId,goTerm
+GO:0090398,Cellular senescence,cellular senescence,GO:0090400,stress-induced premature senescence
+GO:0090398,Cellular senescence,cellular senescence,GO:0090402,oncogene-induced cell senescence
+GO:0090398,Cellular senescence,cellular senescence,GO:0090403,oxidative stress-induced premature senescence
+GO:0090398,Cellular senescence,cellular senescence,GO:2000772,regulation of cellular senescence
+GO:0090398,Cellular senescence,cellular senescence,GO:2000773,negative regulation of cellular senescence
+GO:0090398,Cellular senescence,cellular senescence,GO:2000774,positive regulation of cellular senescence
+GO:0006457,Proteostasis,protein folding,GO:0006458,'de novo' protein folding
+GO:0006457,Proteostasis,protein folding,GO:0007023,post-chaperonin tubulin folding pathway
+GO:0006457,Proteostasis,protein folding,GO:0022417,protein maturation by protein folding
+GO:0006457,Proteostasis,protein folding,GO:0034975,protein folding in endoplasmic reticulum
+GO:0006457,Proteostasis,protein folding,GO:0042026,protein refolding
+GO:0006457,Proteostasis,protein folding,GO:0051083,'de novo' cotranslational protein folding
+GO:0006457,Proteostasis,protein folding,GO:0051084,'de novo' posttranslational protein folding
+GO:0006457,Proteostasis,protein folding,GO:0051085,chaperone cofactor-dependent protein refolding
+GO:0006457,Proteostasis,protein folding,GO:0051086,chaperone mediated protein folding independent of cofactor
+GO:0006457,Proteostasis,protein folding,GO:0060904,regulation of protein folding in endoplasmic reticulum
+GO:0006457,Proteostasis,protein folding,GO:0061077,chaperone-mediated protein folding
+GO:0006457,Proteostasis,protein folding,GO:0061083,regulation of protein refolding
+GO:0006457,Proteostasis,protein folding,GO:0061084,negative regulation of protein refolding
+GO:0006457,Proteostasis,protein folding,GO:0061992,ATP-dependent chaperone mediated protein folding
+GO:0006457,Proteostasis,protein folding,GO:1903332,regulation of protein folding
+GO:0006457,Proteostasis,protein folding,GO:1903333,negative regulation of protein folding
+GO:0006457,Proteostasis,protein folding,GO:1903334,positive regulation of protein folding
+GO:0006457,Proteostasis,protein folding,GO:1903644,regulation of chaperone-mediated protein folding
+GO:0006457,Proteostasis,protein folding,GO:1903645,negative regulation of chaperone-mediated protein folding
+GO:0006457,Proteostasis,protein folding,GO:1903646,positive regulation of chaperone-mediated protein folding
+GO:0006457,Proteostasis,protein folding,GO:1904592,positive regulation of protein refolding
+GO:0006457,Proteostasis,protein folding,GO:1990507,ATP-independent chaperone mediated protein folding
+GO:0030163,Proteostasis,protein catabolic process,GO:0002077,acrosome matrix dispersal
+GO:0030163,Proteostasis,protein catabolic process,GO:0002084,protein depalmitoylation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002203,proteolysis by cytosolic proteases associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002496,proteolysis associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002497,proteasomal proteolysis associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002498,proteolysis within endoplasmic reticulum associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002499,proteolysis within endosome associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002500,proteolysis within lysosome associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002628,regulation of proteolysis associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002629,negative regulation of proteolysis associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0002630,positive regulation of proteolysis associated with antigen processing and presentation
+GO:0030163,Proteostasis,protein catabolic process,GO:0006058,mannoprotein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0006511,ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0006515,protein quality control for misfolded or incompletely synthesized proteins
+GO:0030163,Proteostasis,protein catabolic process,GO:0006516,glycoprotein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0007039,protein catabolic process in the vacuole
+GO:0030163,Proteostasis,protein catabolic process,GO:0007174,epidermal growth factor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0010304,PSII associated light-harvesting complex II catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0010498,proteasomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0010499,proteasomal ubiquitin-independent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0010550,regulation of PSII associated light-harvesting complex II catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0010620,negative regulation of transcription by transcription factor catabolism
+GO:0030163,Proteostasis,protein catabolic process,GO:0010798,regulation of multivesicular body size involved in ubiquitin-dependent protein catabolism
+GO:0030163,Proteostasis,protein catabolic process,GO:0016598,protein arginylation
+GO:0030163,Proteostasis,protein catabolic process,GO:0019941,modification-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0019950,SMT3-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0019951,Smt3-protein conjugation
+GO:0030163,Proteostasis,protein catabolic process,GO:0030164,protein denaturation
+GO:0030163,Proteostasis,protein catabolic process,GO:0030167,proteoglycan catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0030200,heparan sulfate proteoglycan catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0030327,prenylated protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0030433,ubiquitin-dependent ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0030579,ubiquitin-dependent SMAD protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0030970,retrograde protein transport, ER to cytosol
+GO:0030163,Proteostasis,protein catabolic process,GO:0031145,anaphase-promoting complex-dependent catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0031146,SCF-dependent proteasomal ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032434,regulation of proteasomal ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032435,negative regulation of proteasomal ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032436,positive regulation of proteasomal ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032802,low-density lipoprotein particle receptor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032803,regulation of low-density lipoprotein particle receptor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032804,negative regulation of low-density lipoprotein particle receptor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0032805,positive regulation of low-density lipoprotein particle receptor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0035694,mitochondrial protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0035977,protein deglycosylation involved in glycoprotein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0036205,histone catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0036369,transcription factor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0036503,ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0042159,lipoprotein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0042176,regulation of protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0042177,negative regulation of protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0042540,hemoglobin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0043161,proteasome-mediated ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0043162,ubiquitin-dependent protein catabolic process via the multivesicular body sorting pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0043328,protein transport to vacuole involved in ubiquitin-dependent protein catabolic process via the multivesicular body sorting pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0044257,cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0045173,O-sialoglycoprotein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0045732,positive regulation of protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0046155,rhodopsin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0051043,regulation of membrane protein ectodomain proteolysis
+GO:0030163,Proteostasis,protein catabolic process,GO:0051044,positive regulation of membrane protein ectodomain proteolysis
+GO:0030163,Proteostasis,protein catabolic process,GO:0051045,negative regulation of membrane protein ectodomain proteolysis
+GO:0030163,Proteostasis,protein catabolic process,GO:0051190,prosthetic group catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0051603,proteolysis involved in cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0052014,catabolism by symbiont of host protein
+GO:0030163,Proteostasis,protein catabolic process,GO:0052362,catabolism by host of symbiont protein
+GO:0030163,Proteostasis,protein catabolic process,GO:0052363,catabolism by organism of protein in other organism involved in symbiotic interaction
+GO:0030163,Proteostasis,protein catabolic process,GO:0060309,elastin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0060310,regulation of elastin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0060311,negative regulation of elastin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0061136,regulation of proteasomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0061684,chaperone-mediated autophagy
+GO:0030163,Proteostasis,protein catabolic process,GO:0061740,protein targeting to lysosome involved in chaperone-mediated autophagy
+GO:0030163,Proteostasis,protein catabolic process,GO:0061741,chaperone-mediated protein transport involved in chaperone-mediated autophagy
+GO:0030163,Proteostasis,protein catabolic process,GO:0062025,regulation of SCF-dependent proteasomal ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0062026,negative regulation of SCF-dependent proteasomal ubiquitin-dependent catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0062027,positive regulation of SCF-dependent proteasomal ubiquitin-dependent catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0070407,oxidation-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0071596,ubiquitin-dependent protein catabolic process via the N-end rule pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0071629,cytoplasm protein quality control by the ubiquitin-proteasome system
+GO:0030163,Proteostasis,protein catabolic process,GO:0071630,nuclear protein quality control by the ubiquitin-proteasome system
+GO:0030163,Proteostasis,protein catabolic process,GO:0071712,ER-associated misfolded protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0071947,protein deubiquitination involved in ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0072671,mitochondria-associated ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0090611,ubiquitin-independent protein catabolic process via the multivesicular body sorting pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0097466,ubiquitin-dependent glycoprotein ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0099546,protein catabolic process, modulating synaptic transmission
+GO:0030163,Proteostasis,protein catabolic process,GO:0099575,regulation of protein catabolic process at presynapse, modulating synaptic transmission
+GO:0030163,Proteostasis,protein catabolic process,GO:0099576,regulation of protein catabolic process at postsynapse, modulating synaptic transmission
+GO:0030163,Proteostasis,protein catabolic process,GO:0110015,positive regulation of elastin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:0120174,stress-induced homeostatically regulated protein degradation pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:0140246,protein catabolic process at synapse
+GO:0030163,Proteostasis,protein catabolic process,GO:0140247,protein catabolic process at presynapse
+GO:0030163,Proteostasis,protein catabolic process,GO:0140249,protein catabolic process at postsynapse
+GO:0030163,Proteostasis,protein catabolic process,GO:0140455,cytoplasm protein quality control
+GO:0030163,Proteostasis,protein catabolic process,GO:1901044,protein polyubiquitination involved in nucleus-associated proteasomal ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1901143,insulin catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1901483,regulation of transcription factor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1901484,negative regulation of transcription factor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1901485,positive regulation of transcription factor catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1901799,negative regulation of proteasomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1901800,positive regulation of proteasomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1902885,regulation of proteasome-activating ATPase activity
+GO:0030163,Proteostasis,protein catabolic process,GO:1902886,negative regulation of proteasome-activating ATPase activity
+GO:0030163,Proteostasis,protein catabolic process,GO:1902887,positive regulation of proteasome-activating ATPase activity
+GO:0030163,Proteostasis,protein catabolic process,GO:1903050,regulation of proteolysis involved in cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903051,negative regulation of proteolysis involved in cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903052,positive regulation of proteolysis involved in cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903069,regulation of ER-associated ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903070,negative regulation of ER-associated ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903071,positive regulation of ER-associated ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903362,regulation of cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903363,negative regulation of cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1903364,positive regulation of cellular protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1904152,regulation of retrograde protein transport, ER to cytosol
+GO:0030163,Proteostasis,protein catabolic process,GO:1904153,negative regulation of retrograde protein transport, ER to cytosol
+GO:0030163,Proteostasis,protein catabolic process,GO:1904154,positive regulation of retrograde protein transport, ER to cytosol
+GO:0030163,Proteostasis,protein catabolic process,GO:1904211,membrane protein proteolysis involved in retrograde protein transport, ER to cytosol
+GO:0030163,Proteostasis,protein catabolic process,GO:1904292,regulation of ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:1904293,negative regulation of ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:1904294,positive regulation of ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:1904350,regulation of protein catabolic process in the vacuole
+GO:0030163,Proteostasis,protein catabolic process,GO:1904351,negative regulation of protein catabolic process in the vacuole
+GO:0030163,Proteostasis,protein catabolic process,GO:1904352,positive regulation of protein catabolic process in the vacuole
+GO:0030163,Proteostasis,protein catabolic process,GO:1904378,maintenance of unfolded protein involved in ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:1904379,protein localization to cytosolic proteasome complex involved in ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:1904382,mannose trimming involved in glycoprotein ERAD pathway
+GO:0030163,Proteostasis,protein catabolic process,GO:1904714,regulation of chaperone-mediated autophagy
+GO:0030163,Proteostasis,protein catabolic process,GO:1904715,negative regulation of chaperone-mediated autophagy
+GO:0030163,Proteostasis,protein catabolic process,GO:1904716,positive regulation of chaperone-mediated autophagy
+GO:0030163,Proteostasis,protein catabolic process,GO:1904763,chaperone-mediated autophagy translocation complex assembly
+GO:0030163,Proteostasis,protein catabolic process,GO:1905146,lysosomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1905165,regulation of lysosomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1905166,negative regulation of lysosomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1905167,positive regulation of lysosomal protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1905784,regulation of anaphase-promoting complex-dependent catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1905785,negative regulation of anaphase-promoting complex-dependent catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1905786,positive regulation of anaphase-promoting complex-dependent catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1990116,ribosome-associated ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:1990697,protein depalmitoleylation
+GO:0030163,Proteostasis,protein catabolic process,GO:2000058,regulation of ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:2000059,negative regulation of ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:2000060,positive regulation of ubiquitin-dependent protein catabolic process
+GO:0030163,Proteostasis,protein catabolic process,GO:2000777,positive regulation of proteasomal ubiquitin-dependent protein catabolic process involved in cellular response to hypoxia
+GO:0010498,Proteostasis,proteasomal degradation,GO:0010499,proteasomal ubiquitin-independent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0010620,negative regulation of transcription by transcription factor catabolism
+GO:0010498,Proteostasis,proteasomal degradation,GO:0030433,ubiquitin-dependent ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:0030970,retrograde protein transport, ER to cytosol
+GO:0010498,Proteostasis,proteasomal degradation,GO:0031145,anaphase-promoting complex-dependent catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0031146,SCF-dependent proteasomal ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0032434,regulation of proteasomal ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0032435,negative regulation of proteasomal ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0032436,positive regulation of proteasomal ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0036369,transcription factor catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0036503,ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:0043161,proteasome-mediated ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0061136,regulation of proteasomal protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0062025,regulation of SCF-dependent proteasomal ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0062026,negative regulation of SCF-dependent proteasomal ubiquitin-dependent catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0062027,positive regulation of SCF-dependent proteasomal ubiquitin-dependent catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0071596,ubiquitin-dependent protein catabolic process via the N-end rule pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:0071629,cytoplasm protein quality control by the ubiquitin-proteasome system
+GO:0010498,Proteostasis,proteasomal degradation,GO:0071630,nuclear protein quality control by the ubiquitin-proteasome system
+GO:0010498,Proteostasis,proteasomal degradation,GO:0071712,ER-associated misfolded protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0072671,mitochondria-associated ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0097466,ubiquitin-dependent glycoprotein ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:0120174,stress-induced homeostatically regulated protein degradation pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1901044,protein polyubiquitination involved in nucleus-associated proteasomal ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1901483,regulation of transcription factor catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1901484,negative regulation of transcription factor catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1901485,positive regulation of transcription factor catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1901799,negative regulation of proteasomal protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1901800,positive regulation of proteasomal protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1902885,regulation of proteasome-activating ATPase activity
+GO:0010498,Proteostasis,proteasomal degradation,GO:1902886,negative regulation of proteasome-activating ATPase activity
+GO:0010498,Proteostasis,proteasomal degradation,GO:1902887,positive regulation of proteasome-activating ATPase activity
+GO:0010498,Proteostasis,proteasomal degradation,GO:1903069,regulation of ER-associated ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1903070,negative regulation of ER-associated ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1903071,positive regulation of ER-associated ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904152,regulation of retrograde protein transport, ER to cytosol
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904153,negative regulation of retrograde protein transport, ER to cytosol
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904154,positive regulation of retrograde protein transport, ER to cytosol
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904211,membrane protein proteolysis involved in retrograde protein transport, ER to cytosol
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904292,regulation of ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904293,negative regulation of ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904294,positive regulation of ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904378,maintenance of unfolded protein involved in ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904379,protein localization to cytosolic proteasome complex involved in ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1904382,mannose trimming involved in glycoprotein ERAD pathway
+GO:0010498,Proteostasis,proteasomal degradation,GO:1905784,regulation of anaphase-promoting complex-dependent catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1905785,negative regulation of anaphase-promoting complex-dependent catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1905786,positive regulation of anaphase-promoting complex-dependent catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:1990116,ribosome-associated ubiquitin-dependent protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:2000777,positive regulation of proteasomal ubiquitin-dependent protein catabolic process involved in cellular response to hypoxia
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:0061740,protein targeting to lysosome involved in chaperone-mediated autophagy
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:0061741,chaperone-mediated protein transport involved in chaperone-mediated autophagy
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:1904714,regulation of chaperone-mediated autophagy
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:1904715,negative regulation of chaperone-mediated autophagy
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:1904716,positive regulation of chaperone-mediated autophagy
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:1904763,chaperone-mediated autophagy translocation complex assembly
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:0051085,chaperone cofactor-dependent protein refolding
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:0051086,chaperone mediated protein folding independent of cofactor
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:0061992,ATP-dependent chaperone mediated protein folding
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:1903644,regulation of chaperone-mediated protein folding
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:1903645,negative regulation of chaperone-mediated protein folding
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:1903646,positive regulation of chaperone-mediated protein folding
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:1990507,ATP-independent chaperone mediated protein folding
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0000722,telomere maintenance via recombination
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0007004,telomere maintenance via telomerase
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0010833,telomere maintenance via telomere lengthening
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0016233,telomere capping
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0031627,telomeric loop formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0031848,protection from non-homologous end joining at telomere
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0031860,telomeric 3' overhang formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032201,telomere maintenance via semi-conservative replication
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032204,regulation of telomere maintenance
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032205,negative regulation of telomere maintenance
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032206,positive regulation of telomere maintenance
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032207,regulation of telomere maintenance via recombination
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032208,negative regulation of telomere maintenance via recombination
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032209,positive regulation of telomere maintenance via recombination
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032210,regulation of telomere maintenance via telomerase
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032211,negative regulation of telomere maintenance via telomerase
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032212,positive regulation of telomere maintenance via telomerase
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032213,regulation of telomere maintenance via semi-conservative replication
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032214,negative regulation of telomere maintenance via semi-conservative replication
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0032215,positive regulation of telomere maintenance via semi-conservative replication
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0043247,telomere maintenance in response to DNA damage
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0061819,telomeric DNA-containing double minutes formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0061820,telomeric D-loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0090656,t-circle formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0090657,telomeric loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0090737,telomere maintenance via telomere trimming
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0097698,telomere maintenance via base-excision repair
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1902989,meiotic telomere maintenance via semi-conservative replication
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1902990,mitotic telomere maintenance via semi-conservative replication
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904353,regulation of telomere capping
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904354,negative regulation of telomere capping
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904355,positive regulation of telomere capping
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904356,regulation of telomere maintenance via telomere lengthening
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904357,negative regulation of telomere maintenance via telomere lengthening
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904358,positive regulation of telomere maintenance via telomere lengthening
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904418,regulation of telomeric loop formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904419,negative regulation of telomeric loop formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904420,positive regulation of telomeric loop formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904429,regulation of t-circle formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904430,negative regulation of t-circle formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904431,positive regulation of t-circle formation
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904505,regulation of telomere maintenance in response to DNA damage
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904506,negative regulation of telomere maintenance in response to DNA damage
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904507,positive regulation of telomere maintenance in response to DNA damage
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904533,regulation of telomeric loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904534,negative regulation of telomeric loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1904535,positive regulation of telomeric loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1905764,regulation of protection from non-homologous end joining at telomere
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1905765,negative regulation of protection from non-homologous end joining at telomere
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1905766,positive regulation of protection from non-homologous end joining at telomere
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1905838,regulation of telomeric D-loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1905839,negative regulation of telomeric D-loop disassembly
+GO:0000723,Telomere maintenance,telomere maintenance,GO:1905840,positive regulation of telomeric D-loop disassembly
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000304,response to singlet oxygen
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000410,carbon catabolite repression of transcription by galactose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000411,positive regulation of transcription by galactose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000429,carbon catabolite regulation of transcription from RNA polymerase II promoter
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000430,regulation of transcription from RNA polymerase II promoter by glucose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000431,regulation of transcription from RNA polymerase II promoter by galactose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000432,positive regulation of transcription from RNA polymerase II promoter by glucose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000433,carbon catabolite repression of transcription from RNA polymerase II promoter by glucose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000434,carbon catabolite repression of transcription from RNA polymerase II promoter by galactose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000435,positive regulation of transcription from RNA polymerase II promoter by galactose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000436,carbon catabolite activation of transcription from RNA polymerase II promoter
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0000437,carbon catabolite repression of transcription from RNA polymerase II promoter
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0001079,nitrogen catabolite regulation of transcription from RNA polymerase II promoter
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0001080,nitrogen catabolite activation of transcription from RNA polymerase II promoter
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0001081,nitrogen catabolite repression of transcription from RNA polymerase II promoter
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0002021,response to dietary excess
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0002022,detection of dietary excess
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0002023,reduction of food intake in response to dietary excess
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0002024,diet induced thermogenesis
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0006995,cellular response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0007584,response to nutrient
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0007637,proboscis extension reflex
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0009267,cellular response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0009594,detection of nutrient
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0009970,cellular response to sulfate starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010106,cellular response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010266,response to vitamin B1
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010343,singlet oxygen-mediated programmed cell death
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010350,cellular response to magnesium starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010438,cellular response to sulfur starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010516,negative regulation of cellular response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0010691,negative regulation of ribosomal protein gene transcription from RNA polymerase II promoter in response to nutrient levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0015968,stringent response
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0016036,cellular response to phosphate starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0030583,myxococcal fruiting body development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031142,induction of conjugation upon nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031152,aggregation involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031157,regulation of aggregate size involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031158,negative regulation of aggregate size involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031159,positive regulation of aggregate size involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031286,negative regulation of sorocarp stalk cell differentiation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031287,positive regulation of sorocarp stalk cell differentiation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031318,detection of folic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031669,cellular response to nutrient levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031670,cellular response to nutrient
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032094,response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032095,regulation of response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032096,negative regulation of response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032097,positive regulation of response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032098,regulation of appetite
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032099,negative regulation of appetite
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032100,positive regulation of appetite
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032107,regulation of response to nutrient levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032108,negative regulation of response to nutrient levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032109,positive regulation of response to nutrient levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032571,response to vitamin K
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0032573,response to phylloquinone
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033189,response to vitamin A
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033197,response to vitamin E
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033198,response to ATP
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033217,regulation of transcription from RNA polymerase II promoter in response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033273,response to vitamin
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033274,response to vitamin B2
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033280,response to vitamin D
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033552,response to vitamin B3
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033590,response to cobalamin
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0033591,response to L-ascorbic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0034198,cellular response to amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0034224,cellular response to zinc ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0034516,response to vitamin B6
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0035874,cellular response to copper ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036086,positive regulation of transcription from RNA polymerase II promoter in response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036110,cellular response to inositol starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036170,filamentous growth of a population of unicellular organisms in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036223,cellular response to adenine starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036225,cellular response to vitamin B1 starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036278,positive regulation of transcription from RNA polymerase II promoter in response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0036279,positive regulation of protein export from nucleus in response to glucose starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0038108,negative regulation of appetite by leptin-mediated signaling pathway
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0042149,cellular response to glucose starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0042594,response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0042595,behavioral response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0043326,chemotaxis to folate
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0043562,cellular response to nitrogen levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0043617,cellular response to sucrose starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0045013,carbon catabolite repression of transcription
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0045014,carbon catabolite repression of transcription by glucose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0045990,carbon catabolite regulation of transcription
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0045991,carbon catabolite activation of transcription
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0046016,positive regulation of transcription by glucose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0051365,cellular response to potassium ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0051593,response to folic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0051780,behavioral response to nutrient
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0060176,regulation of aggregation involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0060275,maintenance of stationary phase in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0060733,regulation of eIF2 alpha phosphorylation by amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0060905,regulation of induction of conjugation upon nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061406,positive regulation of transcription from RNA polymerase II promoter in response to glucose starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061412,positive regulation of transcription from RNA polymerase II promoter in response to amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061413,regulation of transcription from RNA polymerase II promoter by a nonfermentable carbon source
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061414,positive regulation of transcription from RNA polymerase II promoter by a nonfermentable carbon source
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061415,negative regulation of transcription from RNA polymerase II promoter by a nonfermentable carbon source
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061420,regulation of transcription from RNA polymerase II promoter in response to biotin starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061421,positive regulation of transcription by oleic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061429,positive regulation of transcription from RNA polymerase II promoter by oleic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061431,cellular response to methionine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061433,cellular response to caloric restriction
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061771,response to caloric restriction
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061959,response to (R)-carnitine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061984,catabolite repression
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061985,carbon catabolite repression
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0061987,negative regulation of transcription from RNA polymerase II promoter by glucose
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0070561,vitamin D receptor signaling pathway
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0070562,regulation of vitamin D receptor signaling pathway
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0070563,negative regulation of vitamin D receptor signaling pathway
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0070564,positive regulation of vitamin D receptor signaling pathway
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0070781,response to biotin
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071231,cellular response to folic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071240,cellular response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071262,regulation of translational initiation in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071263,negative regulation of translational initiation in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071264,positive regulation of translational initiation in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071295,cellular response to vitamin
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071296,cellular response to biotin
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071297,cellular response to cobalamin
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071298,cellular response to L-ascorbic acid
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071299,cellular response to vitamin A
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071301,cellular response to vitamin B1
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071302,cellular response to vitamin B2
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071303,cellular response to vitamin B3
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071304,cellular response to vitamin B6
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071305,cellular response to vitamin D
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071306,cellular response to vitamin E
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071307,cellular response to vitamin K
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071309,cellular response to phylloquinone
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071318,cellular response to ATP
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071452,cellular response to singlet oxygen
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0071935,octopamine signaling pathway involved in response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0072732,cellular response to calcium ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0080029,cellular response to boron-containing substance levels
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0080040,positive regulation of cellular response to phosphate starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0080169,cellular response to boron-containing substance deprivation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090293,nitrogen catabolite regulation of transcription
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090294,nitrogen catabolite activation of transcription
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090295,nitrogen catabolite repression of transcription
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090375,negative regulation of transcription from RNA polymerase II promoter in response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090548,response to nitrate starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090549,response to carbon starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090550,response to molybdenum starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090551,response to manganese starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090649,response to oxygen-glucose deprivation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0090650,cellular response to oxygen-glucose deprivation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0097385,programmed necrotic cell death in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0106167,extracellular ATP signaling
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0110013,positive regulation of aggregation involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0110014,negative regulation of aggregation involved in sorocarp development
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0120126,response to copper ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0120127,response to zinc ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0140255,regulation of cellular response to phosphate starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0140256,negative regulation of cellular response to phosphate starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1900434,regulation of filamentous growth of a population of unicellular organisms in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1900436,positive regulation of filamentous growth of a population of unicellular organisms in response to starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1901481,L-glutamate import involved in cellular response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1901482,L-lysine import into vacuole involved in cellular response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1901966,regulation of cellular response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1901967,negative regulation of cellular response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1902065,response to L-glutamate
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903574,negative regulation of cellular response to amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903576,response to L-arginine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903577,cellular response to L-arginine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903693,regulation of mitotic G1 cell cycle arrest in response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903694,positive regulation of mitotic G1 cell cycle arrest in response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903832,regulation of cellular response to amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1903833,positive regulation of cellular response to amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1904547,regulation of cellular response to glucose starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1904844,response to L-glutamine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1904845,cellular response to L-glutamine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1905232,cellular response to L-glutamate
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1905287,positive regulation of G2/M transition of mitotic cell cycle involved in cellular response to nitrogen starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1905429,response to glycine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1905430,cellular response to glycine
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1990253,cellular response to leucine starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1990263,spore wall assembly MAPK cascade
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1990383,cellular response to biotin starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1990641,response to iron ion starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:1990928,response to amino acid starvation
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:2000139,regulation of octopamine signaling pathway involved in response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:2000140,negative regulation of octopamine signaling pathway involved in response to food
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:2000141,positive regulation of octopamine signaling pathway involved in response to food
+GO:0009594,Nutrient signalling,detection of nutrient,GO:0031318,detection of folic acid
+GO:0048009,Nutrient signalling,IGF receptor signaling pathway,GO:0043567,regulation of insulin-like growth factor receptor signaling pathway
+GO:0048009,Nutrient signalling,IGF receptor signaling pathway,GO:0043568,positive regulation of insulin-like growth factor receptor signaling pathway
+GO:0048009,Nutrient signalling,IGF receptor signaling pathway,GO:0043569,negative regulation of insulin-like growth factor receptor signaling pathway
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:0032042,mitochondrial DNA metabolic process
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:0032043,mitochondrial DNA catabolic process
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:0033955,mitochondrial DNA inheritance
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:0043504,mitochondrial DNA repair
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:0110166,DNA synthesis involved in mitochondrial DNA replication
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:1901858,regulation of mitochondrial DNA metabolic process
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:1901859,negative regulation of mitochondrial DNA metabolic process
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:1901860,positive regulation of mitochondrial DNA metabolic process
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:1905951,mitochondrion DNA recombination
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0006306,DNA methylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0010424,DNA methylation on cytosine within a CG sequence
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0010425,DNA methylation on cytosine within a CNG sequence
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0010426,DNA methylation on cytosine within a CHH sequence
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0032775,DNA methylation on adenine
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0032776,DNA methylation on cytosine
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0035511,oxidative DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0035512,hydrolytic DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0035552,oxidative single-stranded DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0043045,DNA methylation involved in embryo development
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0043046,DNA methylation involved in gamete generation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044026,DNA hypermethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044027,hypermethylation of CpG island
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044028,DNA hypomethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044029,hypomethylation of CpG island
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044030,regulation of DNA methylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044725,chromatin reprogramming in the zygote
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044726,protection of DNA demethylation of female pronucleus
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044727,DNA demethylation of male pronucleus
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0080111,DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0090116,C-5 methylation of cytosine
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0090124,N-4 methylation of cytosine
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:1901535,regulation of DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:1901536,negative regulation of DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:1901537,positive regulation of DNA demethylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:1901538,changes to DNA methylation involved in embryo development
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:1905642,negative regulation of DNA methylation
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:1905643,positive regulation of DNA methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0000412,histone peptidyl-prolyl isomerization
+GO:0016570,Epigenetic alteration,histone modification,GO:0000414,regulation of histone H3-K36 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0000415,negative regulation of histone H3-K36 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0000416,positive regulation of histone H3-K36 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0010390,histone monoubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0010452,histone H3-K36 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016571,histone methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016572,histone phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016573,histone acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016574,histone ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0016575,histone deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016576,histone dephosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016577,histone demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016578,histone deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0031056,regulation of histone modification
+GO:0016570,Epigenetic alteration,histone modification,GO:0031057,negative regulation of histone modification
+GO:0016570,Epigenetic alteration,histone modification,GO:0031058,positive regulation of histone modification
+GO:0016570,Epigenetic alteration,histone modification,GO:0031059,histone deacetylation at centromere
+GO:0016570,Epigenetic alteration,histone modification,GO:0031060,regulation of histone methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0031061,negative regulation of histone methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0031062,positive regulation of histone methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0031063,regulation of histone deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0031064,negative regulation of histone deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0031065,positive regulation of histone deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0031066,regulation of histone deacetylation at centromere
+GO:0016570,Epigenetic alteration,histone modification,GO:0031067,negative regulation of histone deacetylation at centromere
+GO:0016570,Epigenetic alteration,histone modification,GO:0031068,positive regulation of histone deacetylation at centromere
+GO:0016570,Epigenetic alteration,histone modification,GO:0033127,regulation of histone phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0033128,negative regulation of histone phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0033129,positive regulation of histone phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0033169,histone H3-K9 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0033182,regulation of histone ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0033183,negative regulation of histone ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0033184,positive regulation of histone ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0033522,histone H2A ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0033523,histone H2B ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0034720,histone H3-K4 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034721,histone H3-K4 demethylation, trimethyl-H3-K4-specific
+GO:0016570,Epigenetic alteration,histone modification,GO:0034729,histone H3-K79 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034770,histone H4-K20 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034771,histone H4-K20 monomethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034772,histone H4-K20 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034773,histone H4-K20 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034968,histone lysine methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034969,histone arginine methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034970,histone H3-R2 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034971,histone H3-R17 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0034972,histone H3-R26 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035065,regulation of histone acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035066,positive regulation of histone acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035067,negative regulation of histone acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035404,histone-serine phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035405,histone-threonine phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035406,histone-tyrosine phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035407,histone H3-T11 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035408,histone H3-T6 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035409,histone H3-Y41 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035518,histone H2A monoubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0035521,monoubiquitinated histone deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0035522,monoubiquitinated histone H2A deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0035574,histone H4-K20 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0035616,histone H2B conserved C-terminal lysine deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0035978,histone H2A-S139 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0036123,histone H3-K9 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0036124,histone H3-K9 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0036351,histone H2A-K13 ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0036352,histone H2A-K15 ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0036353,histone H2A-K119 monoubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0036413,histone H3-R26 citrullination
+GO:0016570,Epigenetic alteration,histone modification,GO:0036414,histone citrullination
+GO:0016570,Epigenetic alteration,histone modification,GO:0043966,histone H3 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043967,histone H4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043968,histone H2A acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043969,histone H2B acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043970,histone H3-K9 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043971,histone H3-K18 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043972,histone H3-K23 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043973,histone H3-K4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043974,histone H3-K27 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043975,histone H3-K36 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043976,histone H3-K79 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043977,histone H2A-K5 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043978,histone H2A-K9 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043979,histone H2B-K5 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043980,histone H2B-K12 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043981,histone H4-K5 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043982,histone H4-K8 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043983,histone H4-K12 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043984,histone H4-K16 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043985,histone H4-R3 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043987,histone H3-S10 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043988,histone H3-S28 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043989,histone H4-S1 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043990,histone H2A-S1 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0043991,histone H2B-S14 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0044154,histone H3-K14 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0044648,histone H3-K4 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051567,histone H3-K9 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051568,histone H3-K4 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051569,regulation of histone H3-K4 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051570,regulation of histone H3-K9 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051571,positive regulation of histone H3-K4 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051572,negative regulation of histone H3-K4 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051573,negative regulation of histone H3-K9 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0051574,positive regulation of histone H3-K9 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0061085,regulation of histone H3-K27 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0061086,negative regulation of histone H3-K27 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0061087,positive regulation of histone H3-K27 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0061647,histone H3-K9 modification
+GO:0016570,Epigenetic alteration,histone modification,GO:0061866,negative regulation of histone H3-S10 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070076,histone lysine demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070077,histone arginine demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070078,histone H3-R2 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070079,histone H4-R3 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070510,regulation of histone H4-K20 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070511,negative regulation of histone H4-K20 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070512,positive regulation of histone H4-K20 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070535,histone H2A K63-linked ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0070537,histone H2A K63-linked deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0070544,histone H3-K36 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070734,histone H3-K27 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070932,histone H3 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0070933,histone H4 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071110,histone biotinylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071440,regulation of histone H3-K14 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071441,negative regulation of histone H3-K14 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071442,positive regulation of histone H3-K14 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071557,histone H3-K27 demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071572,histone H3-K56 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0071894,histone H2B conserved C-terminal lysine ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0072355,histone H3-T3 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0072370,histone H2A-S121 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0080182,histone H3-K4 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0090239,regulation of histone H4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0090240,positive regulation of histone H4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0090241,negative regulation of histone H4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0097043,histone H3-K56 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0097044,histone H3-K56 acetylation in response to DNA damage
+GO:0016570,Epigenetic alteration,histone modification,GO:0097198,histone H3-K36 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0097676,histone H3-K36 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0097692,histone H3-K4 monomethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0097725,histone H3-K79 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0098532,histone H3-K27 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0106185,histone H3-K37 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0140372,histone H3 ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0140373,histone H3-K14 ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:0150166,regulation of histone H3-K4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0150167,positive regulation of histone H3-K4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0150168,negative regulation of histone H3-K4 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1900109,regulation of histone H3-K9 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1900110,negative regulation of histone H3-K9 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1900111,positive regulation of histone H3-K9 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1900112,regulation of histone H3-K9 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1900113,negative regulation of histone H3-K9 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1900114,positive regulation of histone H3-K9 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1901314,regulation of histone H2A K63-linked ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:1901315,negative regulation of histone H2A K63-linked ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:1901316,positive regulation of histone H2A K63-linked ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:1901674,regulation of histone H3-K27 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1901675,negative regulation of histone H3-K27 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1901676,positive regulation of histone H3-K27 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1901725,regulation of histone deacetylase activity
+GO:0016570,Epigenetic alteration,histone modification,GO:1901726,negative regulation of histone deacetylase activity
+GO:0016570,Epigenetic alteration,histone modification,GO:1901727,positive regulation of histone deacetylase activity
+GO:0016570,Epigenetic alteration,histone modification,GO:1902028,regulation of histone H3-K18 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1902029,positive regulation of histone H3-K18 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1902030,negative regulation of histone H3-K18 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1902464,regulation of histone H3-K27 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1902465,negative regulation of histone H3-K27 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1902466,positive regulation of histone H3-K27 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1903584,regulation of histone deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:1903585,negative regulation of histone deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:1903586,positive regulation of histone deubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:1904173,regulation of histone demethylase activity (H3-K4 specific)
+GO:0016570,Epigenetic alteration,histone modification,GO:1904174,negative regulation of histone demethylase activity (H3-K4 specific)
+GO:0016570,Epigenetic alteration,histone modification,GO:1904175,positive regulation of histone demethylase activity (H3-K4 specific)
+GO:0016570,Epigenetic alteration,histone modification,GO:1905435,regulation of histone H3-K4 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1905436,negative regulation of histone H3-K4 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1905437,positive regulation of histone H3-K4 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1905471,regulation of histone H3-K79 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1905472,negative regulation of histone H3-K79 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1905473,positive regulation of histone H3-K79 dimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990164,histone H2A phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990245,histone H2A-T120 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990258,histone glutamine methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990596,histone H3-K4 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990619,histone H3-K9 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990678,histone H4-K16 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990679,histone H4-K12 deacetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:1990853,histone H2A SQE motif phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000281,regulation of histone H3-T3 phosphorylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000615,regulation of histone H3-K9 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000616,negative regulation of histone H3-K9 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000617,positive regulation of histone H3-K9 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000618,regulation of histone H4-K16 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000619,negative regulation of histone H4-K16 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000620,positive regulation of histone H4-K16 acetylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000751,histone H3-T3 phosphorylation involved in chromosome passenger complex localization to kinetochore
+GO:0016570,Epigenetic alteration,histone modification,GO:2000775,histone H3-S10 phosphorylation involved in chromosome condensation
+GO:0016570,Epigenetic alteration,histone modification,GO:2000776,histone H4 acetylation involved in response to DNA damage stimulus
+GO:0016570,Epigenetic alteration,histone modification,GO:2000817,regulation of histone H3-T3 phosphorylation involved in chromosome passenger complex localization to kinetochore
+GO:0016570,Epigenetic alteration,histone modification,GO:2000873,regulation of histone H4 acetylation involved in response to DNA damage stimulus
+GO:0016570,Epigenetic alteration,histone modification,GO:2001160,regulation of histone H3-K79 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2001161,negative regulation of histone H3-K79 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2001162,positive regulation of histone H3-K79 methylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2001166,regulation of histone H2B ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:2001167,negative regulation of histone H2B ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:2001168,positive regulation of histone H2B ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:2001173,regulation of histone H2B conserved C-terminal lysine ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:2001174,negative regulation of histone H2B conserved C-terminal lysine ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:2001175,positive regulation of histone H2B conserved C-terminal lysine ubiquitination
+GO:0016570,Epigenetic alteration,histone modification,GO:2001253,regulation of histone H3-K36 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2001254,negative regulation of histone H3-K36 trimethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:2001255,positive regulation of histone H3-K36 trimethylation
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0000183,rDNA heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0006346,DNA methylation-dependent heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0010964,regulation of heterochromatin assembly by small RNA
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0030466,silent mating-type cassette heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031048,heterochromatin assembly by small RNA
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031055,chromatin remodeling at centromere
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031445,regulation of heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031452,negative regulation of heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031453,positive regulation of heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031454,regulation of extent of heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031507,heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031508,pericentric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0031509,subtelomeric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0033696,negative regulation of extent of heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0033697,positive regulation of extent of heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0034080,CENP-A containing nucleosome assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0035042,fertilization, exchange of chromosomal proteins
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0035093,spermatogenesis, exchange of chromosomal proteins
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0035986,senescence-associated heterochromatin focus assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0042766,nucleosome mobilization
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0043044,ATP-dependent chromatin remodeling
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0043156,chromatin remodeling in response to cation stress
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0043486,histone exchange
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0060820,inactivation of X chromosome by heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0060906,negative regulation of heterochromatin assembly by small RNA
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0061186,negative regulation of silent mating-type cassette heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0061187,regulation of ribosomal DNA heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0061188,negative regulation of ribosomal DNA heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0070919,production of siRNA involved in chromatin silencing by small RNA
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0070923,siRNA loading onto RISC involved in chromatin silencing by small RNA
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090052,regulation of pericentric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090053,positive regulation of pericentric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090054,regulation of silent mating-type cassette heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090055,positive regulation of silent mating-type cassette heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090308,regulation of DNA methylation-dependent heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090309,positive regulation of DNA methylation-dependent heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0090310,negative regulation of DNA methylation-dependent heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1900049,regulation of histone exchange
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1900050,negative regulation of histone exchange
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1900051,positive regulation of histone exchange
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1902360,conversion of ds siRNA to ss siRNA involved in chromatin silencing by small RNA
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1902794,heterochromatin island assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1902795,heterochromatin domain assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1902801,regulation of heterochromatin island assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1902802,regulation of heterochromatin domain assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1903097,regulation of CENP-A containing nucleosome assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1903098,negative regulation of CENP-A containing nucleosome assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1903099,positive regulation of CENP-A containing nucleosome assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1905547,regulation of subtelomeric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1905548,negative regulation of subtelomeric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1905549,positive regulation of subtelomeric heterochromatin assembly
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:1905886,chromatin remodeling involved in meiosis I
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:2000749,positive regulation of rDNA heterochromatin assembly
+GO:0006954,Inflammation,inflammatory response,GO:0001660,fever generation
+GO:0006954,Inflammation,inflammatory response,GO:0001774,microglial cell activation
+GO:0006954,Inflammation,inflammatory response,GO:0001788,antibody-dependent cellular cytotoxicity
+GO:0006954,Inflammation,inflammatory response,GO:0001794,type IIa hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001795,type IIb hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001796,regulation of type IIa hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001797,negative regulation of type IIa hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001798,positive regulation of type IIa hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001799,regulation of type IIb hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001800,negative regulation of type IIb hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001801,positive regulation of type IIb hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001802,type III hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001803,regulation of type III hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001804,negative regulation of type III hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001805,positive regulation of type III hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001806,type IV hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001807,regulation of type IV hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001808,negative regulation of type IV hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001809,positive regulation of type IV hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001810,regulation of type I hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001811,negative regulation of type I hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001812,positive regulation of type I hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0001813,regulation of antibody-dependent cellular cytotoxicity
+GO:0006954,Inflammation,inflammatory response,GO:0001814,negative regulation of antibody-dependent cellular cytotoxicity
+GO:0006954,Inflammation,inflammatory response,GO:0001815,positive regulation of antibody-dependent cellular cytotoxicity
+GO:0006954,Inflammation,inflammatory response,GO:0002232,leukocyte chemotaxis involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002246,wound healing involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002247,clearance of damaged tissue involved in inflammatory response wound healing
+GO:0006954,Inflammation,inflammatory response,GO:0002248,connective tissue replacement involved in inflammatory response wound healing
+GO:0006954,Inflammation,inflammatory response,GO:0002254,kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002255,tissue kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002256,regulation of kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002257,negative regulation of kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002258,positive regulation of kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002265,astrocyte activation involved in immune response
+GO:0006954,Inflammation,inflammatory response,GO:0002269,leukocyte activation involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002282,microglial cell activation involved in immune response
+GO:0006954,Inflammation,inflammatory response,GO:0002349,histamine production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002351,serotonin production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002353,plasma kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002382,regulation of tissue kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002391,platelet activating factor production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002393,lysosomal enzyme production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002432,granuloma formation
+GO:0006954,Inflammation,inflammatory response,GO:0002437,inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002438,acute inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002439,chronic inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002441,histamine secretion involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002442,serotonin secretion involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002445,type II hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002523,leukocyte migration involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002524,hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002525,acute inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002526,acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002527,vasodilation involved in acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002528,regulation of vascular permeability involved in acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002529,regulation of plasma kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002530,regulation of systemic arterial blood pressure involved in acute-phase response
+GO:0006954,Inflammation,inflammatory response,GO:0002531,regulation of heart contraction involved in acute-phase response
+GO:0006954,Inflammation,inflammatory response,GO:0002532,production of molecular mediator involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002533,lysosomal enzyme secretion involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002534,cytokine production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002535,platelet activating factor secretion involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002536,respiratory burst involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002537,nitric oxide production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002538,arachidonic acid metabolite production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002539,prostaglandin production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002540,leukotriene production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002541,activation of plasma proteins involved in acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002542,Factor XII activation
+GO:0006954,Inflammation,inflammatory response,GO:0002543,activation of blood coagulation via clotting cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002544,chronic inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002545,chronic inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002546,negative regulation of tissue kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002547,positive regulation of tissue kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002549,negative regulation of plasma kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002550,positive regulation of plasma kallikrein-kinin cascade
+GO:0006954,Inflammation,inflammatory response,GO:0002552,serotonin secretion by mast cell
+GO:0006954,Inflammation,inflammatory response,GO:0002553,histamine secretion by mast cell
+GO:0006954,Inflammation,inflammatory response,GO:0002554,serotonin secretion by platelet
+GO:0006954,Inflammation,inflammatory response,GO:0002555,histamine secretion by platelet
+GO:0006954,Inflammation,inflammatory response,GO:0002556,serotonin secretion by basophil
+GO:0006954,Inflammation,inflammatory response,GO:0002557,histamine secretion by basophil
+GO:0006954,Inflammation,inflammatory response,GO:0002558,type I hypersensitivity mediated by mast cells
+GO:0006954,Inflammation,inflammatory response,GO:0002559,type I hypersensitivity mediated by basophils
+GO:0006954,Inflammation,inflammatory response,GO:0002631,regulation of granuloma formation
+GO:0006954,Inflammation,inflammatory response,GO:0002632,negative regulation of granuloma formation
+GO:0006954,Inflammation,inflammatory response,GO:0002633,positive regulation of granuloma formation
+GO:0006954,Inflammation,inflammatory response,GO:0002673,regulation of acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002674,negative regulation of acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002675,positive regulation of acute inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002676,regulation of chronic inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002677,negative regulation of chronic inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002678,positive regulation of chronic inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0002861,regulation of inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002862,negative regulation of inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002863,positive regulation of inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002864,regulation of acute inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002865,negative regulation of acute inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002866,positive regulation of acute inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002868,negative regulation of B cell deletion
+GO:0006954,Inflammation,inflammatory response,GO:0002869,positive regulation of B cell deletion
+GO:0006954,Inflammation,inflammatory response,GO:0002872,negative regulation of natural killer cell tolerance induction
+GO:0006954,Inflammation,inflammatory response,GO:0002873,positive regulation of natural killer cell tolerance induction
+GO:0006954,Inflammation,inflammatory response,GO:0002874,regulation of chronic inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002875,negative regulation of chronic inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002876,positive regulation of chronic inflammatory response to antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002877,regulation of acute inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002878,negative regulation of acute inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002879,positive regulation of acute inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002880,regulation of chronic inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002881,negative regulation of chronic inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002882,positive regulation of chronic inflammatory response to non-antigenic stimulus
+GO:0006954,Inflammation,inflammatory response,GO:0002883,regulation of hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002884,negative regulation of hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002885,positive regulation of hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002892,regulation of type II hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002893,negative regulation of type II hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002894,positive regulation of type II hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0002899,negative regulation of central B cell deletion
+GO:0006954,Inflammation,inflammatory response,GO:0002900,positive regulation of central B cell deletion
+GO:0006954,Inflammation,inflammatory response,GO:0002909,negative regulation of peripheral B cell deletion
+GO:0006954,Inflammation,inflammatory response,GO:0002910,positive regulation of peripheral B cell deletion
+GO:0006954,Inflammation,inflammatory response,GO:0006953,acute-phase response
+GO:0006954,Inflammation,inflammatory response,GO:0016068,type I hypersensitivity
+GO:0006954,Inflammation,inflammatory response,GO:0031620,regulation of fever generation
+GO:0006954,Inflammation,inflammatory response,GO:0031621,negative regulation of fever generation
+GO:0006954,Inflammation,inflammatory response,GO:0031622,positive regulation of fever generation
+GO:0006954,Inflammation,inflammatory response,GO:0035490,regulation of leukotriene production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0035491,positive regulation of leukotriene production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0035492,negative regulation of leukotriene production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0048143,astrocyte activation
+GO:0006954,Inflammation,inflammatory response,GO:0050727,regulation of inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0050728,negative regulation of inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0050729,positive regulation of inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0060264,regulation of respiratory burst involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0060265,positive regulation of respiratory burst involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0060266,negative regulation of respiratory burst involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0061888,regulation of astrocyte activation
+GO:0006954,Inflammation,inflammatory response,GO:0061889,negative regulation of astrocyte activation
+GO:0006954,Inflammation,inflammatory response,GO:0061890,positive regulation of astrocyte activation
+GO:0006954,Inflammation,inflammatory response,GO:0061900,glial cell activation
+GO:0006954,Inflammation,inflammatory response,GO:0071809,regulation of fever generation by regulation of prostaglandin biosynthesis
+GO:0006954,Inflammation,inflammatory response,GO:0071810,regulation of fever generation by regulation of prostaglandin secretion
+GO:0006954,Inflammation,inflammatory response,GO:0071811,positive regulation of fever generation by positive regulation of prostaglandin biosynthesis
+GO:0006954,Inflammation,inflammatory response,GO:0071812,positive regulation of fever generation by positive regulation of prostaglandin secretion
+GO:0006954,Inflammation,inflammatory response,GO:0090594,inflammatory response to wounding
+GO:0006954,Inflammation,inflammatory response,GO:0097279,histamine secretion mediated by IgE immunoglobulin
+GO:0006954,Inflammation,inflammatory response,GO:0097280,histamine secretion mediated by immunoglobulin
+GO:0006954,Inflammation,inflammatory response,GO:0100008,regulation of fever generation by prostaglandin biosynthetic process
+GO:0006954,Inflammation,inflammatory response,GO:0100009,regulation of fever generation by prostaglandin secretion
+GO:0006954,Inflammation,inflammatory response,GO:0100010,positive regulation of fever generation by prostaglandin biosynthetic process
+GO:0006954,Inflammation,inflammatory response,GO:0100011,positive regulation of fever generation by prostaglandin secretion
+GO:0006954,Inflammation,inflammatory response,GO:0106014,regulation of inflammatory response to wounding
+GO:0006954,Inflammation,inflammatory response,GO:0106015,negative regulation of inflammatory response to wounding
+GO:0006954,Inflammation,inflammatory response,GO:0106016,positive regulation of inflammatory response to wounding
+GO:0006954,Inflammation,inflammatory response,GO:0150076,neuroinflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0150077,regulation of neuroinflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0150078,positive regulation of neuroinflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0150079,negative regulation of neuroinflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:0150103,reactive gliosis
+GO:0006954,Inflammation,inflammatory response,GO:1900015,regulation of cytokine production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:1900016,negative regulation of cytokine production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:1900017,positive regulation of cytokine production involved in inflammatory response
+GO:0006954,Inflammation,inflammatory response,GO:1903593,regulation of histamine secretion by mast cell
+GO:0006954,Inflammation,inflammatory response,GO:1903594,negative regulation of histamine secretion by mast cell
+GO:0006954,Inflammation,inflammatory response,GO:1903595,positive regulation of histamine secretion by mast cell
+GO:0006954,Inflammation,inflammatory response,GO:1903978,regulation of microglial cell activation
+GO:0006954,Inflammation,inflammatory response,GO:1903979,negative regulation of microglial cell activation
+GO:0006954,Inflammation,inflammatory response,GO:1903980,positive regulation of microglial cell activation
+GO:0006954,Inflammation,inflammatory response,GO:1904596,regulation of connective tissue replacement involved in inflammatory response wound healing
+GO:0006954,Inflammation,inflammatory response,GO:1904597,negative regulation of connective tissue replacement involved in inflammatory response wound healing
+GO:0006954,Inflammation,inflammatory response,GO:1904598,positive regulation of connective tissue replacement involved in inflammatory response wound healing
+GO:0006955,Immune response,immune response,GO:0001788,antibody-dependent cellular cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001794,type IIa hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001795,type IIb hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001796,regulation of type IIa hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001797,negative regulation of type IIa hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001798,positive regulation of type IIa hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001799,regulation of type IIb hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001800,negative regulation of type IIb hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001801,positive regulation of type IIb hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001802,type III hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001803,regulation of type III hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001804,negative regulation of type III hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001805,positive regulation of type III hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001806,type IV hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001807,regulation of type IV hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001808,negative regulation of type IV hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001809,positive regulation of type IV hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001810,regulation of type I hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001811,negative regulation of type I hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001812,positive regulation of type I hypersensitivity
+GO:0006955,Immune response,immune response,GO:0001813,regulation of antibody-dependent cellular cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001814,negative regulation of antibody-dependent cellular cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001815,positive regulation of antibody-dependent cellular cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001867,complement activation, lectin pathway
+GO:0006955,Immune response,immune response,GO:0001868,regulation of complement activation, lectin pathway
+GO:0006955,Immune response,immune response,GO:0001869,negative regulation of complement activation, lectin pathway
+GO:0006955,Immune response,immune response,GO:0001870,positive regulation of complement activation, lectin pathway
+GO:0006955,Immune response,immune response,GO:0001905,activation of membrane attack complex
+GO:0006955,Immune response,immune response,GO:0001913,T cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001914,regulation of T cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001915,negative regulation of T cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001916,positive regulation of T cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0001969,regulation of activation of membrane attack complex
+GO:0006955,Immune response,immune response,GO:0001970,positive regulation of activation of membrane attack complex
+GO:0006955,Immune response,immune response,GO:0001971,negative regulation of activation of membrane attack complex
+GO:0006955,Immune response,immune response,GO:0002204,somatic recombination of immunoglobulin genes involved in immune response
+GO:0006955,Immune response,immune response,GO:0002205,somatic hypermutation of immunoglobulin genes involved in immune response
+GO:0006955,Immune response,immune response,GO:0002207,gene conversion of immunoglobulin genes involved in immune response
+GO:0006955,Immune response,immune response,GO:0002208,somatic diversification of immunoglobulins involved in immune response
+GO:0006955,Immune response,immune response,GO:0002218,activation of innate immune response
+GO:0006955,Immune response,immune response,GO:0002220,innate immune response activating cell surface receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002222,stimulatory killer cell immunoglobulin-like receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002223,stimulatory C-type lectin receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002225,positive regulation of antimicrobial peptide production
+GO:0006955,Immune response,immune response,GO:0002227,innate immune response in mucosa
+GO:0006955,Immune response,immune response,GO:0002228,natural killer cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002233,leukocyte chemotaxis involved in immune response
+GO:0006955,Immune response,immune response,GO:0002250,adaptive immune response
+GO:0006955,Immune response,immune response,GO:0002251,organ or tissue specific immune response
+GO:0006955,Immune response,immune response,GO:0002253,activation of immune response
+GO:0006955,Immune response,immune response,GO:0002259,endothelial cell activation within high endothelial venule involved in immune response
+GO:0006955,Immune response,immune response,GO:0002263,cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002264,endothelial cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002265,astrocyte activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002267,follicular dendritic cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002271,plasmacytoid dendritic cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002272,plasmacytoid dendritic cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002275,myeloid cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002276,basophil activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002277,myeloid dendritic cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002278,eosinophil activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002279,mast cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002280,monocyte activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002281,macrophage activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002282,microglial cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002283,neutrophil activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002284,myeloid dendritic cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002285,lymphocyte activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002286,T cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002287,alpha-beta T cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002288,NK T cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002289,NK T cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002290,gamma-delta T cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002291,T cell activation via T cell receptor contact with antigen bound to MHC molecule on antigen presenting cell
+GO:0006955,Immune response,immune response,GO:0002292,T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002293,alpha-beta T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002294,CD4-positive, alpha-beta T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002295,T-helper cell lineage commitment
+GO:0006955,Immune response,immune response,GO:0002296,T-helper 1 cell lineage commitment
+GO:0006955,Immune response,immune response,GO:0002297,T-helper 2 cell lineage commitment
+GO:0006955,Immune response,immune response,GO:0002298,CD4-positive, CD25-positive, alpha-beta regulatory T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002302,CD8-positive, alpha-beta T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002303,gamma-delta T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002309,T cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002310,alpha-beta T cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002311,gamma-delta T cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002312,B cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002313,mature B cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002314,germinal center B cell differentiation
+GO:0006955,Immune response,immune response,GO:0002315,marginal zone B cell differentiation
+GO:0006955,Immune response,immune response,GO:0002316,follicular B cell differentiation
+GO:0006955,Immune response,immune response,GO:0002317,plasma cell differentiation
+GO:0006955,Immune response,immune response,GO:0002319,memory B cell differentiation
+GO:0006955,Immune response,immune response,GO:0002322,B cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002323,natural killer cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002324,natural killer cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002325,natural killer cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002344,B cell affinity maturation
+GO:0006955,Immune response,immune response,GO:0002366,leukocyte activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0002367,cytokine production involved in immune response
+GO:0006955,Immune response,immune response,GO:0002368,B cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002369,T cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002370,natural killer cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002371,dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002372,myeloid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002373,plasmacytoid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002374,cytokine secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0002375,cytokine biosynthetic process involved in immune response
+GO:0006955,Immune response,immune response,GO:0002379,immunoglobulin biosynthetic process involved in immune response
+GO:0006955,Immune response,immune response,GO:0002380,immunoglobulin secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0002381,immunoglobulin production involved in immunoglobulin mediated immune response
+GO:0006955,Immune response,immune response,GO:0002383,immune response in brain or nervous system
+GO:0006955,Immune response,immune response,GO:0002384,hepatic immune response
+GO:0006955,Immune response,immune response,GO:0002385,mucosal immune response
+GO:0006955,Immune response,immune response,GO:0002386,immune response in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002387,immune response in gut-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002388,immune response in Peyer's patch
+GO:0006955,Immune response,immune response,GO:0002389,tolerance induction in Peyer's patch
+GO:0006955,Immune response,immune response,GO:0002394,tolerance induction in gut-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002395,immune response in nasopharyngeal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002400,tolerance induction in nasopharyngeal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002401,tolerance induction in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002402,B cell tolerance induction in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002403,T cell tolerance induction in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002404,antigen sampling in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002405,antigen sampling by dendritic cells in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002406,antigen sampling by M cells in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002411,T cell tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002412,antigen transcytosis by M cells in mucosal-associated lymphoid tissue
+GO:0006955,Immune response,immune response,GO:0002413,tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002415,immunoglobulin transcytosis in epithelial cells mediated by polymeric immunoglobulin receptor
+GO:0006955,Immune response,immune response,GO:0002417,B cell antigen processing and presentation mediated by B cell receptor uptake of antigen
+GO:0006955,Immune response,immune response,GO:0002418,immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002419,T cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002420,natural killer cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002421,B cell antigen processing and presentation following pinocytosis
+GO:0006955,Immune response,immune response,GO:0002422,immune response in urogenital tract
+GO:0006955,Immune response,immune response,GO:0002423,natural killer cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002424,T cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002425,tolerance induction in urogenital tract
+GO:0006955,Immune response,immune response,GO:0002426,immunoglobulin production in mucosal tissue
+GO:0006955,Immune response,immune response,GO:0002427,mucosal tolerance induction
+GO:0006955,Immune response,immune response,GO:0002429,immune response-activating cell surface receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002430,complement receptor mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0002431,Fc receptor mediated stimulatory signaling pathway
+GO:0006955,Immune response,immune response,GO:0002433,immune response-regulating cell surface receptor signaling pathway involved in phagocytosis
+GO:0006955,Immune response,immune response,GO:0002437,inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002438,acute inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002439,chronic inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002445,type II hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002450,B cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002451,peripheral B cell tolerance induction
+GO:0006955,Immune response,immune response,GO:0002453,peripheral B cell anergy
+GO:0006955,Immune response,immune response,GO:0002454,peripheral B cell deletion
+GO:0006955,Immune response,immune response,GO:0002455,humoral immune response mediated by circulating immunoglobulin
+GO:0006955,Immune response,immune response,GO:0002456,T cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002457,T cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002458,peripheral T cell tolerance induction
+GO:0006955,Immune response,immune response,GO:0002459,adaptive immune response based on somatic recombination of immune receptors built from leucine-rich repeat domains
+GO:0006955,Immune response,immune response,GO:0002460,adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
+GO:0006955,Immune response,immune response,GO:0002461,tolerance induction dependent upon immune response
+GO:0006955,Immune response,immune response,GO:0002462,tolerance induction to nonself antigen
+GO:0006955,Immune response,immune response,GO:0002463,central tolerance induction to nonself antigen
+GO:0006955,Immune response,immune response,GO:0002464,peripheral tolerance induction to nonself antigen
+GO:0006955,Immune response,immune response,GO:0002465,peripheral tolerance induction
+GO:0006955,Immune response,immune response,GO:0002466,peripheral tolerance induction to self antigen
+GO:0006955,Immune response,immune response,GO:0002467,germinal center formation
+GO:0006955,Immune response,immune response,GO:0002522,leukocyte migration involved in immune response
+GO:0006955,Immune response,immune response,GO:0002524,hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002552,serotonin secretion by mast cell
+GO:0006955,Immune response,immune response,GO:0002553,histamine secretion by mast cell
+GO:0006955,Immune response,immune response,GO:0002556,serotonin secretion by basophil
+GO:0006955,Immune response,immune response,GO:0002557,histamine secretion by basophil
+GO:0006955,Immune response,immune response,GO:0002558,type I hypersensitivity mediated by mast cells
+GO:0006955,Immune response,immune response,GO:0002559,type I hypersensitivity mediated by basophils
+GO:0006955,Immune response,immune response,GO:0002561,basophil degranulation
+GO:0006955,Immune response,immune response,GO:0002622,regulation of B cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002623,negative regulation of B cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002624,positive regulation of B cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002625,regulation of T cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002626,negative regulation of T cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002627,positive regulation of T cell antigen processing and presentation
+GO:0006955,Immune response,immune response,GO:0002634,regulation of germinal center formation
+GO:0006955,Immune response,immune response,GO:0002635,negative regulation of germinal center formation
+GO:0006955,Immune response,immune response,GO:0002636,positive regulation of germinal center formation
+GO:0006955,Immune response,immune response,GO:0002652,regulation of tolerance induction dependent upon immune response
+GO:0006955,Immune response,immune response,GO:0002653,negative regulation of tolerance induction dependent upon immune response
+GO:0006955,Immune response,immune response,GO:0002654,positive regulation of tolerance induction dependent upon immune response
+GO:0006955,Immune response,immune response,GO:0002655,regulation of tolerance induction to nonself antigen
+GO:0006955,Immune response,immune response,GO:0002656,negative regulation of tolerance induction to nonself antigen
+GO:0006955,Immune response,immune response,GO:0002657,positive regulation of tolerance induction to nonself antigen
+GO:0006955,Immune response,immune response,GO:0002658,regulation of peripheral tolerance induction
+GO:0006955,Immune response,immune response,GO:0002659,negative regulation of peripheral tolerance induction
+GO:0006955,Immune response,immune response,GO:0002660,positive regulation of peripheral tolerance induction
+GO:0006955,Immune response,immune response,GO:0002709,regulation of T cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002710,negative regulation of T cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002711,positive regulation of T cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002712,regulation of B cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002713,negative regulation of B cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002714,positive regulation of B cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002715,regulation of natural killer cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002716,negative regulation of natural killer cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002717,positive regulation of natural killer cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0002718,regulation of cytokine production involved in immune response
+GO:0006955,Immune response,immune response,GO:0002719,negative regulation of cytokine production involved in immune response
+GO:0006955,Immune response,immune response,GO:0002720,positive regulation of cytokine production involved in immune response
+GO:0006955,Immune response,immune response,GO:0002721,regulation of B cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002722,negative regulation of B cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002723,positive regulation of B cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002724,regulation of T cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002725,negative regulation of T cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002726,positive regulation of T cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002727,regulation of natural killer cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002728,negative regulation of natural killer cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002729,positive regulation of natural killer cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002730,regulation of dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002731,negative regulation of dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002732,positive regulation of dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002733,regulation of myeloid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002734,negative regulation of myeloid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002735,positive regulation of myeloid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002736,regulation of plasmacytoid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002737,negative regulation of plasmacytoid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002738,positive regulation of plasmacytoid dendritic cell cytokine production
+GO:0006955,Immune response,immune response,GO:0002739,regulation of cytokine secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0002740,negative regulation of cytokine secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0002741,positive regulation of cytokine secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0002742,regulation of cytokine biosynthetic process involved in immune response
+GO:0006955,Immune response,immune response,GO:0002743,negative regulation of cytokine biosynthetic process involved in immune response
+GO:0006955,Immune response,immune response,GO:0002744,positive regulation of cytokine biosynthetic process involved in immune response
+GO:0006955,Immune response,immune response,GO:0002752,cell surface pattern recognition receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002757,immune response-activating signal transduction
+GO:0006955,Immune response,immune response,GO:0002758,innate immune response-activating signal transduction
+GO:0006955,Immune response,immune response,GO:0002759,regulation of antimicrobial humoral response
+GO:0006955,Immune response,immune response,GO:0002760,positive regulation of antimicrobial humoral response
+GO:0006955,Immune response,immune response,GO:0002764,immune response-regulating signaling pathway
+GO:0006955,Immune response,immune response,GO:0002765,immune response-inhibiting signal transduction
+GO:0006955,Immune response,immune response,GO:0002766,innate immune response-inhibiting signal transduction
+GO:0006955,Immune response,immune response,GO:0002767,immune response-inhibiting cell surface receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002768,immune response-regulating cell surface receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002769,natural killer cell inhibitory signaling pathway
+GO:0006955,Immune response,immune response,GO:0002770,T cell inhibitory signaling pathway
+GO:0006955,Immune response,immune response,GO:0002771,inhibitory killer cell immunoglobulin-like receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002772,inhibitory C-type lectin receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0002773,B cell inhibitory signaling pathway
+GO:0006955,Immune response,immune response,GO:0002774,Fc receptor mediated inhibitory signaling pathway
+GO:0006955,Immune response,immune response,GO:0002775,antimicrobial peptide production
+GO:0006955,Immune response,immune response,GO:0002776,antimicrobial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002777,antimicrobial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002778,antibacterial peptide production
+GO:0006955,Immune response,immune response,GO:0002779,antibacterial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002780,antibacterial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002781,antifungal peptide production
+GO:0006955,Immune response,immune response,GO:0002782,antifungal peptide secretion
+GO:0006955,Immune response,immune response,GO:0002783,antifungal peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002784,regulation of antimicrobial peptide production
+GO:0006955,Immune response,immune response,GO:0002785,negative regulation of antimicrobial peptide production
+GO:0006955,Immune response,immune response,GO:0002786,regulation of antibacterial peptide production
+GO:0006955,Immune response,immune response,GO:0002787,negative regulation of antibacterial peptide production
+GO:0006955,Immune response,immune response,GO:0002788,regulation of antifungal peptide production
+GO:0006955,Immune response,immune response,GO:0002789,negative regulation of antifungal peptide production
+GO:0006955,Immune response,immune response,GO:0002794,regulation of antimicrobial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002795,negative regulation of antimicrobial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002796,positive regulation of antimicrobial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002797,regulation of antibacterial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002798,negative regulation of antibacterial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002799,positive regulation of antibacterial peptide secretion
+GO:0006955,Immune response,immune response,GO:0002800,regulation of antifungal peptide secretion
+GO:0006955,Immune response,immune response,GO:0002801,negative regulation of antifungal peptide secretion
+GO:0006955,Immune response,immune response,GO:0002802,positive regulation of antifungal peptide secretion
+GO:0006955,Immune response,immune response,GO:0002803,positive regulation of antibacterial peptide production
+GO:0006955,Immune response,immune response,GO:0002804,positive regulation of antifungal peptide production
+GO:0006955,Immune response,immune response,GO:0002805,regulation of antimicrobial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002806,negative regulation of antimicrobial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002807,positive regulation of antimicrobial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002808,regulation of antibacterial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002809,negative regulation of antibacterial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002810,regulation of antifungal peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002811,negative regulation of antifungal peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0002812,biosynthetic process of antibacterial peptides active against Gram-negative bacteria
+GO:0006955,Immune response,immune response,GO:0002813,regulation of biosynthetic process of antibacterial peptides active against Gram-negative bacteria
+GO:0006955,Immune response,immune response,GO:0002814,negative regulation of biosynthetic process of antibacterial peptides active against Gram-negative bacteria
+GO:0006955,Immune response,immune response,GO:0002815,biosynthetic process of antibacterial peptides active against Gram-positive bacteria
+GO:0006955,Immune response,immune response,GO:0002816,regulation of biosynthetic process of antibacterial peptides active against Gram-positive bacteria
+GO:0006955,Immune response,immune response,GO:0002817,negative regulation of biosynthetic process of antibacterial peptides active against Gram-positive bacteria
+GO:0006955,Immune response,immune response,GO:0002819,regulation of adaptive immune response
+GO:0006955,Immune response,immune response,GO:0002820,negative regulation of adaptive immune response
+GO:0006955,Immune response,immune response,GO:0002821,positive regulation of adaptive immune response
+GO:0006955,Immune response,immune response,GO:0002822,regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
+GO:0006955,Immune response,immune response,GO:0002823,negative regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
+GO:0006955,Immune response,immune response,GO:0002824,positive regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
+GO:0006955,Immune response,immune response,GO:0002825,regulation of T-helper 1 type immune response
+GO:0006955,Immune response,immune response,GO:0002826,negative regulation of T-helper 1 type immune response
+GO:0006955,Immune response,immune response,GO:0002827,positive regulation of T-helper 1 type immune response
+GO:0006955,Immune response,immune response,GO:0002828,regulation of type 2 immune response
+GO:0006955,Immune response,immune response,GO:0002829,negative regulation of type 2 immune response
+GO:0006955,Immune response,immune response,GO:0002830,positive regulation of type 2 immune response
+GO:0006955,Immune response,immune response,GO:0002837,regulation of immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002838,negative regulation of immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002839,positive regulation of immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002840,regulation of T cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002841,negative regulation of T cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002842,positive regulation of T cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002843,regulation of tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002844,negative regulation of tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002845,positive regulation of tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002846,regulation of T cell tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002847,negative regulation of T cell tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002848,positive regulation of T cell tolerance induction to tumor cell
+GO:0006955,Immune response,immune response,GO:0002849,regulation of peripheral T cell tolerance induction
+GO:0006955,Immune response,immune response,GO:0002850,negative regulation of peripheral T cell tolerance induction
+GO:0006955,Immune response,immune response,GO:0002851,positive regulation of peripheral T cell tolerance induction
+GO:0006955,Immune response,immune response,GO:0002852,regulation of T cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002853,negative regulation of T cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002854,positive regulation of T cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002855,regulation of natural killer cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002856,negative regulation of natural killer cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002857,positive regulation of natural killer cell mediated immune response to tumor cell
+GO:0006955,Immune response,immune response,GO:0002858,regulation of natural killer cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002859,negative regulation of natural killer cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002860,positive regulation of natural killer cell mediated cytotoxicity directed against tumor cell target
+GO:0006955,Immune response,immune response,GO:0002861,regulation of inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002862,negative regulation of inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002863,positive regulation of inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002864,regulation of acute inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002865,negative regulation of acute inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002866,positive regulation of acute inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002874,regulation of chronic inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002875,negative regulation of chronic inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002876,positive regulation of chronic inflammatory response to antigenic stimulus
+GO:0006955,Immune response,immune response,GO:0002883,regulation of hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002884,negative regulation of hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002885,positive regulation of hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002889,regulation of immunoglobulin mediated immune response
+GO:0006955,Immune response,immune response,GO:0002890,negative regulation of immunoglobulin mediated immune response
+GO:0006955,Immune response,immune response,GO:0002891,positive regulation of immunoglobulin mediated immune response
+GO:0006955,Immune response,immune response,GO:0002892,regulation of type II hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002893,negative regulation of type II hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002894,positive regulation of type II hypersensitivity
+GO:0006955,Immune response,immune response,GO:0002908,regulation of peripheral B cell deletion
+GO:0006955,Immune response,immune response,GO:0002909,negative regulation of peripheral B cell deletion
+GO:0006955,Immune response,immune response,GO:0002910,positive regulation of peripheral B cell deletion
+GO:0006955,Immune response,immune response,GO:0002917,regulation of peripheral B cell anergy
+GO:0006955,Immune response,immune response,GO:0002918,negative regulation of peripheral B cell anergy
+GO:0006955,Immune response,immune response,GO:0002919,positive regulation of peripheral B cell anergy
+GO:0006955,Immune response,immune response,GO:0002920,regulation of humoral immune response
+GO:0006955,Immune response,immune response,GO:0002921,negative regulation of humoral immune response
+GO:0006955,Immune response,immune response,GO:0002922,positive regulation of humoral immune response
+GO:0006955,Immune response,immune response,GO:0002923,regulation of humoral immune response mediated by circulating immunoglobulin
+GO:0006955,Immune response,immune response,GO:0002924,negative regulation of humoral immune response mediated by circulating immunoglobulin
+GO:0006955,Immune response,immune response,GO:0002925,positive regulation of humoral immune response mediated by circulating immunoglobulin
+GO:0006955,Immune response,immune response,GO:0006956,complement activation
+GO:0006955,Immune response,immune response,GO:0006957,complement activation, alternative pathway
+GO:0006955,Immune response,immune response,GO:0006958,complement activation, classical pathway
+GO:0006955,Immune response,immune response,GO:0006959,humoral immune response
+GO:0006955,Immune response,immune response,GO:0006962,male-specific antibacterial humoral response
+GO:0006955,Immune response,immune response,GO:0006963,positive regulation of antibacterial peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0006964,positive regulation of biosynthetic process of antibacterial peptides active against Gram-negative bacteria
+GO:0006955,Immune response,immune response,GO:0006965,positive regulation of biosynthetic process of antibacterial peptides active against Gram-positive bacteria
+GO:0006955,Immune response,immune response,GO:0006967,positive regulation of antifungal peptide biosynthetic process
+GO:0006955,Immune response,immune response,GO:0008348,negative regulation of antimicrobial humoral response
+GO:0006955,Immune response,immune response,GO:0009616,virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0009626,plant-type hypersensitive response
+GO:0006955,Immune response,immune response,GO:0009627,systemic acquired resistance
+GO:0006955,Immune response,immune response,GO:0009682,induced systemic resistance
+GO:0006955,Immune response,immune response,GO:0009689,induction of phytoalexin biosynthetic process
+GO:0006955,Immune response,immune response,GO:0009814,defense response, incompatible interaction
+GO:0006955,Immune response,immune response,GO:0009816,defense response to bacterium, incompatible interaction
+GO:0006955,Immune response,immune response,GO:0009817,defense response to fungus, incompatible interaction
+GO:0006955,Immune response,immune response,GO:0009818,defense response to protozoan, incompatible interaction
+GO:0006955,Immune response,immune response,GO:0009861,jasmonic acid and ethylene-dependent systemic resistance
+GO:0006955,Immune response,immune response,GO:0009862,systemic acquired resistance, salicylic acid mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0009864,induced systemic resistance, jasmonic acid mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0009866,induced systemic resistance, ethylene mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0009868,jasmonic acid and ethylene-dependent systemic resistance, jasmonic acid mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0009870,defense response signaling pathway, resistance gene-dependent
+GO:0006955,Immune response,immune response,GO:0009871,jasmonic acid and ethylene-dependent systemic resistance, ethylene mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0010112,regulation of systemic acquired resistance
+GO:0006955,Immune response,immune response,GO:0010113,negative regulation of systemic acquired resistance
+GO:0006955,Immune response,immune response,GO:0010363,regulation of plant-type hypersensitive response
+GO:0006955,Immune response,immune response,GO:0010934,macrophage cytokine production
+GO:0006955,Immune response,immune response,GO:0010935,regulation of macrophage cytokine production
+GO:0006955,Immune response,immune response,GO:0010936,negative regulation of macrophage cytokine production
+GO:0006955,Immune response,immune response,GO:0016064,immunoglobulin mediated immune response
+GO:0006955,Immune response,immune response,GO:0016068,type I hypersensitivity
+GO:0006955,Immune response,immune response,GO:0019724,B cell mediated immunity
+GO:0006955,Immune response,immune response,GO:0019730,antimicrobial humoral response
+GO:0006955,Immune response,immune response,GO:0019731,antibacterial humoral response
+GO:0006955,Immune response,immune response,GO:0019732,antifungal humoral response
+GO:0006955,Immune response,immune response,GO:0023022,termination of T cell signal transduction
+GO:0006955,Immune response,immune response,GO:0030449,regulation of complement activation
+GO:0006955,Immune response,immune response,GO:0030450,regulation of complement activation, classical pathway
+GO:0006955,Immune response,immune response,GO:0030451,regulation of complement activation, alternative pathway
+GO:0006955,Immune response,immune response,GO:0032260,response to jasmonic acid stimulus involved in jasmonic acid and ethylene-dependent systemic resistance
+GO:0006955,Immune response,immune response,GO:0032762,mast cell cytokine production
+GO:0006955,Immune response,immune response,GO:0032763,regulation of mast cell cytokine production
+GO:0006955,Immune response,immune response,GO:0032764,negative regulation of mast cell cytokine production
+GO:0006955,Immune response,immune response,GO:0032765,positive regulation of mast cell cytokine production
+GO:0006955,Immune response,immune response,GO:0032820,regulation of natural killer cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032821,negative regulation of natural killer cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032822,positive regulation of natural killer cell proliferation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032826,regulation of natural killer cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032827,negative regulation of natural killer cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032828,positive regulation of natural killer cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032832,regulation of CD4-positive, CD25-positive, alpha-beta regulatory T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032833,negative regulation of CD4-positive, CD25-positive, alpha-beta regulatory T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0032834,positive regulation of CD4-positive, CD25-positive, alpha-beta regulatory T cell differentiation involved in immune response
+GO:0006955,Immune response,immune response,GO:0033006,regulation of mast cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0033007,negative regulation of mast cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0033008,positive regulation of mast cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:0034051,negative regulation of plant-type hypersensitive response
+GO:0006955,Immune response,immune response,GO:0034052,positive regulation of plant-type hypersensitive response
+GO:0006955,Immune response,immune response,GO:0034340,response to type I interferon
+GO:0006955,Immune response,immune response,GO:0034341,response to interferon-gamma
+GO:0006955,Immune response,immune response,GO:0034342,response to type III interferon
+GO:0006955,Immune response,immune response,GO:0035006,melanization defense response
+GO:0006955,Immune response,immune response,GO:0035007,regulation of melanization defense response
+GO:0006955,Immune response,immune response,GO:0035008,positive regulation of melanization defense response
+GO:0006955,Immune response,immune response,GO:0035009,negative regulation of melanization defense response
+GO:0006955,Immune response,immune response,GO:0035011,melanotic encapsulation of foreign target
+GO:0006955,Immune response,immune response,GO:0035397,helper T cell enhancement of adaptive immune response
+GO:0006955,Immune response,immune response,GO:0035398,helper T cell enhancement of T cell mediated immune response
+GO:0006955,Immune response,immune response,GO:0035399,helper T cell enhancement of B cell mediated immune response
+GO:0006955,Immune response,immune response,GO:0035420,MAPK cascade involved in innate immune response
+GO:0006955,Immune response,immune response,GO:0035423,inactivation of MAPK activity involved in innate immune response
+GO:0006955,Immune response,immune response,GO:0035708,interleukin-4-dependent isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:0035743,CD4-positive, alpha-beta T cell cytokine production
+GO:0006955,Immune response,immune response,GO:0035744,T-helper 1 cell cytokine production
+GO:0006955,Immune response,immune response,GO:0035745,T-helper 2 cell cytokine production
+GO:0006955,Immune response,immune response,GO:0035895,modulation of mast cell degranulation in other organism
+GO:0006955,Immune response,immune response,GO:0035896,positive regulation of mast cell degranulation in other organism
+GO:0006955,Immune response,immune response,GO:0038093,Fc receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0038094,Fc-gamma receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0038095,Fc-epsilon receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0038096,Fc-gamma receptor signaling pathway involved in phagocytosis
+GO:0006955,Immune response,immune response,GO:0038097,positive regulation of mast cell activation by Fc-epsilon receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0038178,complement component C5a signaling pathway
+GO:0006955,Immune response,immune response,GO:0038196,type III interferon signaling pathway
+GO:0006955,Immune response,immune response,GO:0039502,suppression by virus of host type I interferon-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0039504,suppression by virus of host adaptive immune response
+GO:0006955,Immune response,immune response,GO:0039573,suppression by virus of host complement activation
+GO:0006955,Immune response,immune response,GO:0042088,T-helper 1 type immune response
+GO:0006955,Immune response,immune response,GO:0042092,type 2 immune response
+GO:0006955,Immune response,immune response,GO:0042093,T-helper cell differentiation
+GO:0006955,Immune response,immune response,GO:0042267,natural killer cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0042269,regulation of natural killer cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0042270,protection from natural killer cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0042271,susceptibility to natural killer cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0042381,hemolymph coagulation
+GO:0006955,Immune response,immune response,GO:0043152,induction of bacterial agglutination
+GO:0006955,Immune response,immune response,GO:0043272,ethylene biosynthesis involved in jasmonic acid and ethylene-dependent systemic resistance
+GO:0006955,Immune response,immune response,GO:0043303,mast cell degranulation
+GO:0006955,Immune response,immune response,GO:0043304,regulation of mast cell degranulation
+GO:0006955,Immune response,immune response,GO:0043305,negative regulation of mast cell degranulation
+GO:0006955,Immune response,immune response,GO:0043306,positive regulation of mast cell degranulation
+GO:0006955,Immune response,immune response,GO:0043308,eosinophil degranulation
+GO:0006955,Immune response,immune response,GO:0043309,regulation of eosinophil degranulation
+GO:0006955,Immune response,immune response,GO:0043310,negative regulation of eosinophil degranulation
+GO:0006955,Immune response,immune response,GO:0043311,positive regulation of eosinophil degranulation
+GO:0006955,Immune response,immune response,GO:0043312,neutrophil degranulation
+GO:0006955,Immune response,immune response,GO:0043313,regulation of neutrophil degranulation
+GO:0006955,Immune response,immune response,GO:0043314,negative regulation of neutrophil degranulation
+GO:0006955,Immune response,immune response,GO:0043315,positive regulation of neutrophil degranulation
+GO:0006955,Immune response,immune response,GO:0043316,cytotoxic T cell degranulation
+GO:0006955,Immune response,immune response,GO:0043317,regulation of cytotoxic T cell degranulation
+GO:0006955,Immune response,immune response,GO:0043318,negative regulation of cytotoxic T cell degranulation
+GO:0006955,Immune response,immune response,GO:0043319,positive regulation of cytotoxic T cell degranulation
+GO:0006955,Immune response,immune response,GO:0043320,natural killer cell degranulation
+GO:0006955,Immune response,immune response,GO:0043321,regulation of natural killer cell degranulation
+GO:0006955,Immune response,immune response,GO:0043322,negative regulation of natural killer cell degranulation
+GO:0006955,Immune response,immune response,GO:0043323,positive regulation of natural killer cell degranulation
+GO:0006955,Immune response,immune response,GO:0043379,memory T cell differentiation
+GO:0006955,Immune response,immune response,GO:0043380,regulation of memory T cell differentiation
+GO:0006955,Immune response,immune response,GO:0043381,negative regulation of memory T cell differentiation
+GO:0006955,Immune response,immune response,GO:0043382,positive regulation of memory T cell differentiation
+GO:0006955,Immune response,immune response,GO:0044627,modulation of complement activation, classical pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044628,positive regulation of complement activation, classical pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044629,negative regulation of complement activation, classical pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044630,modulation of complement activation, lectin pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044631,positive regulation of complement activation, lectin pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044632,negative regulation of complement activation, lectin pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044633,modulation of complement activation, alternative pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044634,negative regulation of complement activation, alternative pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044635,positive regulation of complement activation, alternative pathway in other organism
+GO:0006955,Immune response,immune response,GO:0044645,modulation of complement activation in other organism
+GO:0006955,Immune response,immune response,GO:0045063,T-helper 1 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045064,T-helper 2 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045087,innate immune response
+GO:0006955,Immune response,immune response,GO:0045088,regulation of innate immune response
+GO:0006955,Immune response,immune response,GO:0045089,positive regulation of innate immune response
+GO:0006955,Immune response,immune response,GO:0045190,isotype switching
+GO:0006955,Immune response,immune response,GO:0045191,regulation of isotype switching
+GO:0006955,Immune response,immune response,GO:0045622,regulation of T-helper cell differentiation
+GO:0006955,Immune response,immune response,GO:0045623,negative regulation of T-helper cell differentiation
+GO:0006955,Immune response,immune response,GO:0045624,positive regulation of T-helper cell differentiation
+GO:0006955,Immune response,immune response,GO:0045625,regulation of T-helper 1 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045626,negative regulation of T-helper 1 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045627,positive regulation of T-helper 1 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045628,regulation of T-helper 2 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045629,negative regulation of T-helper 2 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045630,positive regulation of T-helper 2 cell differentiation
+GO:0006955,Immune response,immune response,GO:0045824,negative regulation of innate immune response
+GO:0006955,Immune response,immune response,GO:0045829,negative regulation of isotype switching
+GO:0006955,Immune response,immune response,GO:0045830,positive regulation of isotype switching
+GO:0006955,Immune response,immune response,GO:0045916,negative regulation of complement activation
+GO:0006955,Immune response,immune response,GO:0045917,positive regulation of complement activation
+GO:0006955,Immune response,immune response,GO:0045953,negative regulation of natural killer cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0045954,positive regulation of natural killer cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0045957,negative regulation of complement activation, alternative pathway
+GO:0006955,Immune response,immune response,GO:0045958,positive regulation of complement activation, alternative pathway
+GO:0006955,Immune response,immune response,GO:0045959,negative regulation of complement activation, classical pathway
+GO:0006955,Immune response,immune response,GO:0045960,positive regulation of complement activation, classical pathway
+GO:0006955,Immune response,immune response,GO:0048289,isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:0048290,isotype switching to IgA isotypes
+GO:0006955,Immune response,immune response,GO:0048291,isotype switching to IgG isotypes
+GO:0006955,Immune response,immune response,GO:0048292,isotype switching to IgD isotypes
+GO:0006955,Immune response,immune response,GO:0048293,regulation of isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:0048294,negative regulation of isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:0048295,positive regulation of isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:0048296,regulation of isotype switching to IgA isotypes
+GO:0006955,Immune response,immune response,GO:0048297,negative regulation of isotype switching to IgA isotypes
+GO:0006955,Immune response,immune response,GO:0048298,positive regulation of isotype switching to IgA isotypes
+GO:0006955,Immune response,immune response,GO:0048299,regulation of isotype switching to IgD isotypes
+GO:0006955,Immune response,immune response,GO:0048300,negative regulation of isotype switching to IgD isotypes
+GO:0006955,Immune response,immune response,GO:0048301,positive regulation of isotype switching to IgD isotypes
+GO:0006955,Immune response,immune response,GO:0048302,regulation of isotype switching to IgG isotypes
+GO:0006955,Immune response,immune response,GO:0048303,negative regulation of isotype switching to IgG isotypes
+GO:0006955,Immune response,immune response,GO:0048304,positive regulation of isotype switching to IgG isotypes
+GO:0006955,Immune response,immune response,GO:0050776,regulation of immune response
+GO:0006955,Immune response,immune response,GO:0050777,negative regulation of immune response
+GO:0006955,Immune response,immune response,GO:0050778,positive regulation of immune response
+GO:0006955,Immune response,immune response,GO:0050851,antigen receptor-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0050852,T cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050853,B cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050854,regulation of antigen receptor-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0050855,regulation of B cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050856,regulation of T cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050857,positive regulation of antigen receptor-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0050858,negative regulation of antigen receptor-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0050859,negative regulation of B cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050860,negative regulation of T cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050861,positive regulation of B cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0050862,positive regulation of T cell receptor signaling pathway
+GO:0006955,Immune response,immune response,GO:0051214,RNA virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0051215,DNA virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0052003,suppression by symbiont of defense-related host salicylic acid-mediated signal transduction pathway
+GO:0006955,Immune response,immune response,GO:0052072,induction by symbiont of defense-related host salicylic acid-mediated signal transduction pathway
+GO:0006955,Immune response,immune response,GO:0052074,positive regulation by symbiont of host salicylic acid-mediated defense response
+GO:0006955,Immune response,immune response,GO:0052089,modulation by symbiont of host salicylic acid-mediated defense response
+GO:0006955,Immune response,immune response,GO:0060144,host cellular process involved in virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0060145,viral gene silencing in virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0060146,host gene silencing in virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0060150,viral triggering of virus induced gene silencing
+GO:0006955,Immune response,immune response,GO:0060264,regulation of respiratory burst involved in inflammatory response
+GO:0006955,Immune response,immune response,GO:0060265,positive regulation of respiratory burst involved in inflammatory response
+GO:0006955,Immune response,immune response,GO:0060266,negative regulation of respiratory burst involved in inflammatory response
+GO:0006955,Immune response,immune response,GO:0060330,regulation of response to interferon-gamma
+GO:0006955,Immune response,immune response,GO:0060331,negative regulation of response to interferon-gamma
+GO:0006955,Immune response,immune response,GO:0060332,positive regulation of response to interferon-gamma
+GO:0006955,Immune response,immune response,GO:0060333,interferon-gamma-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060334,regulation of interferon-gamma-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060335,positive regulation of interferon-gamma-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060336,negative regulation of interferon-gamma-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060337,type I interferon signaling pathway
+GO:0006955,Immune response,immune response,GO:0060338,regulation of type I interferon-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060339,negative regulation of type I interferon-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060340,positive regulation of type I interferon-mediated signaling pathway
+GO:0006955,Immune response,immune response,GO:0060368,regulation of Fc receptor mediated stimulatory signaling pathway
+GO:0006955,Immune response,immune response,GO:0060369,positive regulation of Fc receptor mediated stimulatory signaling pathway
+GO:0006955,Immune response,immune response,GO:0060370,susceptibility to T cell mediated cytotoxicity
+GO:0006955,Immune response,immune response,GO:0060907,positive regulation of macrophage cytokine production
+GO:0006955,Immune response,immune response,GO:0061078,positive regulation of prostaglandin secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0061081,positive regulation of myeloid leukocyte cytokine production involved in immune response
+GO:0006955,Immune response,immune response,GO:0061082,myeloid leukocyte cytokine production
+GO:0006955,Immune response,immune response,GO:0061470,T follicular helper cell differentiation
+GO:0006955,Immune response,immune response,GO:0061760,antifungal innate immune response
+GO:0006955,Immune response,immune response,GO:0061844,antimicrobial humoral immune response mediated by antimicrobial peptide
+GO:0006955,Immune response,immune response,GO:0071346,cellular response to interferon-gamma
+GO:0006955,Immune response,immune response,GO:0071357,cellular response to type I interferon
+GO:0006955,Immune response,immune response,GO:0071358,cellular response to type III interferon
+GO:0006955,Immune response,immune response,GO:0072538,T-helper 17 type immune response
+GO:0006955,Immune response,immune response,GO:0072539,T-helper 17 cell differentiation
+GO:0006955,Immune response,immune response,GO:0072540,T-helper 17 cell lineage commitment
+GO:0006955,Immune response,immune response,GO:0090323,prostaglandin secretion involved in immune response
+GO:0006955,Immune response,immune response,GO:0090644,age-related resistance
+GO:0006955,Immune response,immune response,GO:0090713,immunological memory process
+GO:0006955,Immune response,immune response,GO:0090714,innate immunity memory response
+GO:0006955,Immune response,immune response,GO:0090715,immunological memory formation process
+GO:0006955,Immune response,immune response,GO:0090716,adaptive immune memory response
+GO:0006955,Immune response,immune response,GO:0090717,adaptive immune memory response involving T cells and B cells
+GO:0006955,Immune response,immune response,GO:0090718,adaptive immune effector response
+GO:0006955,Immune response,immune response,GO:0090719,adaptive immune effector response involving T cells and B lineage cells
+GO:0006955,Immune response,immune response,GO:0090720,primary adaptive immune response
+GO:0006955,Immune response,immune response,GO:0090721,primary adaptive immune response involving T cells and B cells
+GO:0006955,Immune response,immune response,GO:0097279,histamine secretion mediated by IgE immunoglobulin
+GO:0006955,Immune response,immune response,GO:0097280,histamine secretion mediated by immunoglobulin
+GO:0006955,Immune response,immune response,GO:0097281,immune complex formation
+GO:0006955,Immune response,immune response,GO:0097282,immunoglobulin-mediated neutralization
+GO:0006955,Immune response,immune response,GO:0140367,antibacterial innate immune response
+GO:0006955,Immune response,immune response,GO:0140374,antiviral innate immune response
+GO:0006955,Immune response,immune response,GO:0140426,PAMP-triggered immunity signalling pathway
+GO:0006955,Immune response,immune response,GO:1900098,regulation of plasma cell differentiation
+GO:0006955,Immune response,immune response,GO:1900099,negative regulation of plasma cell differentiation
+GO:0006955,Immune response,immune response,GO:1900100,positive regulation of plasma cell differentiation
+GO:0006955,Immune response,immune response,GO:1901672,positive regulation of systemic acquired resistance
+GO:0006955,Immune response,immune response,GO:1902477,regulation of defense response to bacterium, incompatible interaction
+GO:0006955,Immune response,immune response,GO:1902478,negative regulation of defense response to bacterium, incompatible interaction
+GO:0006955,Immune response,immune response,GO:1902479,positive regulation of defense response to bacterium, incompatible interaction
+GO:0006955,Immune response,immune response,GO:1902615,immune response involved in response to exogenous dsRNA
+GO:0006955,Immune response,immune response,GO:1903581,regulation of basophil degranulation
+GO:0006955,Immune response,immune response,GO:1903582,negative regulation of basophil degranulation
+GO:0006955,Immune response,immune response,GO:1903583,positive regulation of basophil degranulation
+GO:0006955,Immune response,immune response,GO:1903593,regulation of histamine secretion by mast cell
+GO:0006955,Immune response,immune response,GO:1903594,negative regulation of histamine secretion by mast cell
+GO:0006955,Immune response,immune response,GO:1903595,positive regulation of histamine secretion by mast cell
+GO:0006955,Immune response,immune response,GO:1904248,regulation of age-related resistance
+GO:0006955,Immune response,immune response,GO:1904249,negative regulation of age-related resistance
+GO:0006955,Immune response,immune response,GO:1904250,positive regulation of age-related resistance
+GO:0006955,Immune response,immune response,GO:1905034,regulation of antifungal innate immune response
+GO:0006955,Immune response,immune response,GO:1905035,negative regulation of antifungal innate immune response
+GO:0006955,Immune response,immune response,GO:1905036,positive regulation of antifungal innate immune response
+GO:0006955,Immune response,immune response,GO:1905449,regulation of Fc-gamma receptor signaling pathway involved in phagocytosis
+GO:0006955,Immune response,immune response,GO:1905450,negative regulation of Fc-gamma receptor signaling pathway involved in phagocytosis
+GO:0006955,Immune response,immune response,GO:1905451,positive regulation of Fc-gamma receptor signaling pathway involved in phagocytosis
+GO:0006955,Immune response,immune response,GO:1905674,regulation of adaptive immune memory response
+GO:0006955,Immune response,immune response,GO:1905675,negative regulation of adaptive immune memory response
+GO:0006955,Immune response,immune response,GO:1905676,positive regulation of adaptive immune memory response
+GO:0006955,Immune response,immune response,GO:1905677,regulation of adaptive immune effector response
+GO:0006955,Immune response,immune response,GO:1905678,negative regulation of adaptive immune effector response
+GO:0006955,Immune response,immune response,GO:1905679,positive regulation of adaptive immune effector response
+GO:0006955,Immune response,immune response,GO:1905680,regulation of innate immunity memory response
+GO:0006955,Immune response,immune response,GO:1905681,negative regulation of innate immunity memory response
+GO:0006955,Immune response,immune response,GO:1905682,positive regulation of innate immunity memory response
+GO:0006955,Immune response,immune response,GO:1990117,B cell receptor apoptotic signaling pathway
+GO:0006955,Immune response,immune response,GO:2000072,regulation of defense response to fungus, incompatible interaction
+GO:0006955,Immune response,immune response,GO:2000316,regulation of T-helper 17 type immune response
+GO:0006955,Immune response,immune response,GO:2000317,negative regulation of T-helper 17 type immune response
+GO:0006955,Immune response,immune response,GO:2000318,positive regulation of T-helper 17 type immune response
+GO:0006955,Immune response,immune response,GO:2000319,regulation of T-helper 17 cell differentiation
+GO:0006955,Immune response,immune response,GO:2000320,negative regulation of T-helper 17 cell differentiation
+GO:0006955,Immune response,immune response,GO:2000321,positive regulation of T-helper 17 cell differentiation
+GO:0006955,Immune response,immune response,GO:2000328,regulation of T-helper 17 cell lineage commitment
+GO:0006955,Immune response,immune response,GO:2000329,negative regulation of T-helper 17 cell lineage commitment
+GO:0006955,Immune response,immune response,GO:2000330,positive regulation of T-helper 17 cell lineage commitment
+GO:0006955,Immune response,immune response,GO:2000551,regulation of T-helper 2 cell cytokine production
+GO:0006955,Immune response,immune response,GO:2000552,negative regulation of T-helper 2 cell cytokine production
+GO:0006955,Immune response,immune response,GO:2000553,positive regulation of T-helper 2 cell cytokine production
+GO:0006955,Immune response,immune response,GO:2000554,regulation of T-helper 1 cell cytokine production
+GO:0006955,Immune response,immune response,GO:2000555,negative regulation of T-helper 1 cell cytokine production
+GO:0006955,Immune response,immune response,GO:2000556,positive regulation of T-helper 1 cell cytokine production
+GO:0006955,Immune response,immune response,GO:2000557,regulation of immunoglobulin production in mucosal tissue
+GO:0006955,Immune response,immune response,GO:2000558,positive regulation of immunoglobulin production in mucosal tissue
+GO:0006955,Immune response,immune response,GO:2000571,regulation of interleukin-4-dependent isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:2000572,positive regulation of interleukin-4-dependent isotype switching to IgE isotypes
+GO:0006955,Immune response,immune response,GO:2001188,regulation of T cell activation via T cell receptor contact with antigen bound to MHC molecule on antigen presenting cell
+GO:0006955,Immune response,immune response,GO:2001189,negative regulation of T cell activation via T cell receptor contact with antigen bound to MHC molecule on antigen presenting cell
+GO:0006955,Immune response,immune response,GO:2001190,positive regulation of T cell activation via T cell receptor contact with antigen bound to MHC molecule on antigen presenting cell
+GO:0006955,Immune response,immune response,GO:2001191,regulation of gamma-delta T cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:2001192,negative regulation of gamma-delta T cell activation involved in immune response
+GO:0006955,Immune response,immune response,GO:2001193,positive regulation of gamma-delta T cell activation involved in immune response
+GO:0090398,Cellular senescence,cellular senescence,GO:0090398,cellular senescence
+GO:0006457,Proteostasis,protein folding,GO:0006457,protein folding
+GO:0050821,Proteostasis,protein stabilization,GO:0050821,protein stabilization
+GO:0030163,Proteostasis,protein catabolic process,GO:0030163,protein catabolic process
+GO:0010498,Proteostasis,proteasomal degradation,GO:0010498,proteasomal degradation
+GO:0061684,Proteostasis,chaperone-mediated autophagy,GO:0061684,chaperone-mediated autophagy
+GO:0061077,Proteostasis,chaperone-mediated protein folding,GO:0061077,chaperone-mediated protein folding
+GO:0000723,Telomere maintenance,telomere maintenance,GO:0000723,telomere maintenance
+GO:0031667,Nutrient signalling,response to nutrient levels,GO:0031667,response to nutrient levels
+GO:0009594,Nutrient signalling,detection of nutrient,GO:0009594,detection of nutrient
+GO:0048009,Nutrient signalling,IGF receptor signaling pathway,GO:0048009,IGF receptor signaling pathway
+GO:0000002,Mitochondrial genome maintenance,mitochondrial genome maintenance,GO:0000002,mitochondrial genome maintenance
+GO:0044728,Epigenetic alteration,DNA methylation or demethylation,GO:0044728,DNA methylation or demethylation
+GO:0016570,Epigenetic alteration,histone modification,GO:0016570,histone modification
+GO:0006338,Epigenetic alteration,chromatin remodeling,GO:0006338,chromatin remodeling
+GO:0006954,Inflammation,inflammatory response,GO:0006954,inflammatory response
+GO:0006955,Immune response,immune response,GO:0006955,immune response
