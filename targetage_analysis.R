@@ -17,20 +17,59 @@ default_overwrite = FALSE            # if FALSE will load previously saved Rda f
 diseases <- read.csv("data/full_disease_list.csv")
 
 ### Lead variants for genetic associations from all GWASs for age-related diseases/traits
-ard_leads <- get_lead_variants(overwrite = default_overwrite)
+ard_leads <- get_lead_variants(overwrite = default_overwrite, input_file = "data/targetage/ard_leads.parquet/part-00000-682df92e-1d00-4977-9cd7-1834de53b5c2-c000.snappy.parquet")
 
 ### Diseases with GWAS evidence (some in `diseases` don't have any)
 d <- ard_leads$morbidity %>% unique()
 #save(d, file = "TargetAge/data/diseases_with_associations.Rda")
 
+### Look at ancestry of GWAS
+populations <- get_ancestries(ard_leads)
+# majority_population %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/sum(n)*100) %>% arrange(-p)
+
+### Update SI table in Google Drive with GWAS and cluster details
+# The list of ARDs, number of GWAS studies, and number of (lead) variants, proportion with summary statistics, number of communities
+genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_diseases)
+update_gs_genetics_table(genetics_tables)
+
 ### Overlaps between genetic associations
-overlaps <- get_overlaps(overwrite = default_overwrite)
+overlaps <- get_overlaps(overwrite = default_overwrite, 
+                         coloc_input_file = "data/targetage/coloc_ard_leads.parquet/part-00000-9479cf2c-da10-447a-ab81-7c1750b5bc78-c000.snappy.parquet",
+                         overlap_input_file = "data/targetage/overlap_ard_leads.parquet/part-00000-5b27ad8f-95fb-4b3b-85a9-bc24c5e30ea1-c000.snappy.parquet")
 
 ### Target details and genetic associations with each phenotype
-target_annotations <- get_associations_annotations(overwrite = default_overwrite, diseases = d)
+target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
+                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-f03d3aa7-99cf-479f-ac90-1dd5c9290dee-c000.snappy.parquet",
+                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-dedc1a1d-b894-441e-a7ef-8a31cdf3606a-c000.snappy.parquet",
+                                                   diseases = diseases)
 
 ### Graph analysis
 g_all <- create_targetage_graph(overwrite = default_overwrite, save_dir = default_save_dir)
+
+n_multicommunities <- get_n_multicommunity_clusters(g_all)
+
+get_n_multicommunity_clusters <- function(g_all){
+  clustered <- g_all$cn %>% filter(!is.na(cluster))
+  all <- bind_rows(clustered %>% mutate(set = "all"),
+                   clustered %>% filter(n_morbidities > 1) %>% mutate(set = "multimorbidity"))
+  all %>% 
+    select(set, cluster, community) %>%
+    unique() %>% 
+    count(set, cluster) %>%
+    group_by(set) %>% 
+    summarise(total = length(cluster),
+              multicommunity = sum(n>1),
+              two_communities = sum(n==2),
+              single_community = sum(n==1)) %>%
+    mutate_at(.vars = c("multicommunity", "two_communities", "single_community"), 
+                 .funs = c(p = ~./total))
+}
+
+## Get the number of clusters within a disease (i.e. number of individual signals)
+individual_diseases = get_diseases_individually(ard_leads, overlaps, overwrite = TRUE, save_dir = default_save_dir)
+
+## Get the number of clusters with just one community
+
 
 ### Calculate overlap between each combination of diseases 
 ft_all <- get_pairwise_overlaps(g_all)
@@ -64,14 +103,22 @@ tbl <- g_all$cn %>%
 top_l2g <- l2g_all_joined %>%
   group_by(studyId, lead_variantId) %>% 
   top_n(1,yProbaModel ) %>% 
-  ## 3 variants have more than one gene with identical L2G 
+  ## 4 variants have more than one gene with identical L2G 
   ## in this case choose the closest by distanceToLocus
-  ## all 3 have L2G < 0.5 and therefore aren't in TargetAge anyway
-  top_n(-1, distanceToLocus)
-save(top_l2g, file = paste0(save_dir, "top_l2g.Rda"))
+  ## 3 have L2G < 0.5 and therefore aren't in TargetAge anyway
+  ## 1 has L2G > 0.5 and maps to two genes
+  ## putative ENSG00000285901/AC008012.1 and CCND2 instead 
+  ## choose one (CCND2)
+  top_n(-1, distanceToLocus) %>%
+  slice(1)
+#save(top_l2g, file = paste0(default_save_dir, "top_l2g.Rda"))
 
 
 ## Add top gene to each node
+# NB this df contains a row for every node but L2G was only retrieved for nodes:
+# - with >1 morbidity
+# - in a cluster (i.e. !is.na(cluster))
+# Remaining nodes without an L2G (~500) didn't have any genes with >0.05 L2G
 top_cluster_genes <- g_all$cn %>% 
   left_join(top_l2g) %>% 
   left_join(tbl) 
@@ -98,9 +145,9 @@ top_cluster_genes_summarised %>%
   mutate(prop = n/sum(n)*100)
 
 targetage <- top_cluster_genes_summarised$gene.id
-save(targetage, file = paste0(default_save_dir, "targetage_geneids.Rda"))
+#save(targetage, file = paste0(default_save_dir, "targetage_geneids.Rda"))
 
-write.table(top_cluster_genes_summarised, file = paste0(save_dir, "top_L2G_genes.txt"), sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
+#write.table(top_cluster_genes_summarised, file = paste0(default_save_dir, "top_L2G_genes.txt"), sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
 
 #top_l2g <- read.table(file = "top_L2G_genes.txt")
 
@@ -141,9 +188,9 @@ tdb_plot <- tdb %>%
   theme(panel.grid = element_blank()) +
   labs(y = "Number of targets", x = "Predicted Tractability Classification", subtitle = "TargetDB Target Tractability Assessment")
 
-tract_fig <- tractability_plot / tdb_plot + plot_annotation(tag_levels = 'a')
-ggsave(tract_fig, width = 7, height = 8, dpi = 300, file = paste0(default_save_dir, "fig3.png"))
-ggsave(tract_fig, width = 7, height = 8, file = paste0(default_save_dir, "fig3.pdf"))
+tract_fig <- tractability_plot + tdb_plot + plot_annotation(tag_levels = 'a')
+ggsave(tract_fig, width = 12, height = 4.1, dpi = 300, file = paste0(default_save_dir, "fig3.png"))
+ggsave(tract_fig, width = 12, height = 4.1, file = paste0(default_save_dir, "fig3.pdf"))
 
 ###########################################################################
 ###########################################################################
@@ -156,7 +203,7 @@ ggsave(tract_fig, width = 7, height = 8, file = paste0(default_save_dir, "fig3.p
 
 
 ## Processing data from Open Targets 
-get_lead_variants <- function(overwrite = FALSE, save_dir = default_save_dir){
+get_lead_variants <- function(overwrite = FALSE, input_file, save_dir = default_save_dir){
   if (overwrite){
     library(arrow)
     
@@ -164,7 +211,7 @@ get_lead_variants <- function(overwrite = FALSE, save_dir = default_save_dir){
     min_n_initial = 2000  ## min sample size for continuous traits
     
     ## All lead variant data for ARDs
-    ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-847cd340-cf61-47da-a25d-9d36d195ef39-c000.snappy.parquet")
+    ard_leads_all <- arrow::read_parquet(input_file)
     
     ## Filter out small GWAS studies
     ard_leads <- filter(ard_leads_all, (n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases))
@@ -179,7 +226,150 @@ get_lead_variants <- function(overwrite = FALSE, save_dir = default_save_dir){
   return(ard_leads)
 }
 
-get_overlaps <- function(overwrite = FALSE, save_dir = default_save_dir){
+## Look at ancestry of GWAS studies
+get_ancestries <- function(ard_leads) {
+  ancestries <-
+    ard_leads %>% 
+    select(studyId, ancestry_initial) %>% 
+    unique() %>% 
+    unnest(ancestry_initial) %>% 
+    separate(ancestry_initial,
+             into = c("ancestry", "n"),
+             sep = "=") %>% 
+    group_by(studyId) %>% 
+    mutate(n = as.numeric(n),
+           total = sum(n),
+           proportion = n / total)
+  majority_population <-
+    ancestries %>% 
+    group_by(studyId) %>% 
+    top_n(1, proportion) %>%
+    mutate(single_population = ifelse(proportion == 1, TRUE, FALSE))
+  return(majority_population)
+}
+
+## Get total replicated and single nodes
+get_n_unique_genetic_hits <- function(g, curr_morbidity){
+  if (nrow(g$edges)>0){
+  ## get number of nodes in each cluster
+  replicated <- sum(!is.na(unique(g$cn$cluster)))
+  # how many nodes aren't in a cluster i.e. don't overlap with any other nodes (i.e. unreplicated) 
+  singles <- g$cn %>% filter(is.na(cluster)) %>% nrow()
+  } else {
+    replicated <- 0
+    singles <- nrow(g$nodes)
+  }
+  n_genetic_hits <- data.frame(morbidity = curr_morbidity, replicated = replicated, single = singles, total = replicated + singles)
+  return(n_genetic_hits)
+}
+
+## For each disease, get the graph and count clusters
+get_diseases_individually <- function(ard_leads, overlaps, overwrite = FALSE, save_dir = default_save_dir){
+  individual_graphs <- list()
+  individual_communities <- data.frame()
+  if (overwrite){
+    d <- ard_leads$morbidity %>% unique()
+    for (i in seq_along(d)){
+      individual_graphs[[i]] <- count_communities(d[i], ard_leads, overlaps$coloc_within, overlaps$overlap_within, min_jaccard = 0, plot = FALSE, detect_subgraph_communities = FALSE)
+      n_unique_genetic_hits <- get_n_unique_genetic_hits(individual_graphs[[i]], d[i])
+      individual_communities <- individual_communities %>% bind_rows(n_unique_genetic_hits)
+    }
+    save(individual_graphs, file = paste0(save_dir, "individual_disease_graphs.Rda"))
+    save(individual_communities, file = paste0(save_dir, "individual_disease_graphs.Rda"))
+  } else {
+    load(paste0(save_dir, "individual_disease_graphs.Rda"))
+    load(paste0(save_dir, "individual_disease_n_communities.Rda"))
+  }
+  return(list("individual_graphs" = individual_graphs, 
+              "individual_communities" = individual_communities))
+}
+
+## Get the details for a table on number, size, etc of GWAS
+get_genetics_table <- function(ard_leads, diseases, g_all, individual_diseases){
+  ard_studies <- ard_leads %>% 
+    select(studyId, 
+           n_cases, 
+           n_initial) %>%
+    unique() %>%
+    mutate(diseaseName = "Total", morbidity = "Total")
+  
+  study_size <- ard_leads %>% 
+    select(morbidity, 
+           diseaseName, 
+           studyId, 
+           n_cases, 
+           n_initial) %>% 
+    group_by(diseaseName) %>% 
+    bind_rows(ard_studies) %>% 
+    summarise_at(.vars = "n_initial", 
+                 .funs = c("min", "max", "median"))
+  
+  total_gwas_tbl <- ard_leads %>% 
+    select(studyId, lead_variantId, has_sumstats) %>%
+    unique() %>%
+    group_by(studyId) %>% 
+    summarise(has_sumstats = max(has_sumstats), 
+              n_variants = length(studyId)) %>% 
+    ungroup() %>% 
+    summarise(n_gwas_studies = length(studyId), 
+              n_variants = sum(n_variants), 
+              has_sumstats = sum(has_sumstats)) %>%
+    mutate(diseaseName = "Total", morbidity="Total")
+  
+  gwas_tbl <- 
+    ard_leads %>% 
+    group_by(diseaseId, 
+             diseaseName,
+             morbidity, 
+             specificDiseaseId, 
+             specificDiseaseName, 
+             studyId)  %>% 
+    summarise(has_sumstats = max(has_sumstats), 
+              n_variants = length(studyId)) %>% 
+    ungroup() %>% 
+    group_by(diseaseId, diseaseName, morbidity, specificDiseaseId, specificDiseaseName) %>% 
+    summarise(n_gwas_studies = length(specificDiseaseName), 
+              has_sumstats = sum(has_sumstats), 
+              n_variants = sum(n_variants))
+  
+  summarised_gwas_tbl <- 
+    gwas_tbl %>% 
+    ungroup() %>% 
+    group_by(diseaseName, morbidity,) %>% 
+    summarise(n_gwas_studies = sum(n_gwas_studies), 
+              has_sumstats = sum(has_sumstats), 
+              n_variants = sum(n_variants)) %>% 
+    bind_rows(total_gwas_tbl) %>% 
+    mutate(has_sumstats = paste0(has_sumstats, 
+                                 " (", 
+                                 round((has_sumstats/n_gwas_studies)*100), 
+                                 "%)")) %>% 
+    left_join(study_size) %>% 
+    full_join(ard_leads %>% 
+                select(diseaseName, morbidity) %>% 
+                unique()) %>%
+    full_join(bind_rows(individual_diseases$individual_communities,
+                        get_n_unique_genetic_hits(g_all, "Total"))) %>%
+    select(-morbidity) %>%
+    select(diseaseName, n_gwas_studies, has_sumstats, min, max, median, n_variants, everything())
+  
+  full_gwas_tbl <- gwas_tbl %>% 
+    full_join(diseases) %>% 
+    ungroup() %>% 
+    select(-therapeuticAreas, -morbidity) %>%
+    filter(!is.na(n_gwas_studies) | diseaseId == specificDiseaseId) %>%
+    arrange(diseaseName) 
+  return(list("summarised" = summarised_gwas_tbl, "full" = full_gwas_tbl))
+}
+
+## Upload to google drive
+update_gs_genetics_table <- function(genetics_tables){
+  library(googlesheets4)
+  gs4_create("SITable1", sheets = genetics_tables$summarised)
+  gs4_create("SITable2", sheets = genetics_tables$full)
+}
+
+get_overlaps <- function(overwrite = FALSE, coloc_input_file, overlap_input_file, save_dir = default_save_dir){
   if (overwrite){
     library(arrow)
     library(data.table) 
@@ -188,10 +378,10 @@ get_overlaps <- function(overwrite = FALSE, save_dir = default_save_dir){
     min_n_initial = 2000  ## min sample size for continuous traits
     
     ### Colocalisation data 
-    coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-7408f34e-85ab-43bb-a12f-f5e78b7d314d-c000.snappy.parquet", as_tibble=TRUE)
+    coloc <- arrow::read_parquet(coloc_input_file, as_tibble=TRUE)
     
     ### Overlap data
-    overlap <- arrow::read_parquet("data/targetage/overlap_ard_leads.parquet/part-00000-968f5e84-1221-4b35-8a99-69fccda34afb-c000.snappy.parquet",as_data_frame = TRUE)
+    overlap <- arrow::read_parquet(overlap_input_file, as_data_frame = TRUE)
     
     ### Filter out small GWAS studies
     overlap <- overlap %>% 
@@ -235,34 +425,35 @@ get_overlaps <- function(overwrite = FALSE, save_dir = default_save_dir){
   return (overlaps)
 }
 
-get_associations_annotations <- function(overwrite = FALSE, save_dir = default_save_dir, diseases){
+get_associations_annotations <- function(overwrite = FALSE, annotations_input_file, associations_input_file, save_dir = default_save_dir, diseases){
   if (overwrite){
     library(arrow)
     ## Target details from Open Targets
-    targets <- arrow::read_parquet("data/targetage/ard_annotations.parquet/part-00000-2d7e85c7-0644-4728-9921-dbdf119c427d-c000.snappy.parquet", as_tibble=TRUE)
+    targets <- arrow::read_parquet(annotations_input_file, as_tibble=TRUE)
+    
+    ## Get ids of the top level diseases to get association scores
+    top_level_disease_ids <- diseases %>% 
+      filter(diseaseId == specificDiseaseId) %>% 
+      pull(diseaseId)
     
     ## Associations
-    associations <- arrow::read_parquet("data/targetage/ard_associations.parquet/part-00000-80ca0def-de33-4d7c-a012-dcbe8813a3d4-c000.snappy.parquet", as_tibble=TRUE) %>% 
-      select(morbidity, targetId, overallDatatypeHarmonicVector) %>% 
-      unnest(overallDatatypeHarmonicVector)
-    
-    ## genetic associations
-    genetic_associations <- associations %>% 
-      filter(datatypeId=="genetic_association", morbidity %in% diseases) %>% 
-      select(morbidity, targetId, datatypeHarmonicScore) %>% 
-      mutate(datatypeHarmonicScore = round(datatypeHarmonicScore, 2)) %>% 
-      pivot_wider(names_from = "morbidity", values_from = "datatypeHarmonicScore") 
-    
-    literature_counts <- associations %>% 
-      filter(datatypeId=="literature") %>% 
-      select(morbidity, targetId, literatureEvidenceCount = datatypeEvidenceCount)
+    associations <- arrow::read_parquet(associations_input_file, as_tibble=TRUE) %>% 
+      filter(diseaseId %in% top_level_disease_ids) %>% 
+      mutate_if(is.numeric, round, 2) 
     
     ## Which morbidity has the largest number of literature associations
-    max_literature_counts <- literature_counts %>% 
+    max_literature_counts <- associations %>% 
+      select(targetId, morbidity, literatureCount) %>% 
       group_by(targetId) %>% 
-      slice(which.max(literatureEvidenceCount)) %>% 
-      rename(maxLiteratureEvidencePhenotype = morbidity, maxLiteratureEvidenceCount = literatureEvidenceCount)
-    
+      slice(which.max(literatureCount)) %>% 
+      rename(maxLiteratureEvidencePhenotype = morbidity, maxLiteratureEvidenceCount = literatureCount)
+  
+    ## genetic associations
+    genetic_associations <- associations %>%
+      select(targetId, morbidity, genetic_association) %>%
+      pivot_wider(names_from = morbidity, values_from = genetic_association) %>%
+      left_join(max_literature_counts, by = "targetId")
+      
     ## go terms mapped to hallmarks of ageing 
     go_terms <- read.csv("data/full_goterm_list.csv")
     
@@ -275,6 +466,10 @@ get_associations_annotations <- function(overwrite = FALSE, save_dir = default_s
     
     save(target_go, file = paste0(save_dir, "targets_all_go.Rda"))
     
+    
+    ## need to make this not hardcoded - also doesn't really need to be in this function?
+    
+    
     ## Read in data from GenAge, CellAge
     load(paste0(save_dir,"genage.Rda"))
     load(paste0(save_dir,"cellage.Rda"))
@@ -283,7 +478,7 @@ get_associations_annotations <- function(overwrite = FALSE, save_dir = default_s
     in_TA = 646
     in_GA = 307
     in_TA_GA = 19
-    n_OT = 25000
+    n_OT = 19938   ## Version 21.06
     
     genage_dat <- data.frame(
       "in_TA" = c(in_TA_GA, in_TA - in_TA_GA),
@@ -293,7 +488,7 @@ get_associations_annotations <- function(overwrite = FALSE, save_dir = default_s
     )
     fisher.test(genage_dat)$p.value 
     
-    in_CA = 279
+    in_CA = nrow(cellage)
     in_TA_CA = 21
     
     cellage_dat <- data.frame(
@@ -332,11 +527,13 @@ gg_color_hue <- function(n) {
 }
 
 ## Prepares edges and nodes for the graph for a given ARD(s)
-gwas_graph <- function(curr_morbidities, curr_variants, curr_coloc, curr_overlap, min_jaccard = 0, plot = TRUE) {
+gwas_graph <- function(curr_morbidities, curr_variants, curr_coloc, curr_overlap, min_jaccard = 0, plot = TRUE, id = NULL) {
   library(visNetwork)
   library(igraph)
   
   g <- list()
+  
+  g$id <- id
   
   # Different colours for ARDs
   g$colours <-
@@ -528,7 +725,7 @@ create_targetage_graph <- function(overwrite = FALSE, save_dir, ...){
   library(igraph)
   
   if (overwrite) {
-    g_all <- count_communities(d, ard_leads, overlaps$coloc_within, overlaps$overlap_within, min_jaccard = 0, detect_subgraph_communities = TRUE, plot = FALSE)
+    g_all <- count_communities(d, ard_leads, overlaps$coloc_within, overlaps$overlap_within, min_jaccard = 0, detect_subgraph_communities = TRUE, plot = FALSE, id = "targetage")
     save(g_all, file = paste0(save_dir, "graph_all_morbidities.Rda"))
   } else {
     load(paste0(save_dir, "graph_all_morbidities.Rda"))
@@ -552,7 +749,7 @@ get_pairwise_overlaps <- function(g){
     sum(Reduce(`&`, shared_clusters))
   })
   #n_pairwise_shared_clusters <- cbind(data.frame(all.pairs, count))[count > 0,] 
-  n_pairwise_shared_clusters <- cbind(data.frame(all.pairs, count)) 
+  n_pairwise_shared_clusters <- cbind(data.frame(pairwise_combinations, count)) 
   
   # join with total number of clusters for each morbidity
   overall_n_clusters <- g$clusters %>% 
@@ -571,7 +768,7 @@ get_pairwise_overlaps <- function(g){
     mutate(total = nrow(tmp_mat))
   
   ## calculate significance of overlap
-  n_tests <- length(pairwise_combinations)
+  n_tests <- nrow(pairwise_combinations)
   
   ## Do I correct using the total number of pairs (possible tests) or the number of tests I actually perform? I guess getting 
   ft_all <- pairwise_shared %>% 
@@ -605,7 +802,7 @@ calculate_pairwise_overlap <- function(g){
 ## Initialise OT Genetics Portal API
 initialise_api <- function(){
   cli <- GraphqlClient$new(
-    url = "https://genetics-api.opentargets.io/graphql"
+    url = "https://api.genetics.opentargets.org/graphql"
   )
   return(cli)
 }
@@ -677,25 +874,28 @@ get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
       group_split() %>% 
       ## API call for each studyID + variantID
       purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
-      bind_rows() 
+      bind_rows() %>%
+      # remove low confidence (L2G<0.05)
+      filter(yProbaModel > 0.05)
     
     ## Do all the other chunks
-    for (i in seq(2, length(l2g_all))){
+    for (i in seq(1, length(l2g_all))){
       print(i)
       l2g_all[[i]] <- studies_variants_split[[i]] %>% 
         group_by(studyId, lead_variantId) %>% 
         group_split() %>% 
         ## API call for each studyID + variantID
         purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
-        bind_rows() 
+        bind_rows() %>%
+        filter(yProbaModel > 0.05)
       Sys.sleep(3)
     }
     
-    ## Collapse into one dataframe, remove low confidence (L2G<0.05)
-    l2g_all_joined <- l2g_all %>% bind_rows() %>% jsonlite::flatten() %>% filter(yProbaModel > 0.05)
+    ## Collapse into one dataframe
+    l2g_all_joined <- l2g_all %>% bind_rows() %>% jsonlite::flatten() 
     
     ## Use more up-to-date gene symbol from the Platform 
-    l2g_all_joined <- l2g_all_joined %>% left_join(targets_annotations %>% select(gene.id = targetId, targetSymbol))
+    l2g_all_joined <- l2g_all_joined %>% left_join(target_annotations %>% select(gene.id = targetId, targetSymbol))
     
     ## Save output
     save(l2g_all_joined, file=paste0(save_dir, "ltg_all.Rda"))
@@ -704,7 +904,7 @@ get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
     load(paste0(save_dir, "ltg_all.Rda"))
   }
   
-  return(ltg_all_joined)
+  return(l2g_all_joined)
   
 }
 
@@ -840,12 +1040,12 @@ plot_shared_heatmap <- function(pairwise_overlaps, overwrite = default_overwrite
 
 
 
-wide_associations <- associations %>% 
-  select(-weight, -datatypeEvidenceCount) %>% 
-  pivot_wider(names_from = datatypeId, values_from = datatypeHarmonicScore) %>% 
-  left_join(associations %>% 
-              filter(datatypeId=="literature") %>% 
-              select(targetId, morbidity, literatureEvidenceCount = datatypeEvidenceCount))
+#wide_associations <- associations %>% 
+#  select(-weight, -datatypeEvidenceCount) %>% 
+#  pivot_wider(names_from = datatypeId, values_from = datatypeHarmonicScore) %>% 
+#  left_join(associations %>% 
+#              filter(datatypeId=="literature") %>% 
+#              select(targetId, morbidity, literatureEvidenceCount = datatypeEvidenceCount))
   
 
 

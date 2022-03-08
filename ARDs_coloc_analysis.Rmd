@@ -9,6 +9,7 @@ library(arrow)
 library(data.table)  # got some giant dataframes
 library(googlesheets4)
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(patchwork)
 
 ```
 
@@ -37,6 +38,9 @@ diseases <- read.csv("data/full_disease_list.csv")
 ard_leads_all <- arrow::read_parquet("data/targetage/ard_leads.parquet/part-00000-847cd340-cf61-47da-a25d-9d36d195ef39-c000.snappy.parquet")
 ard_leads <- filter(ard_leads_all, (n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases))
 #save(ard_leads, file = "ard_leads_filtered.Rda")
+
+### Diseases with 
+d <- ard_leads$morbidity %>% unique()
 
 ### Colocalisation data 
 coloc <- arrow::read_parquet("data/targetage/coloc_ard_leads.parquet/part-00000-7408f34e-85ab-43bb-a12f-f5e78b7d314d-c000.snappy.parquet", as_tibble=TRUE)
@@ -72,8 +76,22 @@ overlap_without <- overlap[is.na(right_morbidity)] %>% as.data.frame()
 overlap_within_sumstats <- overlap_within %>% filter(has_sumstats == TRUE & right_has_sumstats == TRUE)
 overlap_within_nosumstats <- overlap_within %>% filter(has_sumstats == FALSE | right_has_sumstats == FALSE)
 
+
+## Associations
+associations <- arrow::read_parquet("data/targetage/ard_associations.parquet/part-00000-80ca0def-de33-4d7c-a012-dcbe8813a3d4-c000.snappy.parquet", as_tibble=TRUE)
+unnested_associations <- associations %>% select(morbidity, targetId, overallDatatypeHarmonicVector) %>% unnest(overallDatatypeHarmonicVector)
+wide_associations <- unnested_associations %>% select(-weight, -datatypeEvidenceCount) %>% pivot_wider(names_from = datatypeId, values_from = datatypeHarmonicScore) %>% left_join(unnested_associations %>% filter(datatypeId=="literature") %>% select(targetId, morbidity, literatureEvidenceCount = datatypeEvidenceCount))
+genetic_associations <- unnested_associations %>% filter(datatypeId=="genetic_association", morbidity %in% d) %>% select(morbidity, targetId, datatypeHarmonicScore) %>% mutate(datatypeHarmonicScore = round(datatypeHarmonicScore, 2)) %>% pivot_wider(names_from = "morbidity", values_from = "datatypeHarmonicScore") 
+literature_counts <- unnested_associations %>% filter(datatypeId=="literature") %>% select(morbidity, targetId, literatureEvidenceCount = datatypeEvidenceCount)
+max_literature_counts <- literature_counts %>% group_by(targetId) %>% slice(which.max(literatureEvidenceCount)) %>% rename(maxLiteratureEvidencePhenotype = morbidity, maxLiteratureEvidenceCount = literatureEvidenceCount)
+
+save(genetic_associations, file = "TargetAge/data/associations.Rda")
+
 ## Target details
 targets <- arrow::read_parquet("data/targetage/ard_annotations.parquet/part-00000-2d7e85c7-0644-4728-9921-dbdf119c427d-c000.snappy.parquet", as_tibble=TRUE)
+target_annotations <- targets %>% select(targetId, targetSymbol, bioType, hgncId, chemicalProbes, symbolSynonyms, tractability, safety, tep) %>% jsonlite::flatten() %>% left_join(max_literature_counts)
+save(target_annotations, file = "TargetAge/data/target_annotations.Rda")
+
 
 ```
 
@@ -456,26 +474,35 @@ jaccard_communities_results <- bind_rows(jaccard_communities_results, jaccard_co
 
  ji_n_clusters_comp <-  jaccard_communities_results_all  %>% mutate(type = "all") %>% bind_rows(jaccard_communities_results %>% filter(n_morbidities > 1) %>% mutate(type = ">1 morbidity"))  %>% group_by(edges, type, min_jaccard) %>% summarise(n_clusters = length(unique(cluster))) %>% ggplot(., aes(x=min_jaccard, y = n_clusters, colour = edges)) + geom_line() + geom_point() + facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + theme_bw() + labs(x = "Jaccard index threshold", y = "Number of disconnected components (clusters)", subtitle = "Number of communities detected with varying overlap stringency")
  
-  ji_n_clusters <-  jaccard_communities_results_all  %>% filter(edges == "coloc only") %>% mutate(type = "all") %>% bind_rows(jaccard_communities_results %>% filter(edges == "coloc only", n_morbidities > 1) %>% mutate(type = ">1 morbidity"))  %>% group_by(edges, type, min_jaccard) %>% summarise(n_clusters = length(unique(cluster))) %>% ggplot(., aes(x=min_jaccard, y = n_clusters)) + geom_line() + geom_point() + facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + theme_bw() + labs(x = "Jaccard index threshold", y = "Number of disconnected components (clusters)", subtitle = "Number of clusters detected with varying overlap stringency") + theme(panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + scale_x_continuous(breaks = seq(0, 1, 0.2)) + scale_y_continuous(limits = c(0, 3500), expand = c(0, NA)) 
+  ji_n_clusters <-  jaccard_communities_results_coloc %>% mutate(type = "all") %>% bind_rows(jaccard_communities_results_coloc %>% filter(n_morbidities > 1) %>% mutate(type = ">1 morbidity"))  %>% group_by(type, min_jaccard) %>% summarise(n_clusters = length(unique(cluster))) %>% ggplot(., aes(x=min_jaccard, y = n_clusters)) + geom_line() + geom_point() + facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + theme_bw() + labs(x = "Jaccard index threshold", y = "Number of disconnected components (clusters)", subtitle = "Number of clusters detected with varying overlap stringency") + theme(panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank()) + scale_x_continuous(breaks = seq(0, 1, 0.2)) + scale_y_continuous(limits = c(0, 3500), expand = c(0, NA)) 
 
-  ji_n_communities <-  jaccard_communities_results %>% 
-    filter(edges == "coloc only") %>% 
+  ji_n_communities <-  jaccard_communities_results_coloc %>% 
     mutate(type = "all") %>% 
-    bind_rows(jaccard_communities_results %>% 
-                filter(n_morbidities > 1, edges == "coloc only") %>% 
+    bind_rows(jaccard_communities_results_coloc %>% 
+                filter(n_morbidities > 1) %>% 
                 mutate(type = ">1 morbidity")) %>%  
-    group_by(edges, type, min_jaccard, cluster) %>% 
+    group_by(type, min_jaccard, cluster) %>% 
     summarise(communities = length(unique(community))) %>% 
+    ungroup() %>% 
+    group_by(type, min_jaccard) %>% 
+    mutate(outlier.high = communities > quantile(communities, .75) + 1.50*IQR(communities)) %>% 
+    mutate(outlier.communities = ifelse(outlier.high == TRUE, communities, NA)) %>% 
+    ungroup() %>% 
     ggplot(., aes(y= as.character(min_jaccard), x = communities)) + 
-    geom_boxplot() + 
+    geom_boxplot(outlier.shape = NA) + 
+    geom_jitter(aes(x=outlier.communities), size  = .2, width = 0.4, height = 0.3, alpha = 0.7) +
     theme_bw()  + 
     labs(x = "Number of communities per disconnected component (cluster)", y = "Jaccard index threshold", subtitle = "Number of communities detected in each cluster with varying overlap stringency") +
     facet_wrap(~type, labeller = as_labeller(c(`>1 morbidity` = "Clusters with >1 morbidity", `all` = "All clusters"))) + 
     theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + scale_x_continuous(breaks = seq(2,10,2))
   
+  
+  
   ji_si_figure <- ji_n_clusters / ji_n_communities + plot_annotation(tag_levels = 'a')
   
   ggsave(ji_si_figure, file = "si_jaccard_index.png", width = 8, height = 7.5, dpi = 300)
+  ggsave(ji_si_figure, file = "si_jaccard_index.pdf", width = 8, height = 7.5)
+
   
   chosen <- jaccard_communities_results %>% filter(edges == "coloc only", min_jaccard == 0)
   
@@ -515,7 +542,7 @@ Looking at diseases individually:
 
 ```{r}
 
-if (1) {
+if (0) {
   individual_graphs <- list()
 individual_communities <- data.frame()
 
@@ -626,7 +653,10 @@ Studies and ancestry
 ```{r}
 ancestries <- ard_leads %>% select(studyId, ancestry_initial) %>% unique() %>% unnest(ancestry_initial) %>% separate(ancestry_initial, into = c("ancestry", "n"), sep = "=") %>% group_by(studyId) %>% mutate(n = as.numeric(n), total = sum(n), proportion = n/total)
 
-ancestries %>% filter(proportion == 1) %>% ungroup() %>% count(ancestry) %>% mutate(p = n/sum(n)*100)
+majority_population <- ancestries %>% group_by(studyId) %>% top_n(1, proportion) %>%
+  mutate(single_population = ifelse(proportion == 1, TRUE, FALSE)) 
+
+majority_population %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/sum(n)*100) %>% arrange(-p)
 
 ```
 
@@ -914,6 +944,7 @@ for (i in seq(2, length(l2g_all))){
 }
 
 l2g_all_joined <- l2g_all %>% bind_rows() %>% jsonlite::flatten() %>% filter(yProbaModel >= 0.05)
+l2g_all_joined <- l2g_all_joined %>% left_join(targets %>% select(gene.id = targetId, targetSymbol))
 save(l2g_all_joined, file="ltg_all.Rda")
 
 } else {
@@ -962,9 +993,13 @@ top_l2g <- l2g_all_joined %>%
 
 top_cluster_genes <- g_all$cn %>% left_join(top_l2g %>% filter(yProbaModel>= min_l2g)) %>% left_join(tbl) %>% filter(n_morbidities>1)
 
-top_cluster_genes_summarised <- top_cluster_genes %>% filter(yProbaModel >= 0.5) %>% ungroup() %>% group_by(gene.id, gene.symbol, cluster) %>% count() %>% filter(!is.na(cluster)) %>% ungroup() %>% group_by(gene.id, gene.symbol) %>% summarise(n_clusters = length(cluster)) %>% arrange(-n_clusters)
+top_cluster_genes_summarised <- top_cluster_genes %>% filter(yProbaModel >= 0.5) %>% ungroup() %>% group_by(gene.id, targetSymbol, cluster) %>% count() %>% filter(!is.na(cluster)) %>% ungroup() %>% group_by(gene.id, targetSymbol) %>% summarise(n_clusters = length(cluster)) %>% arrange(-n_clusters)
+
+top_cluster_genes_summarised %>% ungroup() %>% count(n_clusters) %>% mutate(prop = n/sum(n)*100)
 
 write.table(top_cluster_genes_summarised, file = "top_L2G_genes.txt", sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+#top_l2g <- read.table(file = "top_L2G_genes.txt")
 
 ```
 
@@ -979,52 +1014,181 @@ top_l2g %>% pivot_longer(contains("yProba")) %>% ggplot(., aes(x=value, y=name))
 ```
 
 
-If we collapse each cluster to a node, we can link to genes and diseases!
-
-```{r}
-C2G_edges <- 
-  cluster_genes %>% 
-  filter(yM)
-  select(from = cluster, to = gene.id, morbidity, hasColoc, starts_with("yProba")) %>%
-  mutate(type = "L2G") %>%
-  unique()
-
-C2D_edges <- 
-  cluster_genes %>%
-  select(from = cluster, to = morbidity, studyId) %>%
-  mutate(type = "GWAS") %>%
-  unique()
-
-C_nodes <- cluster_genes %>% select(id = cluster, morbidities, c_size) %>% unique() %>% filter(!is.na(id)) %>% mutate(id = as.character(id), type = "cluster", color = "green")
-M_nodes <- cluster_genes %>% ungroup() %>% select(id = morbidity, trait_reported) %>% unique() %>% group_by(id) %>% summarise(traits = paste(trait_reported, collapse = ", ")) %>% mutate(type = "morbidity", color = "red")
-G_nodes <- cluster_genes %>% ungroup() %>% select(id = gene.id, gene.symbol) %>% unique() %>% mutate(type = "gene", color = "blue")
-
-cluster_vn <- 
-  visNetwork(
-    bind_rows(C_nodes, M_nodes, G_nodes),
-    bind_rows(C2G_edges, C2D_edges),
-    height = "1000px",
-    width = "100%"
-  ) %>%
-    visIgraphLayout()
-
-```
 
 Looking at targets
 
 ```{r}
+
+## Compare sets of genes in GenAge, CellAge, TargetAge
+load("TargetAge/data/genage.Rda")
+load("TargetAge/data/cellage.Rda")
+
 go_terms <- read.csv("data/full_goterm_list.csv")
+
+targetage <- top_cluster_genes_summarised$gene.id
 
 go <- targets %>% 
   select(targetId, targetSymbol, go) %>% 
   unnest_wider(go) %>% 
-  unnest(c(id, value))
+  unnest(c(id, value), keep_empty = TRUE) %>%
+  rename(goId = id) %>%
+  left_join(go_terms) %>% 
+  mutate(group = "all") 
 
-reactome <- targets %>% select(targetId, targetSymbol, reactome) %>% unnest(reactome)
+go_compare <- go %>%
+  bind_rows(go %>% filter(targetId %in% targetage) %>% mutate(group = "targetage")) %>%
+  group_by(group, targetId, targetSymbol, goHallmarkTerm) %>% count() %>% pivot_wider(names_from = goHallmarkTerm, values_from = n, values_fill = 0) %>% rename(other = `NA`) %>% pivot_longer(-c("group", "targetId", "targetSymbol"))
 
-interesting_pathways <- data.frame(reactome.term = c("Autophagy", "Cell Cycle", "Cell-Cell communication", "DNA Repair", "Extracellular matrix organization", "Metabolism", "Metabolism of proteins"), reactome.id = c("R-HSA-9612973", "R-HSA-1640170", "R-HSA-1500931", "R-HSA-73894", "R-HSA-1474244", "R-HSA-1430728", "R-HSA-392499" ))
+## number of targets with at least one annotation in each hallmark
+go_compare_hallmarks <- go_compare %>% ungroup() %>% group_by(group) %>% mutate(total = length(unique(targetId))) %>% ungroup() %>% group_by(group, total, name) %>% summarise(n = sum(value>0)) %>% mutate(proportion = n/total)
+
+## bar plot 
+## but need to make sure I'm only using >0.5 genes 
+hallmarks_bar <- ggplot(subset(go_compare_hallmarks, name!="other"), aes(x=proportion, y = reorder(name, proportion), fill = group, label = paste0(" ", scales::percent(proportion, accuracy = 0.1)))) + geom_col(position = "dodge") + theme_bw() + geom_text(position = position_dodge(width = 0.9), hjust = 0, size = 3) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_text(size = 10, colour = "black"), axis.title.y = element_blank(), legend.position = c(0.8, 0.1), legend.title = element_blank()) + scale_x_continuous(limits = c(0, 0.15), labels = scales::percent_format(accuracy = 1), expand = c(0, NA)) + labs(x = "Percentage of targets", subtitle = "Proportion of targets mapped to\nHallmarks of Ageing GO terms")
+
+interesting_pathways <- data.frame(reactome.term = c("Autophagy", "Cell Cycle", "Cell-Cell communication", "DNA Repair", "Extracellular matrix organization", "Metabolism", "Metabolism of proteins"), reactome = c("R-HSA-9612973", "R-HSA-1640170", "R-HSA-1500931", "R-HSA-73894", "R-HSA-1474244", "R-HSA-1430728", "R-HSA-392499" ))
+reactome <- targets %>% select(targetId, targetSymbol, reactome) %>% unnest(reactome) %>% left_join(interesting_pathways)
+
+## See overlap of gene sets
+topgenes_genage_cellage <- top_cluster_genes_summarised %>% full_join(genage, by = c("gene.symbol" = "target.gene_info.symbol")) %>% full_join(cellage, by = c("gene.symbol" = "symbol"))
+
+## Prepare for enrichment analysis
+gene_sets_entrez <- list(TargetAge = top_cluster_genes_summarised$gene.id,
+                  GenAgeHuman = genage$entrez.gene.id %>% unique(),
+                  CellAge = cellage$entrezid %>% unique())
+
+save(gene_sets, file = "gene_sets.Rda")
+save(gene_sets_entrez, file = "gene_sets_entrez.Rda")
+
+
+test_overlap <- function(setA, setB){
+  ji = sum(setA %in% setB) / length(unique(c(setA, setB)))
+  return(ji)
+}
+
+## Make a venn diagram 
+library(ggvenn)
+venn <- ggvenn(gene_sets, fill_color = c("white", "white", "white"), show_percentage = FALSE, text_size = 4, set_name_size = 4, stroke_size = 0.5)
+ggsave(venn, file = "genage_cellage_venn.png", width = 6, height = 6, dpi = 300)
+
+#(genage_set %in% targetage_set %>% sum())/length(genage_set)*100
+#(cellage_set %in% targetage_set %>% sum())/length(cellage_set)*100
+
+#sum(genage_set %in% targetage_set) / length(unique(c(genage_set, targetage_set)))
+
+## Load enrichment analysis results
+
+load(file = "scripts/enrichment_plot_1.Rda")
+load(file = "scripts/enrichment_plot_2.Rda")
+load(file = "scripts/enrichment_plot_3.Rda")
+p_all <- p_go_BP / p_go_MF / p_reactome / plot_layout(guides = "collect")
+
+
+
+layout <- "
+14
+14
+25
+25
+35
+35
+"
+
+fig <- p_go_BP + p_go_MF + p_reactome + venn + hallmarks_bar  +
+    plot_layout(design = layout,
+                widths = c(1,1),
+                #    heights = c(1,1,1,1,2),
+                guides = "collect")  +
+    plot_annotation(tag_levels = list(c("a", "", "", "b", "c"))) & 
+    theme(plot.subtitle = element_text(size = 12), plot.tag.position = c(0, 1), legend.box="vertical", plot.tag = element_text(size = 14))
+ggsave(fig, file = "enrichment_figure.png", width = 8, height = 9, dpi = 300)
+ggsave(fig, file = "enrichment_figure.pdf", width = 14, height = 13)
+
+
+```
+
+
+Tractability
+```{r}
+
+targetage_tract <- targets %>% filter(targetId %in% targetage) %>% jsonlite::flatten()
+tract_plot_data <- targetage_tract %>% mutate(tractability.other_modalities.top_category = ifelse(tractability.other_modalities.categories.clinical_precedence > 0, "Clinical_Precedence", NA)) %>% select(targetId, ends_with("top_category")) %>% pivot_longer(-targetId, names_to = "modality", values_to = "top_category") %>% count(modality, top_category) %>% mutate(modality = gsub(".*[.]([^.]+)[.].*", "\\1", modality), top_category = gsub("_", " ", top_category)) %>% mutate(top_category = gsub("le ab", "le \n", top_category), top_category = gsub(" sm", "", top_category), top_category = gsub(" ab", "", top_category), top_category = gsub("to low ", "to low\n", top_category), top_category = gsub(" Precedence", "\nPrecedence", top_category)) 
+
+tractability_plot <- ggplot(tract_plot_data, aes(x=modality, y = n, fill = top_category, label = ifelse(n>35, paste0(top_category, " (", n, ")"), ""))) + geom_col() + geom_text(colour = "white", position = position_stack(vjust = 0.5), size = 3) + theme_bw() + theme(legend.position = "bottom", panel.grid=element_blank(), axis.title.x = element_blank()) + scale_y_continuous(expand = c(0, NA)) + scale_x_discrete(limits = c("smallmolecule", "antibody", "other_modalities"), labels = c("Small Molecule", "Antibody", "Other Modalities")) + guides(fill = FALSE) + labs(y = "Number of targets", subtitle = "TargetAge Target Tractability Assessment")
+
+ggsave(tractability_plot, width = 5.9, height = 4.1, dpi = 300, file = "tractability_categories.png")
+ggsave(tractability_plot, width = 5.9, height = 4.1, file = "tractability_categories.pdf")
+
+
+targetage_annotations <- target_annotations %>% filter(targetId %in% targetage)
+
+teps <- targetage_annotations %>% filter(!is.na(tep.uri))
+probeminer <- targetage_annotations %>% select(targetId, chemicalProbes.portalprobes, chemicalProbes.probeminer.link) %>% filter(!is.na(chemicalProbes.portalprobes) | !is.na(chemicalProbes.probeminer.link))
+probes <- targetage_annotations %>% unnest(chemicalProbes.portalprobes) %>% unnest(sourcelinks)
+
+clinical_precedence <- targetage_tract %>% select(targetId, targetSymbol, tractability.smallmolecule.categories.clinical_precedence, tractability.antibody.categories.clinical_precedence, tractability.other_modalities.categories.clinical_precedence) %>% filter_at(vars(-targetId, -targetSymbol), any_vars(. > 0))
+
+
+probable_targets <- targetage_tract %>% 
+  mutate(tractability.other_modalities.top_category = ifelse(tractability.other_modalities.categories.clinical_precedence > 0, "Clinical_Precedence", NA)) %>%
+  select(targetId, targetSymbol, ends_with("top_category")) %>% 
+  right_join(probes) %>% 
+  left_join(top_cluster_genes %>% 
+              filter(yProbaModel >= 0.5) %>% 
+              select(targetId = gene.id, 
+                     cluster, 
+                     community, 
+                     morbidities) %>% 
+              unique(), by = c("targetId"))
+
+
+```
+
+Safety
+```{r}
+
 
 
 
 ```
 
+Osteoarthritis
+
+```{r}
+tmp <- tbl_genes %>% group_by(cluster) %>% filter(any(morbidity == "osteoarthritis")) %>% ungroup() %>% select(cluster, morbidity, gene.symbol, L2G) %>% group_by(cluster) %>% mutate(morbidities = paste0(unique(morbidity), collapse = "; ")) %>% ungroup() %>% group_by(cluster, morbidities, gene.symbol) %>% summarise(n_associations = length(gene.symbol), max_L2G = max(L2G) ) %>% arrange(cluster, -max_L2G, -n_associations) %>% filter(!is.na(gene.symbol))
+
+tmp2 <- tmp %>% ungroup() %>% group_by(gene.symbol, max_L2G) %>% summarise(max_L2G = round(max(max_L2G),2), confidence = ifelse(max_L2G>=0.5, "higher", "lower"))  %>% unique()
+
+write.table(tmp2, file = "oa_targets_summary.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+write.table(tmp, file = "oa_targets_clusters.tsv", col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
+
+
+```
+
+
+UpSetR
+
+```{r}
+library(UpSetR)
+
+us <- g_all$clusters %>% filter(n_morbidities>1) %>% ungroup() %>% select(-n_morbidities) %>% replace(is.na(.), 0)  %>% mutate(cluster = as.character(cluster)) %>% mutate_if(is.numeric, ~1 * (. > 0)) %>% data.frame()
+
+# n with freq > 1 
+n_intersects = 74
+
+# filter out diseases only involved in combinations that show up once
+all_d <- colnames(us)[2:ncol(us)]
+freq_1_d <- c("gait.measurement", "alzheimers.disease.stroke", "lipid.measurement.lipid.measurement", "healthspan", "cartilage.thickness.measurement", "metabolic.syndrome.lipid.measurement", "lewy.body.dementia", "longevity", "atherosclerosis")
+sets_to_plot <- all_d[! all_d %in% freq_1_d]
+
+upset(us, sets = sets_to_plot, nintersects = n_intersects, order.by = c("freq"))
+
+
+```
+
+Expression
+
+```{r}
+
+
+```

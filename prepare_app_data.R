@@ -62,7 +62,7 @@ add_genage_links <- function(df){
     summarise(icon.GenAge = paste(GenAge.longevity.icon, collapse = "<br>")) %>% 
     mutate(GenAge.URL = paste0("https://genomics.senescence.info/genes/entry.php?hgnc=", targetSymbol),
            icon.GenAge = ifelse(icon.GenAge=="NA", NA, icon.GenAge),
-           GenAge.link = paste0("<a href=\"", GenAge.URL, "\">", GenAge.ID, "</a>")) %>%
+           GenAge.link = paste0("<a target=\"_blank\" href=\"", GenAge.URL, "\">", GenAge.ID, "</a>")) %>%
     unite(col = icon.GenAge, c(GenAge.link, icon.GenAge), sep = "<br>", na.rm = TRUE)
 }
 
@@ -122,145 +122,10 @@ add_details_column <- function(df){
 
 }
 
-make_legends <- function(){
-  ### CellAge icons 
-  cellage_legend <<- 
-    data.frame(Icon = c("<i class=\"fab fa-canadian-maple-leaf\"</i><i class=\"fa fa-arrow-up\"</i>", 
-                        "<i class=\"fab fa-canadian-maple-leaf\"</i><i class=\"fa fa-arrow-down\"</i>"),
-               Meaning = c("Induces senescence", "Inhibits senescence"))
-  
-  ## Genage icons
-  model_imgs <<- data.frame(
-    GenAge.model.organism = c("Caenorhabditis elegans",
-                              "Drosophila melanogaster",
-                              "Mus musculus",
-                              "Saccharomyces cerevisiae"),
-    model.organism.img.path = c(
-      #   "noun_worm_1817517.png",
-      "noun_worm_1817517.png",
-      #  "noun_Fish_657747.png",
-      "noun_fly_2278070.png",
-      #  "noun_Hamster_3511141.png",
-      "noun_Mouse_3551360.png",
-      #  "noun_mold_fungus_3292550.png",
-      #  "noun_yeast_275970.png",
-      "noun_yeast_275970.png"
-    )
-  )
-  
-  longevity_imgs <<- data.frame(
-    GenAge.longevity.influence = c("Pro-Longevity", "Anti-Longevity", "Unclear", NA),
-    GenAge.longevity.iconcode = c("arrow-up", "arrow-down", "question", NA))
-  
-  ## CellAge and GenAge legend
-  genage_legend <<- bind_rows(
-    model_imgs %>%
-      filter(!is.na(model.organism.img.path)) %>%
-      mutate(Icon = paste0("<img src=\"", model.organism.img.path, "\" height=\"20\"></img>")) %>%
-      select(Icon, Meaning = GenAge.model.organism),
-    longevity_imgs %>%
-      filter(!is.na(GenAge.longevity.iconcode)) %>%
-      mutate(Icon = paste0("<i class=\"fa fa-", GenAge.longevity.iconcode, "\"></i>")) %>%
-      select(Icon, Meaning = GenAge.longevity.influence)
-  )
-  
-  ## GO icons
-  go_icons <<- read.csv("data/goterm_icons.csv", header = FALSE, col.names = c("goHallmark", "goIconCode", "goIcon"),quote="" )
-  go_legend <- go_icons %>% select(goIcon, goHallmark)
-  
-  ## Save legends for app
-  save(go_legend, file = "TargetAge/data/hallmarks_legend.Rda")
-  save(cellage_legend, file = "TargetAge/data/cellage_legend.Rda")
-  save(genage_legend, file = "TargetAge/data/genage_legend.Rda")
-  
-}
-
-##### Graphs
-load("data/analysis/target_annotations.Rda")             # Target annotations
-
-
-#### Data ####
-load("ltg_all.Rda")
-load("data/analysis/graph_all_morbidities.Rda")
-load("data/analysis/ard_leads_filtered.Rda")
-load("data/analysis/top_l2g.Rda")
-
-
-# Format specific disease names 
-format_specific_diseases <- function(df){
-  df %>% 
-    mutate(specificDiseaseName = recode(specificDiseaseName, 
-                                        `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
-                                        `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
-                                        `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement",
-                                        `type II diabetes mellitus` = "type 2 diabetes")) %>%
-    mutate(specificDiseaseName = ifelse(specificDiseaseName != morbidity, specificDiseaseName, NA))
-}
-
-
-ard_leads %>% 
-  format_specific_diseases()
-
-get_cluster_tbl <- function(g){
-  g$cn %>% 
-}
-
-
-# top_genes <- top_l2g %>% 
-#   select(studyId, lead_variantId, targetSymbol, gene.id, L2G = yProbaModel, hasColoc, distanceToLocus) %>% 
-#   mutate(targetSymbol = ifelse(hasColoc == TRUE, paste0('atop(bold("',targetSymbol,'")'), targetSymbol)) 
-
-tbl <- g_all$cn %>%
-  select(id, cluster, n_morbidities, morbidity, has_sumstats, everything(), -color, -label, -c_size) %>% 
-  group_by(cluster) %>% 
-  mutate(communities = length(unique(community))) %>% 
-  ungroup() %>%
-  filter(!is.na(cluster)) %>% 
-  filter(n_morbidities > 1) %>% 
-  left_join(top_l2g) %>%
-  left_join(ard_leads %>% select(studyId, lead_variantId, morbidity, specificDiseaseName)) %>%
-  arrange(communities, -n_morbidities, cluster) 
-
-
-tbl_leads <- tbl %>%
-  left_join(ard_leads %>% select(-c("morbidity", "diseaseId", "diseaseName", "specificDiseaseId",   "specificDiseaseName")) %>% unique())
-
-tbl_genes <- tbl_leads  %>% 
-  left_join(top_l2g) 
-
-
-################################################
-
-details_columns <- 
-  
-columns <- c(
-  "targetId",
-  "targetSymbol",
-  "bioType",
-  "symbolSynonyms",
-  chemicalProbes
-)
-
-## add cellage, genage, and hallmarks of ageing 
-make_legends()
-tbl_targets <- target_annotations %>% 
-  rowwise() %>% 
-  mutate(symbolSynonyms = paste(symbolSynonyms, collapse='; '),
-         bioType = str_replace_all(bioType, "_", " ")) %>% 
-  ungroup() %>%
-  add_genage_icons() %>%
-  add_cellage_icons() %>%
-  add_go_hallmarks() %>% 
-  add_tractability() %>% 
-  add_teps_probes() %>% 
-  add_overall_mm(diseases = d, minscore = 0.05) %>%
-  add_safety() %>% 
-  add_details_column()
-
 add_overall_mm <- function(df, diseases, minscore = 0.05){
   df %>%
     mutate(overallMultimorbidityCount =
-           rowSums(select(., any_of(diseases)) >= minscore, na.rm = TRUE))
+             rowSums(select(., any_of(diseases)) >= minscore, na.rm = TRUE))
 }
 
 add_teps_probes <- function(df){
@@ -273,37 +138,37 @@ add_teps_probes <- function(df){
                            `Chemical Probes Portal` = "CPP",
                            `Open Science Probes` = "OSP",
                            `Structural Genomics Consortium` = "SGC"),
-           details.probe = paste0("<a href=\"", link, "\">", source, "</a>")) %>%
+           details.probe = paste0("<a target=\"_blank\" href=\"", link, "\">", source, "</a>")) %>%
     group_by(targetId, chemicalprobe ) %>%
     summarise(details.probe_link = paste0("(",paste(details.probe, collapse = ", "),")")) %>%
     unite(details.probe_link, c(chemicalprobe, details.probe_link), sep = " ", remove = TRUE) %>% 
     summarise(details.probes = paste(details.probe_link, collapse = "; \n"))
   
   ## add icons and details to dataframe 
-      df %>% 
-        ## badge for probes for main table display
-        mutate(probe = ifelse(!is.na(chemicalProbes.portalprobes), 
-                        "<span class=\"badge badge-dark\">Probe</span>", 
-                        ifelse(
-                          !is.na(chemicalProbes.probeminer.link), 
-                          paste0("<a href=\"", chemicalProbes.probeminer.link, "\"><span class=\"badge badge-dark\">ProbeMiner</span></a>"), 
-                          NA)),
-               tep = ifelse(!is.na(tep.uri), "<span class=\"badge badge-dark\">TEP</span>", NA)) %>%
+  df %>% 
+    ## badge for probes for main table display
+    mutate(probe = ifelse(!is.na(chemicalProbes.portalprobes), 
+                          "<span class=\"badge badge-dark\">Probe</span>", 
+                          ifelse(
+                            !is.na(chemicalProbes.probeminer.link), 
+                            paste0("<a target=\"_blank\" href=\"", chemicalProbes.probeminer.link, "\"><span class=\"badge badge-dark\">ProbeMiner</span></a>"), 
+                            NA)),
+           tep = ifelse(!is.na(tep.uri), "<span class=\"badge badge-dark\">TEP</span>", NA)) %>%
     unite("icon.tep_probe", c("tep", "probe"), sep = " ", remove = TRUE, na.rm = TRUE) %>%
     left_join(probes, by = "targetId" ) %>%
-        mutate(details.tep = ifelse(
-          !is.na(tep.uri), 
-          paste0("<a href=\"", tep.uri, "\"><span class=\"badge badge-dark\">", tep.name, "</span></a>"), 
-          NA))
+    mutate(details.tep = ifelse(
+      !is.na(tep.uri), 
+      paste0("<a target=\"_blank\" href=\"", tep.uri, "\"><span class=\"badge badge-dark\">", tep.name, "</span></a>"), 
+      NA))
 }
 
 add_tractability <- function(df){
   df %>% mutate(icon.tractability = case_when(
-      stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Predicted_Tractable") ~ "Predicted Tractable",
-      stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Discovery_Precedence") ~ "Discovery Precedence",
-      stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Clinical_Precedence") ~ "Clinical Precedence",
-      NA ~ NA_character_)
-    ) %>%
+    stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Predicted_Tractable") ~ "Predicted Tractable",
+    stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Discovery_Precedence") ~ "Discovery Precedence",
+    stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Clinical_Precedence") ~ "Clinical Precedence",
+    NA ~ NA_character_)
+  ) %>%
     mutate(icon.tractability = ifelse(is.na(icon.tractability), NA, paste0("<span class=\"badge badge-pill badge-dark\">", icon.tractability, "</span>"))) 
 }
 
@@ -357,6 +222,142 @@ add_safety <- function(df){
   df %>% left_join(safety, by = "targetId")
   
 }
+
+make_legends <- function(){
+  ### CellAge icons 
+  cellage_legend <<- 
+    data.frame(Icon = c("<i class=\"fab fa-canadian-maple-leaf\"</i><i class=\"fa fa-arrow-up\"</i>", 
+                        "<i class=\"fab fa-canadian-maple-leaf\"</i><i class=\"fa fa-arrow-down\"</i>"),
+               Meaning = c("Induces senescence", "Inhibits senescence"))
+  
+  ## Genage icons
+  model_imgs <<- data.frame(
+    GenAge.model.organism = c("Caenorhabditis elegans",
+                              "Drosophila melanogaster",
+                              "Mus musculus",
+                              "Saccharomyces cerevisiae"),
+    model.organism.img.path = c(
+      #   "noun_worm_1817517.png",
+      "noun_worm_1817517.png",
+      #  "noun_Fish_657747.png",
+      "noun_fly_2278070.png",
+      #  "noun_Hamster_3511141.png",
+      "noun_Mouse_3551360.png",
+      #  "noun_mold_fungus_3292550.png",
+      #  "noun_yeast_275970.png",
+      "noun_yeast_275970.png"
+    )
+  )
+  
+  longevity_imgs <<- data.frame(
+    GenAge.longevity.influence = c("Pro-Longevity", "Anti-Longevity", "Unclear", NA),
+    GenAge.longevity.iconcode = c("arrow-up", "arrow-down", "question", NA))
+  
+  ## CellAge and GenAge legend
+  genage_legend <<- bind_rows(
+    model_imgs %>%
+      filter(!is.na(model.organism.img.path)) %>%
+      mutate(Icon = paste0("<img src=\"", model.organism.img.path, "\" height=\"20\"></img>")) %>%
+      select(Icon, Meaning = GenAge.model.organism),
+    longevity_imgs %>%
+      filter(!is.na(GenAge.longevity.iconcode)) %>%
+      mutate(Icon = paste0("<i class=\"fa fa-", GenAge.longevity.iconcode, "\"></i>")) %>%
+      select(Icon, Meaning = GenAge.longevity.influence)
+  )
+  
+  ## GO icons
+  go_icons <<- read.csv("data/goterm_icons.csv", header = FALSE, col.names = c("goHallmark", "goIconCode", "goIcon"),quote="" )
+  go_legend <- go_icons %>% select(goIcon, goHallmark)
+  
+  ## Save legends for app
+  save(go_legend, file = "TargetAge/data/hallmarks_legend.Rda")
+  save(cellage_legend, file = "TargetAge/data/cellage_legend.Rda")
+  save(genage_legend, file = "TargetAge/data/genage_legend.Rda")
+  
+}
+
+# Format specific disease names 
+format_specific_diseases <- function(df){
+  df %>% 
+    mutate(specificDiseaseName = recode(specificDiseaseName, 
+                                        `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
+                                        `high density lipoprotein cholesterol measurement` = "HDL cholesterol measurement",
+                                        `very low density lipoprotein cholesterol measurement` = "VLDL cholesterol measurement",
+                                        `type II diabetes mellitus` = "type 2 diabetes")) %>%
+    mutate(specificDiseaseName = ifelse(specificDiseaseName != morbidity, specificDiseaseName, NA))
+}
+
+
+##### Graphs
+load("data/analysis/target_annotations.Rda")             # Target annotations
+
+
+#### Data ####
+load("ltg_all.Rda")
+load("data/analysis/graph_all_morbidities.Rda")
+load("data/analysis/ard_leads_filtered.Rda")
+load("data/analysis/top_l2g.Rda")
+
+
+
+
+ard_leads %>% 
+  format_specific_diseases()
+
+get_cluster_tbl <- function(g){
+  g$cn %>% 
+}
+
+
+# top_genes <- top_l2g %>% 
+#   select(studyId, lead_variantId, targetSymbol, gene.id, L2G = yProbaModel, hasColoc, distanceToLocus) %>% 
+#   mutate(targetSymbol = ifelse(hasColoc == TRUE, paste0('atop(bold("',targetSymbol,'")'), targetSymbol)) 
+
+tbl <- g_all$cn %>%
+  select(id, cluster, n_morbidities, morbidity, has_sumstats, everything(), -color, -label, -c_size) %>% 
+  group_by(cluster) %>% 
+  mutate(communities = length(unique(community))) %>% 
+  ungroup() %>%
+  filter(!is.na(cluster)) %>% 
+  filter(n_morbidities > 1) %>% 
+  left_join(top_l2g) %>%
+  left_join(ard_leads %>% select(studyId, lead_variantId, morbidity, specificDiseaseName)) %>%
+  arrange(communities, -n_morbidities, cluster) 
+
+
+tbl_leads <- tbl %>%
+  left_join(ard_leads %>% select(-c("morbidity", "diseaseId", "diseaseName", "specificDiseaseId",   "specificDiseaseName")) %>% unique())
+
+tbl_genes <- tbl_leads  %>% 
+  left_join(top_l2g) 
+
+
+################################################
+
+columns <- c(
+  "targetId",
+  "targetSymbol",
+  "bioType",
+  "symbolSynonyms",
+  "chemicalProbes"
+)
+
+## add cellage, genage, and hallmarks of ageing 
+make_legends()
+tbl_targets <- target_annotations %>% 
+  rowwise() %>% 
+  mutate(symbolSynonyms = paste(symbolSynonyms, collapse='; '),
+         bioType = str_replace_all(bioType, "_", " ")) %>% 
+  ungroup() %>%
+  add_genage_icons() %>%
+  add_cellage_icons() %>%
+  add_go_hallmarks() %>% 
+  add_tractability() %>% 
+  add_teps_probes() %>% 
+  add_overall_mm(diseases = d, minscore = 0.05) %>%
+  add_safety() %>% 
+  add_details_column()
+
 
 save(tbl_targets, file = "TargetAge/data/prepared_table.Rda")
 load(file = "data/analysis/targetage_geneids.Rda")

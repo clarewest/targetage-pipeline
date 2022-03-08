@@ -17,31 +17,31 @@ spark = SparkSession.builder \
 
 ## Data paths
 data_path = "data/"
-ot_platform = data_path+"OT_platform/21.02/"
-ot_genetics = data_path+"OT_genetics/ftp.ebi.ac.uk/pub/databases/opentargets/genetics/20022712/"
+ot_platform = "data/OT_platform/21.06/"
+ot_genetics = "data/OT_genetics/210608/"
 targetage = data_path+"targetage/"
 
 
 ## Read Open Targets data 
-diseases = (spark.read.parquet(ot_platform+"ETL_parquet/diseases/", header=True)
+diseases = (spark.read.parquet(ot_platform+"diseases/", header=True)
             .withColumnRenamed("id","diseaseId")
             .withColumnRenamed("name","diseaseName")
             )
-targets = (spark.read.parquet(ot_platform+"ETL_parquet/targets/")
+targets = (spark.read.parquet(ot_platform+"targets/")
            .withColumnRenamed("id","targetId")
            .withColumnRenamed("approvedSymbol", "targetSymbol")
            .withColumnRenamed("approvedName","targetName")
            )
-evidences = spark.read.parquet(ot_platform+"ETL_parquet/evidences/succeeded")
-knowndrugs = spark.read.parquet(ot_platform+"ETL_parquet/knownDrugs")
+evidences = spark.read.parquet(ot_platform+"evidence")
+knowndrugs = spark.read.parquet(ot_platform+"knownDrugsAggregated")
 
 # NB otg_evidence has already filtered out evidence with a score < 0.05
-otg_evidences = spark.read.parquet(ot_platform+"ETL_parquet/evidences/succeeded/sourceId\=ot_genetics_portal/")
+otg_evidences = spark.read.parquet(ot_platform+"evidence/sourceId\=ot_genetics_portal/")
 
 ## Genetic data
 coloc = spark.read.json(ot_genetics+"v2d_coloc/")
 v2d = spark.read.json(ot_genetics+"v2d/")
-cs = spark.read.json(ot_genetics+"v2d_credset")
+#cs = spark.read.json(ot_genetics+"v2d_credset")
 #variants = spark.read.json(ot_genetics+"lut/variant-index/")
 studies = spark.read.json(ot_genetics+"lut/study-index/")
 overlap = spark.read.json(ot_genetics+"lut/overlap-index/")
@@ -83,18 +83,39 @@ all_ardiseases = parent_ardiseases.union(descendant_ardiseases)
 
 
 ## Association data 
-overall_associations = spark.read.parquet(ot_platform+"ETL_parquet/associations/indirect/byOverall/")
+##  overall association scores for targets
+overall_associations = (spark.read.parquet(ot_platform+"associationByOverallIndirect")
+                        .drop("evidenceCount")
+                        .withColumnRenamed("score", "overallAssociationScore")
+                        )
 
-associations = spark.read.parquet(ot_platform+"ETL_parquet/associations/indirect/byDatatype/")
-gen_associations = associations.filter(col("datatypeId")=="genetic_association")
+## association scores by data types 
+associations = spark.read.parquet(ot_platform+"associationByDatatypeIndirect")
+associations_wide = (associations
+                     .drop("evidenceCount")
+                     .groupBy("diseaseId", "targetId")
+                     .pivot("datatypeId")
+                     .max("score")
+                     )
 
+## Number of literature co-mentions of targets with diseases
+lit_count = (associations
+             .filter(col("datatypeId")=="literature")
+             .select("diseaseId", "targetId", "evidenceCount")
+             .withColumnRenamed("evidenceCount","literatureCount")
+             )
 
 ## Targets with genetic associations 
 ard_associations = (ards
-                    # get targets with genetic associations
-                    .join(gen_associations,"diseaseId", "inner")   
-                    # add the scores for other datatypes, for later 
-                    .join(overall_associations, ["diseaseId", "targetId", "diseaseLabel", "targetName", "targetSymbol"]))
+                    # targets associated with ARDs
+                    .join(associations_wide,"diseaseId", "left")
+                    # get targets with genetic associations with ARDs
+                    .filter(col("genetic_association")>0)
+                    # add overall association score
+                    .join(overall_associations, ["diseaseId", "targetId"], "inner")
+                    # add literature comention counts
+                    .join(lit_count, ["diseaseId", "targetId"], "left")
+                    )
 ard_associations.groupBy("morbidity").count().show()
 
 ## Get annotations for all targets implicated
@@ -110,15 +131,16 @@ ard_targets = (ard_associations
 otg_evidence_cols = ["morbidity",
                      "specificDiseaseId", "specificDiseaseName", 
                      "diseaseId", "diseaseName", 
+                     "diseaseFromSource",
                      "targetId", 
                      "variantId",
-                     "diseaseFromSourceId",
                      "variantFunctionalConsequenceId",
                      "publicationYear",
                      "resourceScore",
-                     "diseaseFromSource",
+                     "beta",
                      "oddsRatio",
-                     "confidenceIntervalUpper", "confidenceIntervalLower",
+                     "betaConfidenceIntervalUpper", "betaConfidenceIntervalLower",
+                     "oddsRatioConfidenceIntervalUpper", "oddsRatioConfidenceIntervalLower",
                      "variantRsId",
                      "studyId",
                      "studyCases", "studySampleSize",
@@ -127,9 +149,8 @@ otg_evidence_cols = ["morbidity",
 
 ard_otg_evidences = (all_ardiseases.drop("therapeuticAreas", "description")
                     .join(otg_evidences
-                             .withColumnRenamed("diseaseId", "specificDiseaseId")
-                             .withColumnRenamed("diseaseLabel", "specificDiseaseName"), 
-                             ["specificDiseaseId", "specificDiseaseName"], "inner")
+                             .withColumnRenamed("diseaseId", "specificDiseaseId"), 
+                             ["specificDiseaseId"], "inner")
                     .select(otg_evidence_cols)
                     .groupBy([ col for col in otg_evidence_cols if col != "variantFunctionalConsequenceId"]).agg(collect_set("variantFunctionalConsequenceId").alias("variantFunctionalConsequenceIds"))
                     .drop("variantFunctionalConsequenceId")

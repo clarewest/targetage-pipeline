@@ -1,4 +1,4 @@
-Orphanet_79389,premature ageing
+#Orphanet_79389,premature ageing
 EFO_0000768,idiopathic pulmonary fibrosis
 #EFO_0000270,asthma
 EFO_1002011,adult onset asthma
@@ -41,3 +41,4 @@ EFO_0004529,lipid measurement
 EFO_0009762,healthspan
 EFO_0007873,cartilage thickness measurement
 EFO_0009270,heel bone mineral density
+EFO_0004995,lean body mass
