@@ -1155,7 +1155,7 @@ plot_hallmarks_barplot <- function(enriched_hallmarks, save_dir = default_save_d
   return(hallmarks_barplot)
 }
 
-plot_mini_hallmarks_barplot(enriched_hallmarks, save_dir = default_save_dir, overwrite = default_overwrite){
+plot_mini_hallmarks_barplot<- function(enriched_hallmarks, save_dir = default_save_dir, overwrite = default_overwrite){
   hallmarks_barplot_ta <- 
     enriched_hallmarks %>% 
     mutate(perc = overlap/total_query) %>% 
