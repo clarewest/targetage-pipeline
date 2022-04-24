@@ -1,0 +1,1 @@
+wget --recursive --no-parent --no-host-directories --cut-dirs 8  -X /pub/databases/opentargets/platform/21.06/output/etl/parquet/AOTFClickhouse/,/pub/databases/opentargets/platform/21.06/output/etl/parquet/AOTFElasticsearch/ ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/21.06/output/etl/parquet .

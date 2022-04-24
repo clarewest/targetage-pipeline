@@ -1,0 +1,18 @@
+goHallmark,goHallmarkId,goHallmarkTerm,n_terms,n_targets,total_targets
+Cellular senescence,GO:0090398,cellular senescence,7,17,17
+Proteostasis,GO:0006457,protein folding,23,5,70
+Proteostasis,GO:0050821,protein stabilization,1,9,70
+Proteostasis,GO:0030163,protein catabolic process,145,64,70
+Proteostasis,GO:0010498,proteasomal degradation,51,25,70
+Proteostasis,GO:0061684,chaperone-mediated autophagy,7,2,70
+Proteostasis,GO:0061077,chaperone-mediated protein folding,8,2,70
+Telomere maintenance,GO:0000723,telomere maintenance,54,7,7
+Nutrient signalling,GO:0031667,response to nutrient levels,190,69,72
+Nutrient signalling,GO:0009594,detection of nutrient,2,NA,72
+Nutrient signalling,GO:0048009,IGF receptor signaling pathway,4,5,72
+Mitochondrial genome maintenance,GO:0000002,mitochondrial genome maintenance,10,NA,NA
+Epigenetic alteration,GO:0044728,DNA methylation or demethylation,29,8,58
+Epigenetic alteration,GO:0016570,histone modification,215,45,58
+Epigenetic alteration,GO:0006338,chromatin remodeling,54,24,58
+Inflammation,GO:0006954,inflammatory response,174,65,65
+Immune response,GO:0006955,immune response,661,92,92

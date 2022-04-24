@@ -17,7 +17,7 @@ spark = SparkSession.builder \
 
 ## Data paths
 data_path = "data/"
-ot_platform = "data/OT_platform/21.06/"
+ot_platform = "data/OT_platform/22.02/"
 ot_genetics = "data/OT_genetics/210608/"
 targetage = data_path+"targetage/"
 

@@ -10,6 +10,17 @@ An analysis of age-related disease targets using Open Targets Platform and Open 
 Open Targets Genetics [expands each lead variant](https://genetics-docs.opentargets.org/our-approach/assigning-traits-to-loci) (the variant with the most significant p-value) to include tag variants, representing a more complete set of potentially causal variants at a trait-associated locus. Where summary statistics are available, this expansion is performed using fine-mapping and credible-set analysis. Where only the lead variant is reported per locus, expansion is performed using Linkage Disequilibium (LD) analysis, with the 1000 Genomes Phase 3 (1KG) haplotype panel as a reference population. 
  
 
+# Step 1: spark_targetage.py
+
+This script:
+
+1. Reads in the data from Open Targets Platform, Open Targets Genetics, and the ARD list
+2. Expands the ARDs to include all ontological descendant terms, removing excluded therapeutic areas
+3. Gets all GWAS evidence and target annotations for ARDs 
+4. Gets all lead variants, summary statistics, and credible sets from these GWAS
+5. Generates edges between GWAS hits with potentially shared causal variants
+6. Saves output files in `data/targetage` 
+
 ## Data
 
 - `disease_list.csv` - A curated list of age-related diseases (ARDs), and the corresponding EFO-codes. Commented lines are ignored.
@@ -22,11 +33,8 @@ Open Targets Genetics [expands each lead variant](https://genetics-docs.opentarg
 knownDrugs - evidence from drugs with a known mechanism of action (MOA) and indication, that links a disease to a target
 
 
-
 ##### OT_genetics (json format)
 - `v2d_coloc` - colocalisation analysis result for each variant+studyId (GWAS-GWAS and GWAS-xQTL)
-
-
 
 ## Analysis
 
@@ -69,6 +77,51 @@ Where study 1 and study 2 both have summary statistics available, they can be co
 
 Where only the lead variants (not full summary statistics) are available for one or both studies, colocalisation analysis cannot be performed, and tag variant overlap is used instead. A trait-associated lead variant, SNP1, is considered to be part of the same signal as another lead variant, SNP2, if they are within 5MB of each other and any of the LD-defined tag variants are shared. 
 
+
+## Output files
+
+## Save output
+Output files saved from this analysis:
+
+- `full_disease_list.csv` - all ARDs including ontology descendents 
+- `targetage/ard_v2d.parquet` - V2D 
+- `targetage/ard_associations.parquet` - OT Platform association information for all ARD genes
+- `targetage/ard_annotations.parquet` - OT Platform annotations for all ARD genes
+- `targetage/coloc_ard_leads.parquet` - edges with colocalisation evidence
+- `targetage/overlap_ard_leads.parquet` - edges with overlapping tag variants 
+- `targetage/ard_leads.parquet` - all lead variants from ARD GWAS
+
+# Step 2: targetage_analysis.R
+
+Functions for this script are in `targetage_analysis_functions.R`
+
+This script:
+
+1. Reads and processes the output of `spark_targetage.py` (enforcing minimum GWAS study size)
+2. Summarises ancestry information for GWAS used
+3. Combines colocalisation and tag variant overlap edges to create a graph of each ARD individually and a graph of all ARDs
+4. Calculates the pairwise overlaps between ARDs and generates a heatmap
+5. Gets the most likely causal gene for each cluster via OT Genetics L2G
+6. Gets the genes associated with multimorbidity clusters (TargetAge Gene Set)
+
+### Intermediary files
+- `analysis/ard_leads_filtered.Rda` - ARD lead variants (filtered for GWAS size)
+- `analysis/overlaps_within.Rda` - overlaps between ARD GWAS hits
+- `analysis/overlaps_within.Rda` - overlaps with non-ARD traits
+- `analysis/qtl_coloc` - ARD hit colocalisations with xQTL studies
+- `analysis/graph_all_morbidities.Rda` - graph with all ARDs
+- `analysis/individual_disease_graphs.Rda` - graphs for each ARD individually
+- `analysis/individual_disease_n_communities.Rda` - number of communities in clusters in individual ARD graphs
+- `analysis/ltg_all.Rda` - L2G mappings for for all nodes (lead variants) in the graph
+- `analysis/l2g_qtl_coloc.Rda` - L2G mappings for all xQTLs that colocalise with ARD hits
+- `analysis/top_l2g.Rda` - top gene by L2G per lead variant
+- `analysis/targetage_geneids.Rda` - ENSEMBL IDs of TargetAge genes
+
+### Output files
+- `TargetAge/data/diseases_with_associations.Rda` - list of diseases with GWAS associations
+- 
+
+# Step 3: prepare_app_data.R
 
 
 \[<b id="f1">1</b>\] Ochoa et al., Open Targets Platform: supporting systematic drug–target identification and prioritisation, Nucleic Acids Research (2021) https://doi.org/10.1093/nar/gkaa1027 [↩](#a1)

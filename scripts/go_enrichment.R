@@ -13,7 +13,7 @@ genes <- read.table(file = "../top_L2G_genes.txt", col.names = c("ENSEMBL", "sym
 
 # 1.- Convert the gene_symbols to entrez_ids by using clusterprofiler
 gene_sets_list <- list(
-  TargetAge = bitr(gene_sets_entrez$TargetAge, fromType="ENSEMBL", toType="ENTREZID", OrgDb="org.Hs.eg.db")$ENTREZID,
+  TargetAge = clusterProfiler::bitr(gene_sets_entrez$TargetAge, fromType="ENSEMBL", toType="ENTREZID", OrgDb="org.Hs.eg.db")$ENTREZID,
   GenAgeHuman = as.character(gene_sets_entrez$GenAgeHuman),
   CellAge = as.character(gene_sets_entrez$CellAge)
 )
@@ -22,7 +22,6 @@ gene_sets_list <- list(
 cluster_compa_reactome <- compareCluster(geneCluster = gene_sets_list, fun = "enrichPathway")
 cluster_compa_go_BP <- compareCluster(geneCluster = gene_sets_list, fun = "enrichGO", OrgDb = "org.Hs.eg.db", ont = "BP")
 cluster_compa_go_MF <- compareCluster(geneCluster = gene_sets_list, fun = "enrichGO", OrgDb = "org.Hs.eg.db", ont = "MF")
-
 
 enrichment_theme <-  function(gp) {
   gp + 
@@ -42,7 +41,8 @@ save(p_reactome, file = "enrichment_plot_3.Rda")
 
 
 
-go_enrichment_simplified <- simplify(cluster_compa_go)
+
+go_enrichment_simplified <- simplify(cluster_compa_go_BP)
 dotplot(go_enrichment_simplified)
 dotplot(go_enrichment_simplified, 25)
 

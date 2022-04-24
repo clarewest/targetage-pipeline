@@ -1,4 +1,5 @@
 library(tidyverse)
+source("targetage_analysis_functions.R")
 
 ## Global settings
 default_save_dir = "data/analysis/"  # save location for intermediate Rda files
@@ -7,8 +8,8 @@ default_overwrite = FALSE            # if FALSE will load previously saved Rda f
 ###########################################################################
 ###########################################################################
 ###                                                                     ###
-###                       SECTION 2:                                    ###
-###                        ANALYSIS                                     ###
+###                       SECTION 1:                                    ###
+###                     Read in data                                    ###
 ###                                                                     ###
 ###########################################################################
 ###########################################################################
@@ -23,81 +24,57 @@ ard_leads <- get_lead_variants(overwrite = default_overwrite, input_file = "data
 d <- ard_leads$morbidity %>% unique()
 #save(d, file = "TargetAge/data/diseases_with_associations.Rda")
 
-### Look at ancestry of GWAS
-populations <- get_ancestries(ard_leads)
-# majority_population %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/sum(n)*100) %>% arrange(-p)
-
-### Update SI table in Google Drive with GWAS and cluster details
-# The list of ARDs, number of GWAS studies, and number of (lead) variants, proportion with summary statistics, number of communities
-genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_diseases)
-update_gs_genetics_table(genetics_tables)
-
 ### Overlaps between genetic associations
 overlaps <- get_overlaps(overwrite = default_overwrite, 
                          coloc_input_file = "data/targetage/coloc_ard_leads.parquet/part-00000-9479cf2c-da10-447a-ab81-7c1750b5bc78-c000.snappy.parquet",
                          overlap_input_file = "data/targetage/overlap_ard_leads.parquet/part-00000-5b27ad8f-95fb-4b3b-85a9-bc24c5e30ea1-c000.snappy.parquet")
 
-### Target details and genetic associations with each phenotype
-target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
-                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-f03d3aa7-99cf-479f-ac90-1dd5c9290dee-c000.snappy.parquet",
-                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-dedc1a1d-b894-441e-a7ef-8a31cdf3606a-c000.snappy.parquet",
-                                                   diseases = diseases)
+###########################################################################
+###########################################################################
+###                                                                     ###
+###                       SECTION 2:                                    ###
+###                     Graph analysis                                  ###
+###                                                                     ###
+###########################################################################
+###########################################################################
 
 ### Graph analysis
 g_all <- create_targetage_graph(overwrite = default_overwrite, save_dir = default_save_dir)
-
-n_multicommunities <- get_n_multicommunity_clusters(g_all)
-
-get_n_multicommunity_clusters <- function(g_all){
-  clustered <- g_all$cn %>% filter(!is.na(cluster))
-  all <- bind_rows(clustered %>% mutate(set = "all"),
-                   clustered %>% filter(n_morbidities > 1) %>% mutate(set = "multimorbidity"))
-  all %>% 
-    select(set, cluster, community) %>%
-    unique() %>% 
-    count(set, cluster) %>%
-    group_by(set) %>% 
-    summarise(total = length(cluster),
-              multicommunity = sum(n>1),
-              two_communities = sum(n==2),
-              single_community = sum(n==1)) %>%
-    mutate_at(.vars = c("multicommunity", "two_communities", "single_community"), 
-                 .funs = c(p = ~./total))
-}
 
 ## Get the number of clusters within a disease (i.e. number of individual signals)
 individual_diseases = get_diseases_individually(ard_leads, overlaps, overwrite = TRUE, save_dir = default_save_dir)
 
 ## Get the number of clusters with just one community
-
+n_multicommunities <- get_n_multicommunity_clusters(g_all)
 
 ### Calculate overlap between each combination of diseases 
 ft_all <- get_pairwise_overlaps(g_all)
-qq_plot <- get_qq_plot(ft_all)
-
-## need to update this figure
-get_qq_plot <- function(pairwise_overlaps){
-  x <- 10^(-seq(0,8,0.1))
-  y <- runif(100000)
-  df <- data.frame(x = -log10(x), y = -quantile(log10(pairwise_overlaps$p.value), probs = x), control = -quantile(log10(y), probs = x))
-  gg <- ggplot(data = df) + geom_point(aes(x = x, y = y)) + geom_abline(slope = 1)
-  gg
-}
+qq_plot <- get_qq_plot(ft_all, overwrite = TRUE)
 
 ## Make a heatmap
-shared_heatmap <- plot_shared_heatmap(ft_all, overwrite = FALSE)
-
-### Get L2G from Open Targets Genetics
-l2g_all_joined <- get_L2G(overwrite = default_overwrite)
-
-### Get details of xQTL colocalisation 
-l2g_qtl_coloc <- get_L2G_coloc(overwrite = default_overwrite)
+shared_heatmap <- plot_shared_heatmap(ft_all, detailed = FALSE, overwrite = FALSE)
+shared_heatmap <- plot_shared_heatmap(ft_all, detailed = TRUE, overwrite = FALSE)
 
 ### Table of clusters with number of nodes and morbidities
 tbl <- g_all$cn %>% 
   group_by(cluster, n_morbidities) %>% 
   summarise(nodes = length(id), morbidities = paste0(unique(morbidity), collapse = ", ")) %>% 
   arrange(-n_morbidities) %>% filter(!is.na(cluster))
+
+###########################################################################
+###########################################################################
+###                                                                     ###
+###                       SECTION 3:                                    ###
+###           Get genes for each cluster via OT L2G                     ###
+###                                                                     ###
+###########################################################################
+###########################################################################
+
+### Get L2G from Open Targets Genetics
+l2g_all_joined <- get_L2G(overwrite = default_overwrite)
+
+### Get details of xQTL colocalisation 
+l2g_qtl_coloc <- get_L2G_coloc(overwrite = default_overwrite)
 
 ## Top gene per lead variant 
 top_l2g <- l2g_all_joined %>%
@@ -112,7 +89,6 @@ top_l2g <- l2g_all_joined %>%
   top_n(-1, distanceToLocus) %>%
   slice(1)
 #save(top_l2g, file = paste0(default_save_dir, "top_l2g.Rda"))
-
 
 ## Add top gene to each node
 # NB this df contains a row for every node but L2G was only retrieved for nodes:
@@ -144,910 +120,237 @@ top_cluster_genes_summarised %>%
   count(n_clusters) %>% 
   mutate(prop = n/sum(n)*100)
 
-targetage <- top_cluster_genes_summarised$gene.id
+
+###########################################################################
+###########################################################################
+###                                                                     ###
+###                       SECTION 4:                                    ###
+###                   Tables etc for paper                              ###
+###                                                                     ###
+###########################################################################
+###########################################################################
+
+
+### Look at ancestry of GWAS
+populations <- get_ancestries(ard_leads)
+populations %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/sum(n)*100) %>% arrange(-p)
+
+### Update SI table in Google Drive with GWAS and cluster details
+# The list of ARDs, number of GWAS studies, and number of (lead) variants, proportion with summary statistics, number of communities
+genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_diseases)
+update_gs_genetics_table(genetics_tables)
+
+
+###########################################################################
+###########################################################################
+###                                                                     ###
+###                       SECTION 4:                                    ###
+###          TargetAge genes annotations and tractability               ###
+###                                                                     ###
+###########################################################################
+###########################################################################
+
+
+### Target details and genetic associations with each phenotype
+target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
+                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-f3590b7c-ee8d-4add-ac67-b59df89b6a02-c000.snappy.parquet",
+                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-f300aece-6912-401d-8d61-13072f0d6162-c000.snappy.parquet",
+                                                   go_input_file = "data/full_goterm_list.csv",
+                                                   diseases = diseases)
+
+
+# all multimorbidity genes from clusters
+targetage_all <- top_cluster_genes_summarised$gene.id 
+
+## protein coding and has OT annotations
+targetage <- targetage_all[targetage_all %in% target_annotations$targetId]
+targetage_cluster_summarised = subset(top_cluster_genes_summarised, gene.id %in% targetage)
+
+targetage_cluster_summarised %>% 
+  ungroup() %>% 
+  count(n_clusters) %>% 
+  mutate(prop = n/sum(n)*100)
+
+targetage_annotations <- target_annotations %>% filter(targetId %in% targetage)
+
+#write.table(targetage_cluster_summarised, file = paste0(default_save_dir, "top_L2G_genes.txt"), sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
 #save(targetage, file = paste0(default_save_dir, "targetage_geneids.Rda"))
+load(file = paste0(default_save_dir, "targetage_geneids.Rda"))
 
-#write.table(top_cluster_genes_summarised, file = paste0(default_save_dir, "top_L2G_genes.txt"), sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
 
-#top_l2g <- read.table(file = "top_L2G_genes.txt")
+###################################################
+## Overlap with GenAge and CellAge and Hallmarks ##
+###################################################
 
-## Look at tractability
+## Get gene sets
+gene_sets = get_gene_sets(overwrite = default_overwrite)
+gene_sets_entrez = get_entrez_gene_sets(overwrite = default_overwrite)
 
-targetage_tract <- target_annotations %>% filter(targetId %in% targetage) %>% jsonlite::flatten()
-tract_plot_data <- targetage_tract %>% 
-  mutate(tractability.other_modalities.top_category = ifelse(tractability.other_modalities.categories.clinical_precedence > 0, "Clinical_Precedence", NA)) %>% 
-  select(targetId, ends_with("top_category")) %>% 
-  pivot_longer(-targetId, names_to = "modality", values_to = "top_category") %>% 
-  count(modality, top_category) %>% 
-  mutate(modality = gsub(".*[.]([^.]+)[.].*", "\\1", modality), top_category = gsub("_", " ", top_category)) %>% 
-  mutate(top_category = gsub("le ab", "le \n", top_category), top_category = gsub(" sm", "", top_category), top_category = gsub(" ab", "", top_category)) 
+## Venn Diagram of overlaps
+gplots::venn(gene_sets[1:3])
 
-tractability_plot <- ggplot(tract_plot_data, aes(x=modality, y = n, fill = top_category, label = ifelse(n>10, paste0(top_category, " (", n, ")"), NA))) + 
+## Test overlaps
+cellage_overlap = test_overlap(gene_sets, "TargetAge", "CellAge")
+genage_overlap = test_overlap(gene_sets, "TargetAge", "GenAge")
+hallmarks_overlap = test_overlap(gene_sets, "TargetAge", "Hallmarks")
+hallmarks_a_overlap = test_overlap(gene_sets, "ARDs", "Hallmarks")
+hallmarks_g_overlap = test_overlap(gene_sets, "GenAge", "Hallmarks")
+hallmarks_c_overlap = test_overlap(gene_sets, "CellAge", "Hallmarks")
+
+
+
+###################################################
+##                  Enrichment                   ##
+###################################################
+
+all_enriched <- perform_enrichment(overwrite = default_overwrite)
+
+top_enriched <- all_enriched %>% 
+  filter(set != "Reactome") %>% 
+  group_by(set, Cluster) %>% slice_min(p.adjust, n = 10)
+plot_enriched <- all_enriched %>% filter(ID %in% top_enriched$ID)
+
+ggplot(plot_enriched, aes(x=Cluster, y = reorder(Description, p.adjust))) + geom_point() + facet_wrap(~set, ncol = 1, strip.position = "right", scales = "free_y") + theme_bw()
+
+hallmark_terms <- read.csv("data/full_goterm_list.csv")
+clusterprofiler_enriched_hallmarks <- all_enriched %>% filter(ID %in% hallmark_terms$goId) %>% filter(p.adjust<0.05)
+
+###################################################
+##                  Enrichment                   ##
+###################################################
+
+## Hallmarks
+targetage_hallmarks <- targetage_annotations %>% select(targetId, ageingHallmarks) %>% unnest(ageingHallmarks)
+
+hallmark_counts <- get_hallmark_counts(targetage_hallmarks, overwrite = default_overwrite)
+
+enriched_hallmarks <- enrich_hallmarks(gene_sets) 
+
+hallmarks_barplot <- plot_hallmarks_barplot(enriched_hallmarks, overwrite = default_overwrite)
+hallmarks_barplot_ta <- plot_mini_hallmarks_barplot(enriched_hallmarks, overwrite = default_overwrite)
+
+
+## OT Tractability
+
+targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
+
+get_subset_annotations <- function(annotations, genes = targetage, field){
+    annotations %>% 
+    filter(targetId %in% genes) %>% 
+    dplyr::select(targetId, targetSymbol, all_of(field)) %>%
+    hoist(field) %>% 
+    unnest(field)
+}
+
+# N with approved drug:
+tractability_wide <- targetage_tract %>% group_by(targetSymbol, modality, id) %>% pivot_wider(names_from = "id", values_from = "value")
+## get categories
+tractability_classifications <- 
+tractability_wide %>% 
+  mutate(
+    `Clinical_Precedence` = any(`Approved Drug`, `Advanced Clinical`, `Phase 1 Clinical`) == TRUE,
+    `Discovery_Opportunity` = any(`Structure with Ligand`, `High-Quality Ligand`, `UniProt Ubiquitination`, `Database Ubiquitination`, `Half-life Data`, `Small Molecule Binder`) == TRUE,
+    `Literature_Precedence` = any(`Literature`) == TRUE,
+    `Predicted_Tractable` = any(`High-Quality Pocket`, `Med-Quality Pocket`, `Druggable Family`) == TRUE,
+    `Predicted_Tractable_(H)` = any(`GO CC high conf`, `UniProt loc high conf`) == TRUE,
+    `Predicted_Tractable_(M/L)` = any(`UniProt loc med conf`, `UniProt SigP or TMHMM`, `GO CC med conf`) == TRUE,
+    `No_Evidence` = TRUE
+    ) %>% 
+  select(targetId, targetSymbol, modality, contains("_"))
+
+classes = c("Clinical_Precedence", "Literature_Precedence", "Discovery_Opportunity", "Predicted_Tractable", "Predicted_Tractable_(H)", "Predicted_Tractable_(M/L)", "No_Evidence" )
+
+class_order = data.frame(
+  name = factor(classes, levels = classes),
+  priority = c(1:length(classes))
+)
+
+tractability_classifications_long <- tractability_classifications %>% pivot_longer(-c(targetId, targetSymbol, modality)) %>% right_join(class_order)
+tractability_classifications_top <- tractability_classifications_long %>% group_by(targetId, targetSymbol, modality) %>% filter(value==TRUE) %>% slice(which.min(priority))
+tractability_classifications_summary <- tractability_classifications_top %>% 
+  ungroup() %>% group_by(modality) %>% 
+  count(name) %>% 
+  rename(top_category = "name") %>%
+  mutate(modality = factor(modality, levels = c("SM", "AB", "PR", "OM")),
+         top_category = factor(gsub("_", " ", top_category), levels = gsub("_", " ", classes)))
+
+tractability_plot <- 
+  tractability_classifications_summary %>% 
+  filter(modality != "OM") %>% 
+  ggplot(., aes(x=modality, y = n, fill = top_category, label = ifelse(n>10, paste0(top_category, " (", n, ")"), NA))) + 
   geom_col() + 
   geom_text(colour = "white", position = position_stack(vjust = 0.5), size = 3) + 
-  theme_bw() + 
+  theme_classic() + 
   theme(legend.position = "bottom", panel.grid=element_blank(), axis.title.x = element_blank()) + 
   scale_y_continuous(expand = c(0,0)) + 
-  scale_x_discrete(limits = c("smallmolecule", "antibody", "other_modalities"), labels = c("Small Molecule", "Antibody", "Other Modalities")) + 
-  guides(fill = FALSE) + 
+  scale_x_discrete(limits = c("SM", "AB", "PR"), labels = c("Small Molecule", "Antibody", "PROTAC")) + 
+  scale_fill_manual(values = c(viridis::viridis(7)[1:6], "grey")) + 
+  guides(fill = "none") + 
   labs(y = "Number of targets", subtitle = "Open Targets Target Tractability Assessment")
 
-tdb <- readxl::read_excel("data/targetDB/Export_644_entries_15Jun2021_105820.xlsx", skip = 1)
-tdb_plot <- tdb %>% 
-  group_by(Tractable, Pharos_class) %>% 
-  count() %>%
-  mutate(Tractable = factor(Tractable, levels = c("Tractable", "Challenging", "Intractable")),
-         Pharos_class = factor(Pharos_class, levels = c("Tdark", "Tbio", "Tchem", "Tclin"))) %>% 
-  ggplot(., aes(x = Tractable, fill = Pharos_class, y = n, label = ifelse(n>3, paste0(Pharos_class, " (", n, ")"), NA))) + 
-  geom_col() + 
-  theme_bw() + 
-  scale_fill_discrete("Pharos class") + 
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) + 
-  geom_text(colour = "white", position = position_stack(vjust = 0.5), size = 3) + 
-  guides(fill = FALSE) +
-  theme(panel.grid = element_blank()) +
-  labs(y = "Number of targets", x = "Predicted Tractability Classification", subtitle = "TargetDB Target Tractability Assessment")
 
-tract_fig <- tractability_plot + tdb_plot + plot_annotation(tag_levels = 'a')
-ggsave(tract_fig, width = 12, height = 4.1, dpi = 300, file = paste0(default_save_dir, "fig3.png"))
-ggsave(tract_fig, width = 12, height = 4.1, file = paste0(default_save_dir, "fig3.pdf"))
-
-###########################################################################
-###########################################################################
-###                                                                     ###
-###                       SECTION 1:                                    ###
-###                       FUNCTIONS                                     ###
-###                                                                     ###
-###########################################################################
-###########################################################################
-
-
-## Processing data from Open Targets 
-get_lead_variants <- function(overwrite = FALSE, input_file, save_dir = default_save_dir){
-  if (overwrite){
-    library(arrow)
-    
-    min_n_cases = 2000    ## min n cases for case control studies
-    min_n_initial = 2000  ## min sample size for continuous traits
-    
-    ## All lead variant data for ARDs
-    ard_leads_all <- arrow::read_parquet(input_file)
-    
-    ## Filter out small GWAS studies
-    ard_leads <- filter(ard_leads_all, (n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases))
-    
-    ## Save output 
-    save(ard_leads, file = paste0(save_dir, "ard_leads_filtered.Rda"))
-  }
-  else {
-    # Load preprepared leads 
-    load(paste0(save_dir, "ard_leads_filtered.Rda"))
-  }
-  return(ard_leads)
-}
-
-## Look at ancestry of GWAS studies
-get_ancestries <- function(ard_leads) {
-  ancestries <-
-    ard_leads %>% 
-    select(studyId, ancestry_initial) %>% 
-    unique() %>% 
-    unnest(ancestry_initial) %>% 
-    separate(ancestry_initial,
-             into = c("ancestry", "n"),
-             sep = "=") %>% 
-    group_by(studyId) %>% 
-    mutate(n = as.numeric(n),
-           total = sum(n),
-           proportion = n / total)
-  majority_population <-
-    ancestries %>% 
-    group_by(studyId) %>% 
-    top_n(1, proportion) %>%
-    mutate(single_population = ifelse(proportion == 1, TRUE, FALSE))
-  return(majority_population)
-}
-
-## Get total replicated and single nodes
-get_n_unique_genetic_hits <- function(g, curr_morbidity){
-  if (nrow(g$edges)>0){
-  ## get number of nodes in each cluster
-  replicated <- sum(!is.na(unique(g$cn$cluster)))
-  # how many nodes aren't in a cluster i.e. don't overlap with any other nodes (i.e. unreplicated) 
-  singles <- g$cn %>% filter(is.na(cluster)) %>% nrow()
-  } else {
-    replicated <- 0
-    singles <- nrow(g$nodes)
-  }
-  n_genetic_hits <- data.frame(morbidity = curr_morbidity, replicated = replicated, single = singles, total = replicated + singles)
-  return(n_genetic_hits)
-}
-
-## For each disease, get the graph and count clusters
-get_diseases_individually <- function(ard_leads, overlaps, overwrite = FALSE, save_dir = default_save_dir){
-  individual_graphs <- list()
-  individual_communities <- data.frame()
-  if (overwrite){
-    d <- ard_leads$morbidity %>% unique()
-    for (i in seq_along(d)){
-      individual_graphs[[i]] <- count_communities(d[i], ard_leads, overlaps$coloc_within, overlaps$overlap_within, min_jaccard = 0, plot = FALSE, detect_subgraph_communities = FALSE)
-      n_unique_genetic_hits <- get_n_unique_genetic_hits(individual_graphs[[i]], d[i])
-      individual_communities <- individual_communities %>% bind_rows(n_unique_genetic_hits)
-    }
-    save(individual_graphs, file = paste0(save_dir, "individual_disease_graphs.Rda"))
-    save(individual_communities, file = paste0(save_dir, "individual_disease_graphs.Rda"))
-  } else {
-    load(paste0(save_dir, "individual_disease_graphs.Rda"))
-    load(paste0(save_dir, "individual_disease_n_communities.Rda"))
-  }
-  return(list("individual_graphs" = individual_graphs, 
-              "individual_communities" = individual_communities))
-}
-
-## Get the details for a table on number, size, etc of GWAS
-get_genetics_table <- function(ard_leads, diseases, g_all, individual_diseases){
-  ard_studies <- ard_leads %>% 
-    select(studyId, 
-           n_cases, 
-           n_initial) %>%
-    unique() %>%
-    mutate(diseaseName = "Total", morbidity = "Total")
-  
-  study_size <- ard_leads %>% 
-    select(morbidity, 
-           diseaseName, 
-           studyId, 
-           n_cases, 
-           n_initial) %>% 
-    group_by(diseaseName) %>% 
-    bind_rows(ard_studies) %>% 
-    summarise_at(.vars = "n_initial", 
-                 .funs = c("min", "max", "median"))
-  
-  total_gwas_tbl <- ard_leads %>% 
-    select(studyId, lead_variantId, has_sumstats) %>%
-    unique() %>%
-    group_by(studyId) %>% 
-    summarise(has_sumstats = max(has_sumstats), 
-              n_variants = length(studyId)) %>% 
-    ungroup() %>% 
-    summarise(n_gwas_studies = length(studyId), 
-              n_variants = sum(n_variants), 
-              has_sumstats = sum(has_sumstats)) %>%
-    mutate(diseaseName = "Total", morbidity="Total")
-  
-  gwas_tbl <- 
-    ard_leads %>% 
-    group_by(diseaseId, 
-             diseaseName,
-             morbidity, 
-             specificDiseaseId, 
-             specificDiseaseName, 
-             studyId)  %>% 
-    summarise(has_sumstats = max(has_sumstats), 
-              n_variants = length(studyId)) %>% 
-    ungroup() %>% 
-    group_by(diseaseId, diseaseName, morbidity, specificDiseaseId, specificDiseaseName) %>% 
-    summarise(n_gwas_studies = length(specificDiseaseName), 
-              has_sumstats = sum(has_sumstats), 
-              n_variants = sum(n_variants))
-  
-  summarised_gwas_tbl <- 
-    gwas_tbl %>% 
-    ungroup() %>% 
-    group_by(diseaseName, morbidity,) %>% 
-    summarise(n_gwas_studies = sum(n_gwas_studies), 
-              has_sumstats = sum(has_sumstats), 
-              n_variants = sum(n_variants)) %>% 
-    bind_rows(total_gwas_tbl) %>% 
-    mutate(has_sumstats = paste0(has_sumstats, 
-                                 " (", 
-                                 round((has_sumstats/n_gwas_studies)*100), 
-                                 "%)")) %>% 
-    left_join(study_size) %>% 
-    full_join(ard_leads %>% 
-                select(diseaseName, morbidity) %>% 
-                unique()) %>%
-    full_join(bind_rows(individual_diseases$individual_communities,
-                        get_n_unique_genetic_hits(g_all, "Total"))) %>%
-    select(-morbidity) %>%
-    select(diseaseName, n_gwas_studies, has_sumstats, min, max, median, n_variants, everything())
-  
-  full_gwas_tbl <- gwas_tbl %>% 
-    full_join(diseases) %>% 
-    ungroup() %>% 
-    select(-therapeuticAreas, -morbidity) %>%
-    filter(!is.na(n_gwas_studies) | diseaseId == specificDiseaseId) %>%
-    arrange(diseaseName) 
-  return(list("summarised" = summarised_gwas_tbl, "full" = full_gwas_tbl))
-}
-
-## Upload to google drive
-update_gs_genetics_table <- function(genetics_tables){
-  library(googlesheets4)
-  gs4_create("SITable1", sheets = genetics_tables$summarised)
-  gs4_create("SITable2", sheets = genetics_tables$full)
-}
-
-get_overlaps <- function(overwrite = FALSE, coloc_input_file, overlap_input_file, save_dir = default_save_dir){
-  if (overwrite){
-    library(arrow)
-    library(data.table) 
-    
-    min_n_cases = 2000    ## min n cases for case control studies
-    min_n_initial = 2000  ## min sample size for continuous traits
-    
-    ### Colocalisation data 
-    coloc <- arrow::read_parquet(coloc_input_file, as_tibble=TRUE)
-    
-    ### Overlap data
-    overlap <- arrow::read_parquet(overlap_input_file, as_data_frame = TRUE)
-    
-    ### Filter out small GWAS studies
-    overlap <- overlap %>% 
-      filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
-      filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases)) %>%
-      filter(!is.na(right_is_lead)) %>% ## one variant is NA for this: GCST006288 11_86942946_G_A
-      as.data.table() 
-    
-    ## All the colocalisation where the right hand variant is the lead variant (so we have one node per associated locus)
-    lead_coloc <- coloc %>% filter(right_is_lead == TRUE) 
-    
-    ## All the colocalisation hits where the right hand study is an xQTL study, for later
-    qtl_coloc <- coloc %>% filter(right_type %in% c("eqtl", "pqtl"))
-    
-    ## All the hits within the ARDs (i.e. both studies are for ARDs)
-    coloc_within <- lead_coloc %>% 
-      filter(!is.na(right_morbidity)) %>% 
-      filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
-      filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases))
-    overlap_within <- overlap[!is.na(right_morbidity)] %>% as.data.frame()
-    
-    ## All the hits with traits other than our ARDs of interest
-    coloc_without <- lead_coloc %>% 
-      filter(is.na(right_morbidity)) %>% 
-      filter((n_cases >= min_n_cases) | (is.na(n_cases) & n_initial >= min_n_cases)) %>%
-      filter((right_n_cases >= min_n_cases) | (is.na(right_n_cases) & right_n_initial >= min_n_cases))
-    overlap_without <- overlap[is.na(right_morbidity)] %>% as.data.frame()
-    
-    ## overlaps
-    overlaps <- list("overlap_within" = overlap_within, "coloc_within" = coloc_within)
-    overlaps_without <- list("overlap_without" = overlap_without, "coloc_without" = coloc_without)
-    
-    ## save output 
-    save(overlaps, file = paste0(save_dir, "overlaps_within.Rda"))  
-    save(overlaps_without, file = paste0(save_dir, "overlaps_without.Rda"))
-    save(qtl_coloc, file = paste0(save_dir, "qtl_coloc"))
-  }
-  else {
-    load(paste0(save_dir, "overlaps_within.Rda"))
-  }
-  return (overlaps)
-}
-
-get_associations_annotations <- function(overwrite = FALSE, annotations_input_file, associations_input_file, save_dir = default_save_dir, diseases){
-  if (overwrite){
-    library(arrow)
-    ## Target details from Open Targets
-    targets <- arrow::read_parquet(annotations_input_file, as_tibble=TRUE)
-    
-    ## Get ids of the top level diseases to get association scores
-    top_level_disease_ids <- diseases %>% 
-      filter(diseaseId == specificDiseaseId) %>% 
-      pull(diseaseId)
-    
-    ## Associations
-    associations <- arrow::read_parquet(associations_input_file, as_tibble=TRUE) %>% 
-      filter(diseaseId %in% top_level_disease_ids) %>% 
-      mutate_if(is.numeric, round, 2) 
-    
-    ## Which morbidity has the largest number of literature associations
-    max_literature_counts <- associations %>% 
-      select(targetId, morbidity, literatureCount) %>% 
-      group_by(targetId) %>% 
-      slice(which.max(literatureCount)) %>% 
-      rename(maxLiteratureEvidencePhenotype = morbidity, maxLiteratureEvidenceCount = literatureCount)
-  
-    ## genetic associations
-    genetic_associations <- associations %>%
-      select(targetId, morbidity, genetic_association) %>%
-      pivot_wider(names_from = morbidity, values_from = genetic_association) %>%
-      left_join(max_literature_counts, by = "targetId")
-      
-    ## go terms mapped to hallmarks of ageing 
-    go_terms <- read.csv("data/full_goterm_list.csv")
-    
-    target_go <- targets %>% 
-      select(targetId, go) %>% 
-      unnest_wider(go) %>% 
-      unnest(c(id, value), keep_empty = TRUE) %>%
-      rename(goId = id) %>%
-      left_join(go_terms) 
-    
-    save(target_go, file = paste0(save_dir, "targets_all_go.Rda"))
-    
-    
-    ## need to make this not hardcoded - also doesn't really need to be in this function?
-    
-    
-    ## Read in data from GenAge, CellAge
-    load(paste0(save_dir,"genage.Rda"))
-    load(paste0(save_dir,"cellage.Rda"))
-    
-    # number of protein-coding genes in OT (need to find out)
-    in_TA = 646
-    in_GA = 307
-    in_TA_GA = 19
-    n_OT = 19938   ## Version 21.06
-    
-    genage_dat <- data.frame(
-      "in_TA" = c(in_TA_GA, in_TA - in_TA_GA),
-      "not_in_TA" = c(in_GA - in_TA_GA, n_OT - in_TA - in_GA + in_TA_GA),
-      row.names = c("in_GA", "not_in_GA"),
-      stringsAsFactors = FALSE
-    )
-    fisher.test(genage_dat)$p.value 
-    
-    in_CA = nrow(cellage)
-    in_TA_CA = 21
-    
-    cellage_dat <- data.frame(
-      "in_TA" = c(in_TA_CA, in_TA - in_TA_CA),
-      "not_in_TA" = c(in_CA - in_TA_CA, n_OT - in_TA - in_CA + in_TA_CA),
-      row.names = c("in_CA", "not_in_CA"),
-      stringsAsFactors = FALSE
-    )
-    fisher.test(genage_dat)$p.value 
-         
-    ## Target annotations of interest to us
-    target_annotations <- targets %>% 
-      select(targetId, targetSymbol, targetName, bioType, hgncId, chemicalProbes, symbolSynonyms, tractability, safety, tep) %>% 
-      jsonlite::flatten() %>% 
-      left_join(max_literature_counts) %>%
-      left_join(genetic_associations) %>%
-      left_join(cellage %>% group_nest(targetSymbol, .key = "CellAge")) %>% 
-      left_join(genage %>% group_nest(targetSymbol, .key = "GenAge")) %>%
-      left_join(target_go %>% 
-                  filter(!is.na(goHallmarkId)) %>% 
-                  group_nest(targetId, .key = "ageingHallmarks"))
-    
-    save(target_annotations, file = paste0(save_dir, "target_annotations.Rda"))
-    
-  } else {
-    load(file = paste0(save_dir, "target_annotations.Rda"))
-  }
-  
-  return(target_annotations)
-}
-
-## Just to get nice colours for the graphs
-gg_color_hue <- function(n) {
-  hues = seq(15, 375, length = n + 1)
-  hcl(h = hues, l = 65, c = 100)[1:n]
-}
-
-## Prepares edges and nodes for the graph for a given ARD(s)
-gwas_graph <- function(curr_morbidities, curr_variants, curr_coloc, curr_overlap, min_jaccard = 0, plot = TRUE, id = NULL) {
-  library(visNetwork)
-  library(igraph)
-  
-  g <- list()
-  
-  g$id <- id
-  
-  # Different colours for ARDs
-  g$colours <-
-    data.frame(color = gg_color_hue(length(curr_morbidities)), morbidity = curr_morbidities)
-  # Get variants and overlaps just for the ARD(s) of interest
-  m_variants <- curr_variants %>% filter(morbidity %in% curr_morbidities)
-  m_overlap <-
-    curr_overlap %>% filter(morbidity %in% curr_morbidities &
-                              right_morbidity %in% curr_morbidities)
-  m_coloc <-
-    curr_coloc %>% filter(morbidity %in% curr_morbidities &
-                            right_morbidity %in% curr_morbidities)
-  
-  # Edges: where two studyId+variantId have at least one overlapping tag variant
-  g$edges <-
-    m_overlap %>%
-    # minimum overlap criteria 
-    filter((LR_overlap / (right_distinct + lead_distinct + LR_overlap)) >= min_jaccard) %>% 
-    mutate(
-      from = paste(studyId, lead_variantId, sep = "."),
-      to = paste(right_studyId, right_variantId, sep = ".")
-    ) %>%
-    # remove self-edges
-    filter(from != to) %>%
-    # dashed edge if both have sum stats (therefore will have coloc data)
-    # we will use these edges for visualisation but not for calculating clusters 
-    mutate(dashes = ifelse(has_sumstats == TRUE & right_has_sumstats, TRUE, FALSE)) %>%
-    select(from, to, morbidity, dashes) %>%
-    left_join(g$colours, by = "morbidity") 
-  
-  # Edges: where two studyId+variantId are colocalised (edges in black)
-  g$coloc_edges <-
-    m_coloc %>%
-    mutate(
-      from = paste(studyId, lead_variantId, sep = "."),
-      to = paste(right_studyId, right_variantId, sep = ".")
-    ) %>%
-    filter(from != to) %>%
-    select(from, to, morbidity) %>%
-    mutate(color = "black", dashes = FALSE)
-  
-  # Each node is a studyId+variantId
-  # Make a label with the variant, reported trait, and n_cases
-  g$nodes <- m_variants %>%
-    mutate(id = paste(studyId, lead_variantId, sep = ".")) %>%
-    select(id,
-           studyId,
-           lead_variantId,
-           morbidity,
-           has_sumstats,
-           n_cases,
-           trait_reported,
-           direction) %>%
-    unique() %>%
-    left_join(g$colours, by = "morbidity") %>%
-    mutate(label = paste0(lead_variantId, "\n", trait_reported, " (", n_cases, ") ", direction)) %>%
-    group_by(id) %>%
-    mutate(n=length(morbidity)) %>% 
-    mutate(morbidity = paste0(morbidity, collapse="+")) %>%
-    mutate(color = ifelse(n==1, color, "black")) %>%
-    slice(1) %>%
-    select(-n)
-  
-  if (plot){
-    # Make the plot
-    g$plot <-
-      visNetwork(
-        g$nodes,
-        bind_rows(g$edges, g$coloc_edges),
-        main = curr_morbidities,
-        height = "1000px",
-        width = "100%"
-      ) %>% 
-      visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
-      visIgraphLayout()
-  }
-  return(g)
-}
-
-## Makes the graph and counts the number of disconnected clusters and communities within a disconnected cluster
-count_communities <- function(curr_morbidities, detect_subgraph_communities = FALSE, ...) {
-  ## get relevant edges and nodes
-  g <- gwas_graph(curr_morbidities, ...)
-  if (nrow(g$edges) > 0) {
-    ## make an igraph object
-    g$ig <- graph_from_data_frame(
-      bind_rows(
-        subset(g$edges, dashes == FALSE),  ## overlap edges one or both studies don't have sumstats
-        g$coloc_edges),                    ## colocalisation edges otherwise (both have sumstats)
-      directed = FALSE)
-    ## get clusters
-    clusters <- clusters(g$ig)
-    overall_communities <- cluster_louvain(g$ig, weights = NA)
-    V(g$ig)$cluster <- clusters$membership
-    V(g$ig)$overall_community <- overall_communities$membership
-    
-    # detect communities in connected component subgraphs
-    if (detect_subgraph_communities == TRUE){
-      V(g$ig)$community = 0
-      for (component in unique(clusters$membership)) {
-        g_component_subgraph <-
-          induced_subgraph(g$ig, which(clusters$membership == component))
-        m <- cluster_louvain(g_component_subgraph)
-        V(g$ig)[V(g_component_subgraph)$name]$community = m$membership + max(V(g$ig)$community)
-      }
-    }
-    
-    ## add cluster ID, cluster size, and n_morbidities to nodes dataframe
-    n <- get.data.frame(g$ig, what = "vertices")
-    g$cn <- g$nodes %>%
-      left_join(n, by = c("id" = "name")) %>%
-      group_by(cluster) %>%
-      mutate(c_size = ifelse(is.na(cluster), NA, length(id)),
-             n_morbidities = length(unique(morbidity)))
-    g$clusters <-
-      g$cn %>% 
-      group_by(cluster, n_morbidities, morbidity) %>% 
-      count() %>% 
-      pivot_wider(names_from = "morbidity", values_from = n)
-    if (length(curr_morbidities) == 2) {
-      ## remove nodes with both morbidity
-      ## get number of nodes for each morbidity in each cluster
-      tmp <-
-        g$cn %>% 
-        filter(str_detect(morbidity, "\\+", negate = TRUE)) %>% 
-        group_by(cluster, n_morbidities, morbidity) %>% 
-        count()
-      ## how many nodes aren't in a cluster i.e. don't overlap with any other nodes (i.e. unreplicated) for each morbidity
-      singles <-
-        tmp %>% 
-        ungroup() %>% 
-        filter(is.na(cluster)) %>% 
-        select(morbidity, single = n)
-      ## for clusters, how many consist of just one morbidity (distinct) and how many contain both (shared)
-      shared <- tmp %>%
-        # remove single nodes (accounted for in `singles` above)
-        filter(!is.na(cluster)) %>% 
-        select(-n) %>%
-        # clusters with more than 2 morbidities include nodes from GWAS studies involving both morbidity A and B together, so treat these as 2 (i.e. `shared`)
-        mutate(n_morbidities = ifelse(n_morbidities > 1, 2, n_morbidities)) %>% 
-        group_by(morbidity, n_morbidities) %>%
-        count() %>%
-        mutate(n_morbidities = recode(n_morbidities, `1` = "distinct", `2` = "shared")) %>% 
-        pivot_wider(names_from = n_morbidities, values_from = n) %>%
-        full_join(singles)
-      if (nrow(shared) == 0) {
-        shared <-
-          data.frame(morbidity = curr_morbidities) %>% 
-          mutate(distinct = 0, shared = 0) %>% left_join(singles)
-      }
-      g$overlap <- shared %>%
-        ungroup() %>%
-        rename(morbidity_A = morbidity) %>%
-        mutate(morbidity_B = rev(.$morbidity_A)) %>%
-        inner_join(
-          shared %>% 
-            rename(morbidity_B = morbidity),
-          by = "morbidity_B",
-          suffix = c("_A", "_B")
-        )
-    }
-  } else {
-    if (length(curr_morbidities) == 2) {
-      singles <-
-        g$nodes %>% 
-        group_by(morbidity) %>% 
-        count(name = "single")
-      shared <-
-        data.frame(morbidity = curr_morbidities) %>% 
-        mutate(distinct = 0, shared = 0) %>% 
-        left_join(singles)
-      g$overlap <- shared %>%
-        rename(morbidity_A = morbidity) %>%
-        mutate(morbidity_B = rev(.$morbidity_A)) %>%
-        inner_join(
-          shared %>% 
-            rename(morbidity_B = morbidity),
-          by = "morbidity_B",
-          suffix = c("_A", "_B")
-        )
-    }
-  }
-  return(g)
-}
-
-## Create a graph with all morbidities
-create_targetage_graph <- function(overwrite = FALSE, save_dir, ...){
-  library(visNetwork)
-  library(igraph)
-  
-  if (overwrite) {
-    g_all <- count_communities(d, ard_leads, overlaps$coloc_within, overlaps$overlap_within, min_jaccard = 0, detect_subgraph_communities = TRUE, plot = FALSE, id = "targetage")
-    save(g_all, file = paste0(save_dir, "graph_all_morbidities.Rda"))
-  } else {
-    load(paste0(save_dir, "graph_all_morbidities.Rda"))
-  }
-  return(g_all)
-}
-
-get_pairwise_overlaps <- function(g){
-  ## get morbidities in each cluster (excluding nodes with multiple morbidities)
-  tmp_mat <- g$clusters %>% 
-    ungroup() %>% 
-    filter(!is.na(cluster)) %>% ## unclustered nodes
-    select(-cluster, -n_morbidities, -contains("+"))  %>% 
-    as.matrix()
-  morbidities_per_cluster <- lapply(seq(nrow(tmp_mat)), function(i) names(which(tmp_mat[i,] > 0)))
-  # get all possible pairwise combinations 
-  pairwise_combinations <- gtools::combinations(n = ncol(tmp_mat), r = 2, colnames(tmp_mat))
-  # count how many times each pair appears together in a cluster 
-  count <- apply(pairwise_combinations, 1, function(x){
-    shared_clusters <- lapply(x, function(y) sapply(morbidities_per_cluster, `%in%`, x = y))
-    sum(Reduce(`&`, shared_clusters))
-  })
-  #n_pairwise_shared_clusters <- cbind(data.frame(all.pairs, count))[count > 0,] 
-  n_pairwise_shared_clusters <- cbind(data.frame(pairwise_combinations, count)) 
-  
-  # join with total number of clusters for each morbidity
-  overall_n_clusters <- g$clusters %>% 
-    ungroup() %>% 
-    filter(!is.na(cluster)) %>% 
-    select(-n_morbidities, -contains("+")) %>% 
-    pivot_longer(-cluster) %>% 
-    group_by(name) %>% 
-    summarise(X_overall = sum(value>0, na.rm = TRUE)) %>% 
-    mutate(Y_overall = X_overall)
-  pairwise_shared <- n_pairwise_shared_clusters %>% 
-    data.frame() %>% 
-    left_join(select(overall_n_clusters, name, X_overall) , by = c("X1" = "name")) %>% 
-    left_join(select(overall_n_clusters, name, Y_overall), by = c("X2" = "name")) %>% 
-    rename(X = X1, Y = X2) %>%
-    mutate(total = nrow(tmp_mat))
-  
-  ## calculate significance of overlap
-  n_tests <- nrow(pairwise_combinations)
-  
-  ## Do I correct using the total number of pairs (possible tests) or the number of tests I actually perform? I guess getting 
-  ft_all <- pairwise_shared %>% 
-    rowwise() %>% 
-    mutate(p.value = get_fishers_exact(overlap = count, morb_x_overall = X_overall, morb_y_overall = Y_overall, total = total)) %>%
-    ungroup() %>% 
-    mutate(p.adjust = p.adjust(p.value, method = "BH", n = n_tests))   # n tests
-  # mutate(p.adjust = p.adjust(p.value, method = "BH", n = nrow(.)))   # n possible pairs
-  
-  return(ft_all)
-}
-
-## One-sided fishers exact test for overlapping clusters between 
-## pairwise combination of morbidities
-get_fishers_exact <- function(overlap, morb_x_overall, morb_y_overall, total, alternative = "greater"){
-  dat <- data.frame(
-    "morb_x" = c(overlap, morb_x_overall - overlap),
-    "not_morb_x" = c(morb_y_overall - overlap, total - morb_x_overall - morb_y_overall + 3),
-    row.names = c("morb_y", "not_morb_y"),
-    stringsAsFactors = FALSE
+blank_theme <- theme_minimal()+
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    axis.ticks = element_blank(),
+    plot.title=element_text(size=14, face="bold")
   )
-  fisher.test(dat, alternative = alternative)$p.value 
-}
 
-
-## Calculate overlap between each pair of diseases in a graph
-calculate_pairwise_overlap <- function(g){
-  unreplicated_associations <- g_all$cn %>% filter(is.na(cluster)) %>% count(morbidity)
-}
-
-## Initialise OT Genetics Portal API
-initialise_api <- function(){
-  cli <- GraphqlClient$new(
-    url = "https://api.genetics.opentargets.org/graphql"
-  )
-  return(cli)
-}
-
-## GraphQL Query to retrive L2G
-initialise_queries <- function(){
-  qry <- Query$new()
-  qry$query('l2g_query', 'query l2gQuery($studyId: String!, $variantId: String!){
-  studyLocus2GeneTable(studyId: $studyId, variantId: $variantId){
-    rows {
-      gene {
-        id
-        symbol
-      }
-      hasColoc
-      yProbaModel
-      yProbaDistance
-      yProbaInteraction
-      yProbaMolecularQTL
-      yProbaPathogenicity
-      distanceToLocus
-    }
-  }
-  variantInfo(variantId: $variantId){
-      mostSevereConsequence
-  }
-}')
-  return(qry)
-}
-
-## Do the API call
-fetch_l2g <- function(df, variables){
-  result <- fromJSON(cli$exec(qry$queries$l2g_query, variables, flatten = TRUE))$data
-  
-  l2g_result <- result$studyLocus2GeneTable %>% bind_cols(result$variantInfo) %>% bind_cols(df) 
-  return(l2g_result)
-}
-
-## Retrieve L2G scores from Open Targets Genetics
-## Warning: This will take a while!
-get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
-
-  if(overwrite) {
-    library(ghql)
-    library(jsonlite)
-    
-    # studies + variants
-    studies_variants <- g_all$cn %>% filter(n_morbidities > 1) %>% ungroup() %>% select(studyId, lead_variantId) %>% unique()
-
-    cli <- initialise_api()
-    qry <- initialise_queries()
-    
-    ## split the data frame into smaller chunks (1000 rows)
-    ## I don't really know if we need to do this but just in case
-    ## I don't want to break the server with too many successive calls
-    
-    n <- 100
-    nr <- nrow(studies_variants)
-    studies_variants_split <-
-      studies_variants %>% 
-      split(., rep(1:ceiling(nr / n), each = n, length.out = nr))
-    
-    # Somewhere to hold the results
-    l2g_all <- vector(mode = "list", length = length(studies_variants_split))
-    
-    ## Do the first chunk on its own to check 
-    l2g_all[[1]] <-  studies_variants_split[[1]]  %>% 
-      group_by(studyId, lead_variantId) %>% 
-      group_split() %>% 
-      ## API call for each studyID + variantID
-      purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
-      bind_rows() %>%
-      # remove low confidence (L2G<0.05)
-      filter(yProbaModel > 0.05)
-    
-    ## Do all the other chunks
-    for (i in seq(1, length(l2g_all))){
-      print(i)
-      l2g_all[[i]] <- studies_variants_split[[i]] %>% 
-        group_by(studyId, lead_variantId) %>% 
-        group_split() %>% 
-        ## API call for each studyID + variantID
-        purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
-        bind_rows() %>%
-        filter(yProbaModel > 0.05)
-      Sys.sleep(3)
-    }
-    
-    ## Collapse into one dataframe
-    l2g_all_joined <- l2g_all %>% bind_rows() %>% jsonlite::flatten() 
-    
-    ## Use more up-to-date gene symbol from the Platform 
-    l2g_all_joined <- l2g_all_joined %>% left_join(target_annotations %>% select(gene.id = targetId, targetSymbol))
-    
-    ## Save output
-    save(l2g_all_joined, file=paste0(save_dir, "ltg_all.Rda"))
-    
-  } else {
-    load(paste0(save_dir, "ltg_all.Rda"))
-  }
-  
-  return(l2g_all_joined)
-  
-}
-
-get_L2G_coloc <- function(overwrite = default_overwrite, save_dir = default_save_dir){
-  if (overwrite){
-    load(paste0(save_dir, "qtl_coloc"))
-    qtl_to_join <- qtl_coloc %>%
-      select(studyId, lead_variantId, right_type, right_studyId, coloc_h4, starts_with("lead_var_right_"), right_phenotype, right_bio_feature, right_gene_id) %>%
-      mutate(direction = ifelse(lead_var_right_study_beta > 0, "increased", "decreased")) %>% 
-      mutate(trait = ifelse(right_type == "eqtl", "expression", ifelse(right_type == "pqtl", "abundance", NA))) %>% 
-      unite(molecular_trait, c(direction, trait), sep = " ", remove = TRUE)
-    
-    l2g_qtl_coloc <- l2g_all_joined %>% 
-      filter(hasColoc == TRUE) %>% 
-      left_join(qtl_to_join, c("studyId", "lead_variantId", "gene.id" = "right_gene_id"))
-    
-    save(l2g_qtl_coloc, file = paste0(save_dir,"l2g_qtl_coloc.Rda"))
-  } else {
-    load(paste0(save_dir,"l2g_qtl_coloc.Rda"))
-  }
-  return(l2g_qtl_coloc)
-}
-
-## make the heatmap figure showing overlaps between phenotypes
-plot_shared_heatmap <- function(pairwise_overlaps, overwrite = default_overwrite, save_dir = default_save_dir){
-  library(ggdendro)
-  
-  textcol <- "grey40"
-  
-  df <- pairwise_overlaps %>% 
-    mutate(proportion_X = count/X_overall,
-           face = ifelse(p.value >= 0.05, "plain", ifelse(p.adjust < 0.05, "bold.italic", "bold"))) %>%
-    mutate_at((c("X", "Y")), str_replace_all, pattern ="chronic obstructive pulmonary disease", replacement = "COPD") 
-  
-  
-  # make the bottom half of the matrix
-  swapped_df <- 
-    df %>% 
-    rename(tmpX = Y,
-           tmpY = X,
-           tmpX_overall = Y_overall, 
-           tmpY_overall = X_overall) %>%
-    rename_all(~stringr::str_replace(.,"^tmp","")) %>%
-    mutate(proportion_X = count/X_overall)
-  
-  full_df <- df %>% 
-    bind_rows(swapped_df)
-  
-  # ## clustering
-  # pre_mat <- full_df %>% 
-  #   select(X, Y, proportion_X) %>%
-  #   pivot_wider(names_from = Y, values_from = proportion_X) %>%
-  #   replace(is.na(.), 0)
-  # 
-  # mat <- as.matrix(pre_mat[,-1])
-  # rownames(mat) <- pre_mat$X
-  # shared.dendro <- as.dendrogram(hclust(d = dist(x = mat)))
-  # 
-  # # Create dendro
-  # dendro.plot <- ggdendrogram(data = shared.dendro, rotate = TRUE)
-  # 
-  # ## reorder to the clustered order
-  # dendro.order <- order.dendrogram(shared.dendro)
-  # 
-  # full_df$Y <- factor(x = full_df$Y,
-  #                levels = unique(pre_mat$X)[dendro.order],
-  #                ordered = TRUE)
-  # full_df$X <- factor(x = full_df$X,
-  #                levels = unique(pre_mat$X)[dendro.order],
-  #                ordered = TRUE)
-  
-  
-  ## heatmap 
-  shared_heatmap <- full_df %>%
-    arrange(X_overall) %>% 
-    mutate(X=factor(X, levels=unique(X)),
-           Y=factor(Y, levels = unique(X))) %>%   
-    mutate(proportion_X = ifelse(proportion_X == 0, NA, proportion_X)) %>%
-    # mutate_at((c("morbidity_A", "morbidity_B")), str_replace_all, pattern ="chronic obstructive pulmonary disease", replacement = "COPD") %>%
-    ggplot(., aes(x=X, y = Y, fill = proportion_X)) +
-    geom_tile(colour = textcol) +
-    geom_tile(data = subset(full_df, p.value < 0.05), colour = textcol, size = 0.65) +
-    #   geom_text(aes(label = count, colour = proportion_X > 0.45, fontface = face), size = 2.1) + 
-    geom_text(aes(label = ifelse(p.adjust < 0.05, paste0(count, "*"), count), colour = proportion_X > 0.45), size = 2.1) + 
-    labs(subtitle = "Independent genetic associations shared between\nage-related diseases and traits") +
-    coord_fixed() +
-    theme_bw(base_size = 10) +
-    scale_y_discrete(expand = c(0, 0)) +
-    scale_x_discrete(expand = c(0, 0)) +
-    scale_color_manual(values = c("black", "white"), breaks = c(FALSE, TRUE)) +
-    scale_fill_gradient(
-      "proportion",
-      low = "#CBDEF0",
-      high = "#08306B",
-      na.value = "white",
-      guide = guide_colorbar(frame.colour = "black", frame.linewidth = 0.8)
-    ) +
-    guides(color = FALSE) + 
+simple_tractability_plot <- 
+  tractability_classifications_summary %>% 
+  filter(modality %in% c("AB", "SM")) %>% 
+    mutate(top_category = as.character(top_category),
+           modality = factor(modality, levels = c("AB", "SM"))) %>%
+  mutate(top_category = ifelse(stringr::str_detect(top_category, "Predicted Tractable"), "Predicted Tractable", top_category)) %>%
+    mutate(top_category = factor(top_category, levels = c("Clinical Precedence", "Discovery Opportunity", "Predicted Tractable", "No Evidence"))) %>% 
+    group_by(modality, top_category) %>% summarise(n= sum(n)) %>%
+    ggplot(., aes(x=modality, y = n, fill = top_category, label = n)) + 
+    geom_col() + 
+    geom_text(colour = "white", position = position_stack(vjust = 0.5), size = 3) + 
+    theme_minimal() +
     theme(
-      panel.grid = element_blank(),
-      axis.text.x = element_text(
-        colour = textcol,
-        angle = 45,
-        hjust = 1
-      ),
-      axis.text.y = element_text(vjust = 0.2,
-                                 colour = textcol),
-      axis.ticks = element_line(size = 0.4),
-      axis.title = element_blank(),
-      plot.background = element_blank(),
-      plot.margin = margin(0.7, 0.4, 0.1, 0.2, "cm"),
-      plot.title = element_text(
-        colour = textcol,
-        hjust = 0,
-        size = 14,
-        face = "bold"
-      ),
-      panel.border = element_rect(colour = "black",
-                                  size = 0.8)
-    )
-  
-  if (overwrite) {
-    ggsave(shared_heatmap, file = paste0(save_dir, "Fig1.png"), width = 8, height = 7.5, dpi = 300)
-    ggsave(shared_heatmap, file = paste0(save_dir, "Fig1.pdf"), width = 8, height = 7.5)
-  }
-  
-  return(shared_heatmap)
-}
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      panel.border = element_blank(),
+      panel.grid=element_blank(),
+      axis.ticks = element_blank(),
+      plot.title=element_text(size=14, face="bold"),
+      legend.position = "bottom",
+      legend.direction = "vertical", 
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      legend.title = element_blank(),
+      legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-10,-10,-10,-10)
+      
+    ) + 
+   # theme(legend.position = "bottom", panel.grid=element_blank(), axis.title.x = element_blank()) + 
+    scale_y_continuous(expand = c(0,0)) + 
+    scale_x_discrete(limits = c("AB","SM"), labels = c("Antibody", "Small Molecule")) + 
+    scale_fill_manual(values = c(viridis::viridis(4)[1:3], "grey")) + 
+    coord_polar("y", start = 0)
+ggsave(simple_tractability_plot, width = 3, height = 2.5, dpi = 600, file = paste0(default_save_dir, "tractability_mini.png"))
+ggsave(simple_tractability_plot, width = 3, height = 2.5, file = paste0(default_save_dir, "tractability_mini.pdf"))
+
+
+library(patchwork)
+tract_fig <- hallmarks_barplot + tractability_plot + plot_annotation(tag_levels = 'a') + plot_layout(widths = c(0.65, 2.35))
+ggsave(tract_fig, width = 10.5, height = 4.1, dpi = 600, file = paste0(default_save_dir, "fig3.png"))
+ggsave(tract_fig, width = 10.5, height = 4.1, file = paste0(default_save_dir, "fig3.pdf"))
 
 
 
 
 
+probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
+
+probes %>% group_by(targetId, targetSymbol) %>% count()
 
 
-#wide_associations <- associations %>% 
-#  select(-weight, -datatypeEvidenceCount) %>% 
-#  pivot_wider(names_from = datatypeId, values_from = datatypeHarmonicScore) %>% 
-#  left_join(associations %>% 
-#              filter(datatypeId=="literature") %>% 
-#              select(targetId, morbidity, literatureEvidenceCount = datatypeEvidenceCount))
-  
+probes %>% filter(isHighQuality==TRUE) %>% group_by(targetId, targetSymbol)  %>% left_join(tractability_classifications_top)
 
-
-
+top_any_modality <- tractability_classifications_long %>% ungroup() %>% group_by(targetId, targetSymbol) %>% filter(value==TRUE) %>% slice(which.min(priority)) %>% ungroup()
 

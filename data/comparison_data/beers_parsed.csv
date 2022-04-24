@@ -1,0 +1,169 @@
+Organ System,Category,Drug,Recommendation,Quality of Evidence,Strength of Recommendation
+Anticholinergics,First‐generation antihistamines,Brompheniramine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Carbinoxamine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Chlorpheniramine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Clemastine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Cyproheptadine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Dexbrompheniramine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Dexchlorpheniramine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Dimenhydrinate,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Diphenhydramine (oral),Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Doxylamine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Hydroxyzine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Meclizine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Promethazine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Pyrilamine,Avoid,Moderate,Strong
+Anticholinergics,First‐generation antihistamines,Triprolidine,Avoid,Moderate,Strong
+Anticholinergics,Antiparkinsonian agents,Benztropine (oral),Avoid,Moderate,Strong
+Anticholinergics,Antiparkinsonian agents,Trihexyphenidyl,Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Atropine (excludes ophthalmic),Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Belladonna alkaloids,Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Clidinium‐chlordiazepoxide,Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Dicyclomine Homatropine (excludes opthalmic),Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Hyoscyamine,Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Methscopolamine,Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Propantheline,Avoid,Moderate,Strong
+Anticholinergics,Antispasmodics,Scopolamine,Avoid,Moderate,Strong
+Antithrombotics,NA,"Dipyridamole, oral short acting (does not apply to the extended‐release combination with aspirin)",Avoid,Moderate,Strong
+Anti‐infective,NA,Nitrofurantoin,Avoid in individuals with creatinine clearance <30 mL/min or for long‐term suppression,Low,Strong
+Cardiovascular,Peripheral alpha‐1 blockers for treatment of hypertension,Doxazosin,Avoid use as an antihypertensive,Moderate,Strong
+Cardiovascular,Peripheral alpha‐1 blockers for treatment of hypertension,Prazosin,Avoid use as an antihypertensive,Moderate,Strong
+Cardiovascular,Peripheral alpha‐1 blockers for treatment of hypertension,Terazosin,Avoid use as an antihypertensive,Moderate,Strong
+Cardiovascular,Central alpha‐agonists,Clonidine for first‐line treatment of hypertension,"Avoid as first‐line antihypertensive
+Avoid other CNS alpha‐agonists as listed
+","Low
+Low
+","Strong
+Strong
+"
+Cardiovascular,Central alpha‐agonists,Other CNS alpha‐agonists,"Avoid as first‐line antihypertensive
+Avoid other CNS alpha‐agonists as listed
+","Low
+Low
+","Strong
+Strong
+"
+Cardiovascular,Central alpha‐agonists,Guanabenz,"Avoid as first‐line antihypertensive
+Avoid other CNS alpha‐agonists as listed
+","Low
+Low
+","Strong
+Strong
+"
+Cardiovascular,Central alpha‐agonists,Guanfacine,"Avoid as first‐line antihypertensive
+Avoid other CNS alpha‐agonists as listed
+","Low
+Low
+","Strong
+Strong
+"
+Cardiovascular,Central alpha‐agonists,Methyldopa,"Avoid as first‐line antihypertensive
+Avoid other CNS alpha‐agonists as listed
+","Low
+Low
+","Strong
+Strong
+"
+Cardiovascular,Central alpha‐agonists,Reserpine (>0.1 mg/day),"Avoid as first‐line antihypertensive
+Avoid other CNS alpha‐agonists as listed
+","Low
+Low
+","Strong
+Strong
+"
+Cardiovascular,NA,Disopyramide,Avoid,Low,Strong
+Cardiovascular,NA,Dronedarone,Avoid in individuals with permanent atrial fibrillation or severe or recently decompensated heart failure,High,Strong
+Cardiovascular,NA,Digoxin for first‐line treatment of atrial fibrillation or of heart failure,"Avoid this rate control agent as first‐line therapy for atrial fibrillation
+Avoid as first‐line therapy for heart failure
+If used for atrial fibrillation or heart failure, avoid dosages >0.125 mg/day
+","Atrial fibrillation: low
+Heart failure: low
+Dosage >0.125 mg/day: moderate
+","Atrial fibrillation: strong
+Heart failure: strong
+Dosage >0.125 mg/day: strong
+"
+Cardiovascular,NA,"Nifedipine, immediate release",Avoid,High,Strong
+Cardiovascular,NA,Amiodarone,Avoid as first‐line therapy for atrial fibrillation unless patient has heart failure or substantial left ventricular hypertrophy,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Amitriptyline,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Amoxapine,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Clomipramine,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Desipramine,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Doxepin >6 mg/day,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Imipramine,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Nortriptyline,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Paroxetine,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Protriptyline,Avoid,High,Strong
+Central nervous system,"Antidepressants, alone or in combination",Trimipramine,Avoid,High,Strong
+Central nervous system,NA,"Antipsychotics, first (conventional) and second (atypical) generation","Avoid, except in schizophrenia or bipolar disorder, or for short‐term use as antiemetic during chemotherapy",Moderate,Strong
+Central nervous system,Barbiturates,Amobarbital,Avoid,High,Strong
+Central nervous system,Barbiturates,Butabarbital,Avoid,High,Strong
+Central nervous system,Barbiturates,Butalbital,Avoid,High,Strong
+Central nervous system,Barbiturates,Mephobarbital,Avoid,High,Strong
+Central nervous system,Barbiturates,Pentobarbital,Avoid,High,Strong
+Central nervous system,Barbiturates,Phenobarbital,Avoid,High,Strong
+Central nervous system,Barbiturates,Secobarbital,Avoid,High,Strong
+Central nervous system,Benzodiazepines,Short and intermediate acting:,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Alprazolam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Estazolam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Lorazepam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Oxazepam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Temazepam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Triazolam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Long acting:,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Chlordiazepoxide (alone or in combination with amitriptyline or clidinium),Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Clonazepam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Clorazepate,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Diazepam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Flurazepam,Avoid,Moderate,Strong
+Central nervous system,Benzodiazepines,Quazepam,Avoid,Moderate,Strong
+Central nervous system,NA,Meprobamate,Avoid,Moderate,Strong
+Central nervous system,"Nonbenzodiazepine, benzodiazepine receptor agonist hypnotics (ie, “Z‐drugs”)",Eszopiclone,Avoid,Moderate,Strong
+Central nervous system,"Nonbenzodiazepine, benzodiazepine receptor agonist hypnotics (ie, “Z‐drugs”)",Zaleplon,Avoid,Moderate,Strong
+Central nervous system,"Nonbenzodiazepine, benzodiazepine receptor agonist hypnotics (ie, “Z‐drugs”)",Zolpidem,Avoid,Moderate,Strong
+Central nervous system,Ergoloid mesylates,(dehydrogenated ergot alkaloids),Avoid,High,Strong
+Central nervous system,Ergoloid mesylates,Isoxsuprine,Avoid,High,Strong
+Endocrine,Androgens,Methyltestosterone,Avoid unless indicated for confirmed hypogonadism with clinical symptoms,Moderate,Weak
+Endocrine,Androgens,Testosterone,Avoid unless indicated for confirmed hypogonadism with clinical symptoms,Moderate,Weak
+Endocrine,NA,Desiccated thyroid,Avoid,Low,Strong
+Endocrine,NA,Estrogens with or without progestins,"Avoid systemic estrogen (eg, oral and topical patch)
+Vaginal cream or vaginal tablets: acceptable to use low‐dose intravaginal estrogen for management of dyspareunia, recurrent lower urinary tract infections, and other vaginal symptoms
+","Oral and patch: high
+Vaginal cream or vaginal tablets: moderate
+","Oral and patch: strong
+Topical vaginal cream or tablets: weak
+"
+Endocrine,NA,Growth hormone,"Avoid, except for patients rigorously diagnosed by evidence‐based criteria with growth hormone deficiency due to an established etiology",High,Strong
+Endocrine,NA,"Insulin, sliding scale (insulin regimens containing only short‐ or rapid‐acting insulin dosed according to current blood glucose levels without concurrent use of basal or long‐acting insulin)",Avoid,Moderate,Strong
+Endocrine,NA,Megestrol,Avoid,Moderate,Strong
+Endocrine,"Sulfonylureas, long acting",Chlorpropamide,Avoid,High,Strong
+Endocrine,"Sulfonylureas, long acting",Glimepiride,Avoid,High,Strong
+Endocrine,"Sulfonylureas, long acting",Glyburide (also known as glibenclamide),Avoid,High,Strong
+Gastrointestinal,NA,Metoclopramide,"Avoid, unless for gastroparesis with duration of use not to exceed 12 weeks except in rare cases",Moderate,Strong
+Gastrointestinal,NA,"Mineral oil, given orally",Avoid,Moderate,Strong
+Gastrointestinal,NA,Proton‐pump inhibitors,"Avoid scheduled use for >8 weeks unless for high‐risk patients (eg, oral corticosteroids or chronic NSAID use), erosive esophagitis, Barrett esophagitis, pathological hypersecretory condition, or demonstrated need for maintenance treatment (eg, because of failure of drug discontinuation trial or H2‐receptor antagonists)",High,Strong
+Pain medications,NA,Meperidine,Avoid,Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Aspirin >325 mg/day,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Diclofenac,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Diflunisal,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Etodolac,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Fenoprofen,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Ibuprofen,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Ketoprofen,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Meclofenamate,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Mefenamic acid,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Meloxicam,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Nabumetone,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Naproxen,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Oxaprozin,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Piroxicam,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Sulindac,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,"Non–cyclooxygenase‐selective NSAIDs, oral:",Tolmetin,"Avoid chronic use, unless other alternatives are not effective and patient can take gastroprotective agent (proton‐pump inhibitor or misoprostol)",Moderate,Strong
+Pain medications,Indomethacin,"Ketorolac, includes parenteral",Avoid,Moderate,Strong
+Pain medications,Skeletal muscle relaxants,Carisoprodol,Avoid,Moderate,Strong
+Pain medications,Skeletal muscle relaxants,Chlorzoxazone,Avoid,Moderate,Strong
+Pain medications,Skeletal muscle relaxants,Cyclobenzaprine,Avoid,Moderate,Strong
+Pain medications,Skeletal muscle relaxants,Metaxalone,Avoid,Moderate,Strong
+Pain medications,Skeletal muscle relaxants,Methocarbamol,Avoid,Moderate,Strong
+Pain medications,Skeletal muscle relaxants,Orphenadrine,Avoid,Moderate,Strong
+Genitourinary,NA,Desmopressin,Avoid for treatment of nocturia or nocturnal polyuria,Moderate,Strong
