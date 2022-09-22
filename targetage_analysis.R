@@ -229,18 +229,13 @@ enriched_hallmarks <- enrich_hallmarks(gene_sets)
 hallmarks_barplot <- plot_hallmarks_barplot(enriched_hallmarks, overwrite = default_overwrite)
 hallmarks_barplot_ta <- plot_mini_hallmarks_barplot(enriched_hallmarks, overwrite = default_overwrite)
 
-
 ## OT Tractability
 
-targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
-
-get_subset_annotations <- function(annotations, genes = targetage, field){
-    annotations %>% 
-    filter(targetId %in% genes) %>% 
-    dplyr::select(targetId, targetSymbol, all_of(field)) %>%
-    hoist(field) %>% 
-    unnest(field)
-}
+#targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
+targetage_tract <- targetage_annotations %>% 
+  filter(targetId %in% targetage) %>% 
+  dplyr::select(targetId, targetSymbol, all_of("tractability"))  %>% 
+  unnest("tractability")
 
 # N with approved drug:
 tractability_wide <- targetage_tract %>% group_by(targetSymbol, modality, id) %>% pivot_wider(names_from = "id", values_from = "value")
@@ -274,9 +269,14 @@ tractability_classifications_summary <- tractability_classifications_top %>%
   mutate(modality = factor(modality, levels = c("SM", "AB", "PR", "OM")),
          top_category = factor(gsub("_", " ", top_category), levels = gsub("_", " ", classes)))
 
+
+clinical_targets <- tractability_classifications_top %>% filter(name=="Clinical_Precedence") %>% group_by(targetSymbol) %>% count()
+discovery_precedence <- tractability_classifications_top %>% filter(! targetSymbol %in% clinical_targets$targetSymbol) %>% filter(name == "Discovery_Opportunity") %>% filter(modality == "SM")
+predicted_tractable <- tractability_classifications_top %>% filter(! targetSymbol %in% clinical_targets$targetSymbol) %>% filter(!targetSymbol %in% discovery_precedence$targetSymbol) %>% filter(name %in% c("Predicted_Tractable", "Predicted_Tractable_(H)", "Predicted_Tractable_(M/L)")) %>% filter(modality != "PR") %>% group_by(targetSymbol) %>% count()
+
 tractability_plot <- 
   tractability_classifications_summary %>% 
-  filter(modality != "OM") %>% 
+  filter(modality != "OC") %>% 
   ggplot(., aes(x=modality, y = n, fill = top_category, label = ifelse(n>10, paste0(top_category, " (", n, ")"), NA))) + 
   geom_col() + 
   geom_text(colour = "white", position = position_stack(vjust = 0.5), size = 3) + 
@@ -338,19 +338,36 @@ ggsave(simple_tractability_plot, width = 3, height = 2.5, file = paste0(default_
 
 library(patchwork)
 tract_fig <- hallmarks_barplot + tractability_plot + plot_annotation(tag_levels = 'a') + plot_layout(widths = c(0.65, 2.35))
-ggsave(tract_fig, width = 10.5, height = 4.1, dpi = 600, file = paste0(default_save_dir, "fig3.png"))
-ggsave(tract_fig, width = 10.5, height = 4.1, file = paste0(default_save_dir, "fig3.pdf"))
-
+ggsave(tract_fig, width = 12.1, height = 4.5, dpi = 600, file = paste0(default_save_dir, "fig3.png"))
+ggsave(tract_fig, width = 12.1, height = 4.5, file = paste0(default_save_dir, "fig3.pdf"))
 
 
 
 
 probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
+probes <- targetage_annotations %>% 
+  filter(targetId %in% targetage) %>% 
+  dplyr::select(targetId, targetSymbol, all_of("chemicalProbes"))  %>% 
+  unnest("chemicalProbes")
 
 probes %>% group_by(targetId, targetSymbol) %>% count()
 
-
-probes %>% filter(isHighQuality==TRUE) %>% group_by(targetId, targetSymbol)  %>% left_join(tractability_classifications_top)
-
+## 38 targets have high quality probes 
+high_quality_probes <- probes %>% filter(isHighQuality==TRUE) %>% group_by(targetId, targetSymbol) %>% count()
 top_any_modality <- tractability_classifications_long %>% ungroup() %>% group_by(targetId, targetSymbol) %>% filter(value==TRUE) %>% slice(which.min(priority)) %>% ungroup()
+
+## 11 have no clinical precedence
+high_quality_probes_tractability <- high_quality_probes %>% left_join(top_any_modality) 
+high_quality_probes_tractability %>% group_by(name) %>% count()
+
+## SI Probe Table 
+probe_si_table <- probes %>% 
+  filter(isHighQuality==TRUE) %>% 
+  left_join(top_any_modality) %>% 
+  select(targetId, targetSymbol, inchiKey, drugId, id, control, urls, tractability = name) %>% 
+  unnest(urls) %>% 
+  arrange(tractability, targetSymbol)
+
+gs4_create("SITable4", sheets = probe_si_table)
+
 

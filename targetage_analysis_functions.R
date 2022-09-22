@@ -1144,7 +1144,8 @@ plot_hallmarks_barplot <- function(enriched_hallmarks, save_dir = default_save_d
     labs(x = "Number of genes", subtitle = "Hallmarks of Ageing Genes") + 
     theme(panel.grid = element_blank(), 
           axis.title.y = element_blank(), 
-          legend.position = "bottom", 
+          #     legend.position = "bottom", 
+          legend.position = c(0.8, 0.85),
           legend.title = element_blank(),
           legend.text = element_text(margin = margin(r = 10, unit = "pt"))) + 
     scale_x_continuous(expand = c(0,0))
