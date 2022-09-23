@@ -126,7 +126,6 @@ get_associations_annotations <- function(overwrite = FALSE, annotations_input_fi
     
     ## Associations
     associations <- arrow::read_parquet(associations_input_file, as_tibble=TRUE) %>% 
-      filter(diseaseId %in% top_level_disease_ids) %>% 
       mutate_if(is.numeric, round, 2) 
     
     ## Which morbidity has the largest number of literature associations

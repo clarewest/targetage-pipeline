@@ -22,7 +22,7 @@ ard_leads <- get_lead_variants(overwrite = default_overwrite, input_file = "data
 
 ### Diseases with GWAS evidence (some in `diseases` don't have any)
 d <- ard_leads$morbidity %>% unique()
-#save(d, file = "TargetAge/data/diseases_with_associations.Rda")
+#save(d, file = "data/analysis/diseases_with_associations.Rda")
 
 ### Overlaps between genetic associations
 overlaps <- get_overlaps(overwrite = default_overwrite, 
@@ -125,7 +125,7 @@ top_cluster_genes_summarised %>%
 ###########################################################################
 ###                                                                     ###
 ###                       SECTION 4:                                    ###
-###                   Tables etc for paper                              ###
+###                   GWAS summary information                          ###
 ###                                                                     ###
 ###########################################################################
 ###########################################################################
@@ -138,13 +138,13 @@ populations %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/
 ### Update SI table in Google Drive with GWAS and cluster details
 # The list of ARDs, number of GWAS studies, and number of (lead) variants, proportion with summary statistics, number of communities
 genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_diseases)
-update_gs_genetics_table(genetics_tables)
+#update_gs_genetics_table(genetics_tables)
 
 
 ###########################################################################
 ###########################################################################
 ###                                                                     ###
-###                       SECTION 4:                                    ###
+###                       SECTION 5:                                    ###
 ###          TargetAge genes annotations and tractability               ###
 ###                                                                     ###
 ###########################################################################
@@ -153,8 +153,8 @@ update_gs_genetics_table(genetics_tables)
 
 ### Target details and genetic associations with each phenotype
 target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
-                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-f3590b7c-ee8d-4add-ac67-b59df89b6a02-c000.snappy.parquet",
-                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-f300aece-6912-401d-8d61-13072f0d6162-c000.snappy.parquet",
+                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-16237769-f92d-48c3-b396-6d5f5d797719-c000.snappy.parquet",
+                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-b1ee0a40-e1b1-4ee6-9b41-fc41115d0a05-c000.snappy.parquet",
                                                    go_input_file = "data/full_goterm_list.csv",
                                                    diseases = diseases)
 
@@ -268,6 +268,7 @@ tractability_classifications_summary <- tractability_classifications_top %>%
   rename(top_category = "name") %>%
   mutate(modality = factor(modality, levels = c("SM", "AB", "PR", "OM")),
          top_category = factor(gsub("_", " ", top_category), levels = gsub("_", " ", classes)))
+save(tractability_classifications_top, file = paste0(default_save_dir, "target_tractability.Rda"))
 
 
 clinical_targets <- tractability_classifications_top %>% filter(name=="Clinical_Precedence") %>% group_by(targetSymbol) %>% count()
@@ -342,7 +343,7 @@ ggsave(tract_fig, width = 12.1, height = 4.5, dpi = 600, file = paste0(default_s
 ggsave(tract_fig, width = 12.1, height = 4.5, file = paste0(default_save_dir, "fig3.pdf"))
 
 
-
+## Chemical Probes 
 
 probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
 probes <- targetage_annotations %>% 
@@ -368,6 +369,6 @@ probe_si_table <- probes %>%
   unnest(urls) %>% 
   arrange(tractability, targetSymbol)
 
-gs4_create("SITable4", sheets = probe_si_table)
+write.csv(probe_si_table, paste0(default_save_dir,"SITable4.csv"))
 
 
