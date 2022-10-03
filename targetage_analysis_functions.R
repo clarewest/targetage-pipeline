@@ -707,7 +707,7 @@ initialise_queries <- function(){
 }
 
 ## Do the API call
-fetch_l2g <- function(df, variables){
+fetch_l2g <- function(df, variables, cli){
   result <- fromJSON(cli$exec(qry$queries$l2g_query, variables, flatten = TRUE))$data
   
   l2g_result <- result$studyLocus2GeneTable %>% bind_cols(result$variantInfo) %>% bind_cols(df) 
@@ -746,7 +746,7 @@ get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
       group_by(studyId, lead_variantId) %>% 
       group_split() %>% 
       ## API call for each studyID + variantID
-      purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
+      purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId, cli = cli))) %>%
       bind_rows() %>%
       # remove low confidence (L2G<0.05)
       filter(yProbaModel > 0.05)
@@ -758,7 +758,7 @@ get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
         group_by(studyId, lead_variantId) %>% 
         group_split() %>% 
         ## API call for each studyID + variantID
-        purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
+        purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId, cli = cli))) %>%
         bind_rows() %>%
         filter(yProbaModel > 0.05)
       Sys.sleep(3)

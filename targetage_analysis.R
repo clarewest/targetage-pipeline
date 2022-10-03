@@ -29,6 +29,14 @@ overlaps <- get_overlaps(overwrite = default_overwrite,
                          coloc_input_file = "data/targetage/coloc_ard_leads.parquet/part-00000-9479cf2c-da10-447a-ab81-7c1750b5bc78-c000.snappy.parquet",
                          overlap_input_file = "data/targetage/overlap_ard_leads.parquet/part-00000-5b27ad8f-95fb-4b3b-85a9-bc24c5e30ea1-c000.snappy.parquet")
 
+### Target details and genetic associations with each phenotype
+target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
+                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-16237769-f92d-48c3-b396-6d5f5d797719-c000.snappy.parquet",
+                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-b1ee0a40-e1b1-4ee6-9b41-fc41115d0a05-c000.snappy.parquet",
+                                                   go_input_file = "data/full_goterm_list.csv",
+                                                   diseases = diseases)
+
+
 ###########################################################################
 ###########################################################################
 ###                                                                     ###
@@ -149,14 +157,6 @@ genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_dis
 ###                                                                     ###
 ###########################################################################
 ###########################################################################
-
-
-### Target details and genetic associations with each phenotype
-target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
-                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-16237769-f92d-48c3-b396-6d5f5d797719-c000.snappy.parquet",
-                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-b1ee0a40-e1b1-4ee6-9b41-fc41115d0a05-c000.snappy.parquet",
-                                                   go_input_file = "data/full_goterm_list.csv",
-                                                   diseases = diseases)
 
 
 # all multimorbidity genes from clusters
@@ -345,7 +345,7 @@ ggsave(tract_fig, width = 12.1, height = 4.5, file = paste0(default_save_dir, "f
 
 ## Chemical Probes 
 
-probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
+#probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
 probes <- targetage_annotations %>% 
   filter(targetId %in% targetage) %>% 
   dplyr::select(targetId, targetSymbol, all_of("chemicalProbes"))  %>% 
