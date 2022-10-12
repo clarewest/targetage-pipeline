@@ -3,7 +3,7 @@ source("targetage_analysis_functions.R")
 
 ## Global settings
 default_save_dir = "data/analysis/"  # save location for intermediate Rda files
-default_overwrite = FALSE            # if FALSE will load previously saved Rda files
+default_overwrite = TRUE            # if FALSE will load previously saved Rda files
 
 ###########################################################################
 ###########################################################################
@@ -22,17 +22,18 @@ ard_leads <- get_lead_variants(overwrite = default_overwrite, input_file = "data
 
 ### Diseases with GWAS evidence (some in `diseases` don't have any)
 d <- ard_leads$morbidity %>% unique()
-#save(d, file = "data/analysis/diseases_with_associations.Rda")
+save(d, file = "data/analysis/diseases_with_associations.Rda") # I need to uncomment this cause it is used by prepare_app.R
 
 ### Overlaps between genetic associations
 overlaps <- get_overlaps(overwrite = default_overwrite, 
-                         coloc_input_file = "data/targetage/coloc_ard_leads.parquet/part-00000-9479cf2c-da10-447a-ab81-7c1750b5bc78-c000.snappy.parquet",
-                         overlap_input_file = "data/targetage/overlap_ard_leads.parquet/part-00000-5b27ad8f-95fb-4b3b-85a9-bc24c5e30ea1-c000.snappy.parquet")
+                         coloc_input_file = "data/targetage/coloc_ard_leads.parquet/part-00000-7fe01d87-8c10-439e-b3a4-01c5c3a5455f-c000.snappy.parquet",
+                         overlap_input_file = "data/targetage/overlap_ard_leads.parquet/part-00000-97372f59-641b-43a3-87a0-ab4da282735f-c000.snappy.parquet")
 
 ### Target details and genetic associations with each phenotype
+# I have to manually download geneage.Rda, cellage.Rda, full_goterm_list.csv
 target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
-                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-16237769-f92d-48c3-b396-6d5f5d797719-c000.snappy.parquet",
-                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-b1ee0a40-e1b1-4ee6-9b41-fc41115d0a05-c000.snappy.parquet",
+                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-b5d44e84-337a-4ad5-9f7f-62db70624cc2-c000.snappy.parquet",
+                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-a9ddac54-b10a-42db-b9a5-d6742cb9d00c-c000.snappy.parquet",
                                                    go_input_file = "data/full_goterm_list.csv",
                                                    diseases = diseases)
 
@@ -79,10 +80,12 @@ tbl <- g_all$cn %>%
 ###########################################################################
 
 ### Get L2G from Open Targets Genetics
-l2g_all_joined <- get_L2G(overwrite = default_overwrite)
+# I need to download ltg_all.Rda
+l2g_all_joined <- get_L2G(overwrite = FALSE)
 
 ### Get details of xQTL colocalisation 
-l2g_qtl_coloc <- get_L2G_coloc(overwrite = default_overwrite)
+# I need to download ltg_qtl_coloc.Rda
+l2g_qtl_coloc <- get_L2G_coloc(overwrite = FALSE)
 
 ## Top gene per lead variant 
 top_l2g <- l2g_all_joined %>%
@@ -96,7 +99,7 @@ top_l2g <- l2g_all_joined %>%
   ## choose one (CCND2)
   top_n(-1, distanceToLocus) %>%
   slice(1)
-#save(top_l2g, file = paste0(default_save_dir, "top_l2g.Rda"))
+save(top_l2g, file = paste0(default_save_dir, "top_l2g.Rda")) # I need to uncomment this cause it is used at prepare_app.R
 
 ## Add top gene to each node
 # NB this df contains a row for every node but L2G was only retrieved for nodes:
@@ -174,7 +177,7 @@ targetage_cluster_summarised %>%
 targetage_annotations <- target_annotations %>% filter(targetId %in% targetage)
 
 #write.table(targetage_cluster_summarised, file = paste0(default_save_dir, "top_L2G_genes.txt"), sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
-#save(targetage, file = paste0(default_save_dir, "targetage_geneids.Rda"))
+save(targetage, file = paste0(default_save_dir, "targetage_geneids.Rda"))
 load(file = paste0(default_save_dir, "targetage_geneids.Rda"))
 
 
@@ -184,9 +187,13 @@ load(file = paste0(default_save_dir, "targetage_geneids.Rda"))
 
 ## Get gene sets
 gene_sets = get_gene_sets(overwrite = default_overwrite)
+# I need to download full_goterm_genes.csv
+# Error in loadNamespace(x) : there is no package called ‘clusterProfiler’
 gene_sets_entrez = get_entrez_gene_sets(overwrite = default_overwrite)
 
 ## Venn Diagram of overlaps
+# returns error:
+# Error in plot.new() : figure margins too large
 gplots::venn(gene_sets[1:3])
 
 ## Test overlaps
@@ -203,6 +210,9 @@ hallmarks_c_overlap = test_overlap(gene_sets, "CellAge", "Hallmarks")
 ##                  Enrichment                   ##
 ###################################################
 
+# returns error:
+# Error in library(clusterProfiler) : 
+#  there is no package called ‘clusterProfiler’
 all_enriched <- perform_enrichment(overwrite = default_overwrite)
 
 top_enriched <- all_enriched %>% 
@@ -222,6 +232,7 @@ clusterprofiler_enriched_hallmarks <- all_enriched %>% filter(ID %in% hallmark_t
 ## Hallmarks
 targetage_hallmarks <- targetage_annotations %>% select(targetId, ageingHallmarks) %>% unnest(ageingHallmarks)
 
+# I need to download goterm_list.csv
 hallmark_counts <- get_hallmark_counts(targetage_hallmarks, overwrite = default_overwrite)
 
 enriched_hallmarks <- enrich_hallmarks(gene_sets) 
@@ -231,11 +242,11 @@ hallmarks_barplot_ta <- plot_mini_hallmarks_barplot(enriched_hallmarks, overwrit
 
 ## OT Tractability
 
-#targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
-targetage_tract <- targetage_annotations %>% 
-  filter(targetId %in% targetage) %>% 
-  dplyr::select(targetId, targetSymbol, all_of("tractability"))  %>% 
-  unnest("tractability")
+targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
+#targetage_tract <- targetage_annotations %>% 
+#  filter(targetId %in% targetage) %>% 
+#  dplyr::select(targetId, targetSymbol, all_of("tractability"))  %>% 
+#  unnest("tractability")
 
 # N with approved drug:
 tractability_wide <- targetage_tract %>% group_by(targetSymbol, modality, id) %>% pivot_wider(names_from = "id", values_from = "value")
@@ -345,11 +356,11 @@ ggsave(tract_fig, width = 12.1, height = 4.5, file = paste0(default_save_dir, "f
 
 ## Chemical Probes 
 
-#probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
-probes <- targetage_annotations %>% 
-  filter(targetId %in% targetage) %>% 
-  dplyr::select(targetId, targetSymbol, all_of("chemicalProbes"))  %>% 
-  unnest("chemicalProbes")
+probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
+#probes <- targetage_annotations %>% 
+#  filter(targetId %in% targetage) %>% 
+#  dplyr::select(targetId, targetSymbol, all_of("chemicalProbes"))  %>% 
+#  unnest("chemicalProbes")
 
 probes %>% group_by(targetId, targetSymbol) %>% count()
 
