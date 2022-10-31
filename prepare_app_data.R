@@ -84,6 +84,7 @@ add_cellage_icons <- function(df){
 
 add_details_column <- function(df){
   description <- df %>% select(targetId, functionDescriptions) %>%
+    hoist(functionDescriptions) %>% 
     unnest(functionDescriptions) %>% 
     group_by(targetId) %>% 
     summarise(details.description = paste(functionDescriptions, collapse = " ")) %>% 
@@ -139,7 +140,9 @@ add_overall_mm <- function(df, diseases, minscore = 0.05){
 
 add_teps_probes <- function(df){
 # summarise probes and links to resources
-probes <- df %>% select(targetId, chemicalProbes) %>% unnest(chemicalProbes)  %>% 
+probes <- df %>% select(targetId, chemicalProbes) %>%
+hoist(chemicalProbes) %>% 
+unnest(chemicalProbes)  %>% 
   select(targetId, drugId, id, urls) %>% 
   unnest(urls) %>%
   rename(chemicalprobe = id, 
@@ -191,6 +194,7 @@ add_tractability <- function(df){
   # druggable genome
   druggable <- df %>% 
     select(targetId, tractability) %>% 
+    hoist(tractability) %>%
     unnest(tractability) %>% 
     filter(id == "Druggable Family" & value == "TRUE") %>% 
     select(targetId) %>% 
@@ -200,7 +204,9 @@ add_tractability <- function(df){
 }
 
 add_safety <- function(df){
-  safety <- df %>% select(targetId, safetyLiabilities) %>% unnest(safetyLiabilities) %>%
+  safety <- df %>% select(targetId, safetyLiabilities) %>% 
+  hoist(safetyLiabilities) %>%
+  unnest(safetyLiabilities) %>%
     group_by(targetId) %>% 
     summarise(details.safety_warnings = paste(unique(event), collapse = "; "),
               details.safety_sources = paste(unique(datasource), collapse = "; ")) %>%
@@ -332,6 +338,9 @@ format_specific_diseases <- function(df){
 load("data/analysis/target_annotations.Rda")             # Target annotations
 load("data/analysis/target_tractability.Rda")
 load("data/analysis/diseases_with_associations.Rda")
+load("data/analysis/ard_leads_filtered.Rda") # I need to add this here
+load("data/analysis/graph_all_morbidities.Rda") # I need to add this here
+load("data/analysis/top_l2g.Rda") # I need to add this here
 
 ard_leads %>% 
   format_specific_diseases()
@@ -374,6 +383,8 @@ columns <- c(
 
 ## add cellage, genage, and hallmarks of ageing 
 make_legends()
+# I need to download goterm_icons.csv
+# I need to create TargetAgeApp/data dir
 tbl_targets <- target_annotations %>% 
   rowwise() %>% 
   mutate(symbolSynonyms = paste(symbolSynonyms, collapse='; '),
@@ -397,10 +408,10 @@ save(d, file = "TargetAgeApp/data/diseases_with_associations.Rda")
 
 ## Genetics data 
 load("data/analysis/ltg_all.Rda")
-load("data/analysis/graph_all_morbidities.Rda")
-load("data/analysis/ard_leads_filtered.Rda")
+#load("data/analysis/graph_all_morbidities.Rda") # already loaded
+#load("data/analysis/ard_leads_filtered.Rda") # already loaded
 
-load("data/analysis/top_l2g.Rda")
+# load("data/analysis/top_l2g.Rda") # already loaded
 
 ard_leads <- ard_leads %>% 
   mutate(specificDiseaseName = recode(specificDiseaseName, 

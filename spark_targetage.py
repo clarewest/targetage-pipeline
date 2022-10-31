@@ -325,7 +325,7 @@ overlap_ard_leads = is_right_lead(overlap_ard_leads, v2d)
 
 
 ## Save output
-if (0):
+if (1):
     # All diseases
     all_ardiseases.toPandas().to_csv(data_path+"full_disease_list.csv", index=False)
     
@@ -346,6 +346,8 @@ if (0):
 
 
 
+# returns warning message at the end of the script, although it does generate parquet fiiles (but not crc ones):
+# 22/10/08 16:11:37 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
 
 
                      
