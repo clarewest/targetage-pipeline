@@ -1,6 +1,10 @@
 library(tidyverse)
 load("data/analysis/target_annotations.Rda")             # Target annotations
 
+## Set path to TargetAge App repo
+targetage_app_path = "TargetAgeApp/"
+targetage_app_data = paste0(targetage_app_path, "data/")
+
 ### Functions
 add_go_hallmarks <- function(df){
 
@@ -310,9 +314,9 @@ make_legends <- function(){
   go_legend <- go_icons %>% select(goIcon, goHallmark)
   
   ## Save legends for app
-  save(go_legend, file = "TargetAgeApp/data/hallmarks_legend.Rda")
-  save(cellage_legend, file = "TargetAgeApp/data/cellage_legend.Rda")
-  save(genage_legend, file = "TargetAgeApp/data/genage_legend.Rda")
+  save(go_legend, file = paste0(targetage_app_data,"hallmarks_legend.Rda"))
+  save(cellage_legend, file = paste0(targetage_app_data,"cellage_legend.Rda"))
+  save(genage_legend, file = paste0(targetage_app_data,"genage_legend.Rda"))
   
 }
 
@@ -388,10 +392,10 @@ tbl_targets <- target_annotations %>%
   add_overall_mm(diseases = d, minscore = 0.05) %>% 
   add_details_column()
 
-save(tbl_targets, file = "TargetAgeApp/data/prepared_table.Rda")
+save(tbl_targets, file = paste0(targetage_app_data,"prepared_table.Rda"))
 load(file = "data/analysis/targetage_geneids.Rda")
-save(targetage, file = "TargetAgeApp/data/targetage_geneids.Rda")
-save(d, file = "TargetAgeApp/data/diseases_with_associations.Rda")
+save(targetage, file = paste0(targetage_app_data,"targetage_geneids.Rda"))
+save(d, file = paste0(targetage_app_data,"diseases_with_associations.Rda"))
 
 
 
@@ -401,7 +405,7 @@ load("data/analysis/graph_all_morbidities.Rda")
 load("data/analysis/ard_leads_filtered.Rda")
 
 load("data/analysis/top_l2g.Rda")
-
+kjk
 ard_leads <- ard_leads %>% 
   mutate(specificDiseaseName = recode(specificDiseaseName, 
                                       `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
@@ -443,7 +447,7 @@ tbl_leads <- cluster_tbl %>%
 tbl_genes <- tbl_leads  %>% 
   left_join(top_l2g) 
 
-save(tbl_genes, file = "TargetAgeApp/data/genetics_table.Rda")
-save(g_all, file = "TargetAgeApp/data/graph_all_morbidities.Rda")
+save(tbl_genes, file = paste0(targetage_app_data,"genetics_table.Rda"))
+save(g_all, file = paste0(targetage_app_data,"graph_all_morbidities.Rda"))
 
 
