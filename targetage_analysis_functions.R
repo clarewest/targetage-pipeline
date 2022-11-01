@@ -126,7 +126,6 @@ get_associations_annotations <- function(overwrite = FALSE, annotations_input_fi
     
     ## Associations
     associations <- arrow::read_parquet(associations_input_file, as_tibble=TRUE) %>% 
-      filter(diseaseId %in% top_level_disease_ids) %>% 
       mutate_if(is.numeric, round, 2) 
     
     ## Which morbidity has the largest number of literature associations
@@ -708,7 +707,7 @@ initialise_queries <- function(){
 }
 
 ## Do the API call
-fetch_l2g <- function(df, variables){
+fetch_l2g <- function(df, variables, cli){
   result <- fromJSON(cli$exec(qry$queries$l2g_query, variables, flatten = TRUE))$data
   
   l2g_result <- result$studyLocus2GeneTable %>% bind_cols(result$variantInfo) %>% bind_cols(df) 
@@ -747,7 +746,7 @@ get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
       group_by(studyId, lead_variantId) %>% 
       group_split() %>% 
       ## API call for each studyID + variantID
-      purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
+      purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId, cli = cli))) %>%
       bind_rows() %>%
       # remove low confidence (L2G<0.05)
       filter(yProbaModel > 0.05)
@@ -759,7 +758,7 @@ get_L2G <- function(overwrite = default_overwrite, save_dir = default_save_dir){
         group_by(studyId, lead_variantId) %>% 
         group_split() %>% 
         ## API call for each studyID + variantID
-        purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId))) %>%
+        purrr::map(~fetch_l2g(df = ., variables = list(studyId = .$studyId, variantId = .$lead_variantId, cli = cli))) %>%
         bind_rows() %>%
         filter(yProbaModel > 0.05)
       Sys.sleep(3)
@@ -1144,7 +1143,8 @@ plot_hallmarks_barplot <- function(enriched_hallmarks, save_dir = default_save_d
     labs(x = "Number of genes", subtitle = "Hallmarks of Ageing Genes") + 
     theme(panel.grid = element_blank(), 
           axis.title.y = element_blank(), 
-          legend.position = "bottom", 
+          #     legend.position = "bottom", 
+          legend.position = c(0.8, 0.85),
           legend.title = element_blank(),
           legend.text = element_text(margin = margin(r = 10, unit = "pt"))) + 
     scale_x_continuous(expand = c(0,0))

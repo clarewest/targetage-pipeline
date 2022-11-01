@@ -1,6 +1,10 @@
 library(tidyverse)
 load("data/analysis/target_annotations.Rda")             # Target annotations
 
+## Set path to TargetAge App repo
+targetage_app_path = "TargetAgeApp/"
+targetage_app_data = paste0(targetage_app_path, "data/")
+
 ### Functions
 add_go_hallmarks <- function(df){
 
@@ -83,21 +87,30 @@ add_cellage_icons <- function(df){
 }
 
 add_details_column <- function(df){
-  df %>%
+  description <- df %>% select(targetId, functionDescriptions) %>%
+    unnest(functionDescriptions) %>% 
+    group_by(targetId) %>% 
+    summarise(details.description = paste(functionDescriptions, collapse = " ")) %>% 
+    ungroup() %>% select(targetId, details.description)
+  
+  
+  df %>% left_join(description) %>% 
     rowwise() %>% 
     mutate(details_output = data.frame(
       "ID" = targetId,
       "Gene symbol" = targetSymbol,
       "Gene name" = targetName,
-      "Bio Type" = bioType,
+      "Description" = details.description,
+      "Biotype" = biotype, 
+      "PDB structures" = PDB,
       "Synonyms" = symbolSynonyms,
       "GO Hallmarks" = goHallmarkTerms,
       "Max literature evidence count" = ifelse(is.na(maxLiteratureEvidencePhenotype), 
                                                NA, 
                                                paste0(maxLiteratureEvidencePhenotype," (", maxLiteratureEvidenceCount, ")")
                                                ),
-      "Druggable Genome" = tractability.smallmolecule.small_molecule_genome_member,
-      "ChEMBL compounds" = tractability.smallmolecule.high_quality_compounds,
+      "Druggable Genome" = details.druggable_genome,
+   #   "ChEMBL compounds" = tractability.smallmolecule.high_quality_compounds,
       "Chemical probes" = details.probes,
       "Target Enabling Package" = details.tep,
       "Safety Warnings" = details.safety_warnings,
@@ -129,50 +142,81 @@ add_overall_mm <- function(df, diseases, minscore = 0.05){
 }
 
 add_teps_probes <- function(df){
-  ## summarise probes and links to resources
-  probes <- df %>% 
-    select(targetId, chemicalProbes.portalprobes) %>% 
-    unnest(chemicalProbes.portalprobes) %>% 
-    unnest(sourcelinks) %>%
-    mutate(source = recode(source,
-                           `Chemical Probes Portal` = "CPP",
-                           `Open Science Probes` = "OSP",
-                           `Structural Genomics Consortium` = "SGC"),
-           details.probe = paste0("<a target=\"_blank\" href=\"", link, "\">", source, "</a>")) %>%
-    group_by(targetId, chemicalprobe ) %>%
-    summarise(details.probe_link = paste0("(",paste(details.probe, collapse = ", "),")")) %>%
-    unite(details.probe_link, c(chemicalprobe, details.probe_link), sep = " ", remove = TRUE) %>% 
-    summarise(details.probes = paste(details.probe_link, collapse = "; \n"))
-  
-  ## add icons and details to dataframe 
-  df %>% 
-    ## badge for probes for main table display
-    mutate(probe = ifelse(!is.na(chemicalProbes.portalprobes), 
-                          "<span class=\"badge badge-dark\">Probe</span>", 
-                          ifelse(
-                            !is.na(chemicalProbes.probeminer.link), 
-                            paste0("<a target=\"_blank\" href=\"", chemicalProbes.probeminer.link, "\"><span class=\"badge badge-dark\">ProbeMiner</span></a>"), 
-                            NA)),
-           tep = ifelse(!is.na(tep.uri), "<span class=\"badge badge-dark\">TEP</span>", NA)) %>%
-    unite("icon.tep_probe", c("tep", "probe"), sep = " ", remove = TRUE, na.rm = TRUE) %>%
-    left_join(probes, by = "targetId" ) %>%
-    mutate(details.tep = ifelse(
-      !is.na(tep.uri), 
-      paste0("<a target=\"_blank\" href=\"", tep.uri, "\"><span class=\"badge badge-dark\">", tep.name, "</span></a>"), 
-      NA))
+# summarise probes and links to resources
+probes <- df %>% select(targetId, chemicalProbes) %>% unnest(chemicalProbes)  %>% 
+  select(targetId, drugId, id, urls) %>% 
+  unnest(urls) %>%
+  rename(chemicalprobe = id, 
+         source = niceName) %>% 
+  mutate(details.probe = paste0("<a target=\"_blank\" href=\"", url, "\">", source, "</a>")) %>%
+  group_by(targetId, chemicalprobe ) %>%
+  summarise(details.probe_link = paste0("(",paste(details.probe, collapse = ", "),")")) %>%
+  unite(details.probe_link, c(chemicalprobe, details.probe_link), sep = " ", remove = TRUE) %>% 
+  summarise(details.probes = paste(details.probe_link, collapse = "; \n")) %>%
+  mutate(probe = ifelse(!is.na(details.probes), 
+                 "<span class=\"badge badge-dark\">Probe</span>"))
+
+# summarise teps and links to resources
+teps <-  df %>% 
+  select(targetId, tep.description, tep.url) %>%
+  mutate(tep = ifelse(!is.na(tep.url), "<span class=\"badge badge-dark\">TEP</span>", NA)) %>%
+  mutate(details.tep = ifelse(
+    !is.na(tep.url), 
+    paste0("<a target=\"_blank\" href=\"", tep.url, "\"><span class=\"badge badge-dark\">", tep.description, "</span></a>"), 
+    NA)) %>%
+  select(targetId, tep, details.tep)
+
+# combine
+df %>% 
+  left_join(probes) %>% 
+  left_join(teps) %>%  
+  unite("icon.tep_probe", c("tep", "probe"), sep = " ", remove = TRUE, na.rm = TRUE)
 }
+  
+
+
+
 
 add_tractability <- function(df){
-  df %>% mutate(icon.tractability = case_when(
-    stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Predicted_Tractable") ~ "Predicted Tractable",
-    stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Discovery_Precedence") ~ "Discovery Precedence",
-    stringr::str_detect(paste(tractability.antibody.top_category, tractability.smallmolecule.top_category), "Clinical_Precedence") ~ "Clinical Precedence",
-    NA ~ NA_character_)
-  ) %>%
+  tractability_icons <- tractability_classifications_top %>% 
+    ungroup() %>% 
+    select(targetId, modality, name) %>% 
+    pivot_wider(names_from = modality, values_from = name) %>% 
+    mutate(icon.tractability = case_when(
+      stringr::str_detect(paste(PR), "Discovery_Opportunity") ~ "Discovery Opportunity",
+      stringr::str_detect(paste(AB, SM), "Predicted_Tractable") ~ "Predicted Tractable",
+      stringr::str_detect(paste(PR), "Literature_Precedence") ~ "Literature Precedence",
+      stringr::str_detect(paste(AB, SM), "Discovery_Opportunity") ~ "Discovery Precedence",
+      stringr::str_detect(paste(AB, OC, PR, SM), "Clinical_Precedence") ~ "Clinical Precedence",
+      NA ~ NA_character_)
+    ) %>%
     mutate(icon.tractability = ifelse(is.na(icon.tractability), NA, paste0("<span class=\"badge badge-pill badge-dark\">", icon.tractability, "</span>"))) 
+  
+  # druggable genome
+  druggable <- df %>% 
+    select(targetId, tractability) %>% 
+    unnest(tractability) %>% 
+    filter(id == "Druggable Family" & value == "TRUE") %>% 
+    select(targetId) %>% 
+    mutate(details.druggable_genome = TRUE)
+  
+  df %>% left_join(tractability_icons) %>% left_join(druggable)
 }
 
 add_safety <- function(df){
+  safety <- df %>% select(targetId, safetyLiabilities) %>% unnest(safetyLiabilities) %>%
+    group_by(targetId) %>% 
+    summarise(details.safety_warnings = paste(unique(event), collapse = "; "),
+              details.safety_sources = paste(unique(datasource), collapse = "; ")) %>%
+    mutate(icon.safety_warning = as.character(
+      shiny::icon("exclamation-triangle", lib = "font-awesome")
+    )) 
+  
+  df %>% left_join(safety, on = targetId)
+}
+
+
+old_add_safety <- function(df){
   safety_liability <- df %>% 
     filter(!is.na(safety.safety_risk_info)) %>% 
     select(targetId, safety.safety_risk_info) %>% 
@@ -270,9 +314,9 @@ make_legends <- function(){
   go_legend <- go_icons %>% select(goIcon, goHallmark)
   
   ## Save legends for app
-  save(go_legend, file = "TargetAge/data/hallmarks_legend.Rda")
-  save(cellage_legend, file = "TargetAge/data/cellage_legend.Rda")
-  save(genage_legend, file = "TargetAge/data/genage_legend.Rda")
+  save(go_legend, file = paste0(targetage_app_data,"hallmarks_legend.Rda"))
+  save(cellage_legend, file = paste0(targetage_app_data,"cellage_legend.Rda"))
+  save(genage_legend, file = paste0(targetage_app_data,"genage_legend.Rda"))
   
 }
 
@@ -288,25 +332,15 @@ format_specific_diseases <- function(df){
 }
 
 
-##### Graphs
-load("data/analysis/target_annotations.Rda")             # Target annotations
-
-
 #### Data ####
-load("ltg_all.Rda")
-load("data/analysis/graph_all_morbidities.Rda")
-load("data/analysis/ard_leads_filtered.Rda")
-load("data/analysis/top_l2g.Rda")
-
-
-
+load("data/analysis/target_annotations.Rda")             # Target annotations
+load("data/analysis/target_tractability.Rda")
+load("data/analysis/diseases_with_associations.Rda")
 
 ard_leads %>% 
   format_specific_diseases()
 
-get_cluster_tbl <- function(g){
-  g$cn %>% 
-}
+
 
 
 # top_genes <- top_l2g %>% 
@@ -347,21 +381,22 @@ make_legends()
 tbl_targets <- target_annotations %>% 
   rowwise() %>% 
   mutate(symbolSynonyms = paste(symbolSynonyms, collapse='; '),
-         bioType = str_replace_all(bioType, "_", " ")) %>% 
+         biotype = str_replace_all(biotype, "_", " ")) %>% 
   ungroup() %>%
   add_genage_icons() %>%
   add_cellage_icons() %>%
   add_go_hallmarks() %>% 
-  add_tractability() %>% 
-  add_teps_probes() %>% 
-  add_overall_mm(diseases = d, minscore = 0.05) %>%
+  add_tractability() %>% select(-tractability) %>% 
+  add_teps_probes() %>% select(-chemicalProbes) %>% 
   add_safety() %>% 
+  add_overall_mm(diseases = d, minscore = 0.05) %>% 
   add_details_column()
 
-
-save(tbl_targets, file = "TargetAge/data/prepared_table.Rda")
+save(tbl_targets, file = paste0(targetage_app_data,"prepared_table.Rda"))
 load(file = "data/analysis/targetage_geneids.Rda")
-save(targetage, file = "TargetAge/data/targetage_geneids.Rda")
+save(targetage, file = paste0(targetage_app_data,"targetage_geneids.Rda"))
+save(d, file = paste0(targetage_app_data,"diseases_with_associations.Rda"))
+
 
 
 ## Genetics data 
@@ -369,6 +404,8 @@ load("data/analysis/ltg_all.Rda")
 load("data/analysis/graph_all_morbidities.Rda")
 load("data/analysis/ard_leads_filtered.Rda")
 
+load("data/analysis/top_l2g.Rda")
+kjk
 ard_leads <- ard_leads %>% 
   mutate(specificDiseaseName = recode(specificDiseaseName, 
                                       `low density lipoprotein cholesterol measurement` = "LDL cholesterol measurement",
@@ -410,7 +447,7 @@ tbl_leads <- cluster_tbl %>%
 tbl_genes <- tbl_leads  %>% 
   left_join(top_l2g) 
 
-save(tbl_genes, file = "TargetAge/data/genetics_table.Rda")
-save(g_all, file = "TargetAge/data/graph_all_morbidities.Rda")
+save(tbl_genes, file = paste0(targetage_app_data,"genetics_table.Rda"))
+save(g_all, file = paste0(targetage_app_data,"graph_all_morbidities.Rda"))
 
 

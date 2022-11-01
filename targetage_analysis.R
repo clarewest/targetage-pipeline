@@ -22,12 +22,20 @@ ard_leads <- get_lead_variants(overwrite = default_overwrite, input_file = "data
 
 ### Diseases with GWAS evidence (some in `diseases` don't have any)
 d <- ard_leads$morbidity %>% unique()
-#save(d, file = "TargetAge/data/diseases_with_associations.Rda")
+#save(d, file = "data/analysis/diseases_with_associations.Rda")
 
 ### Overlaps between genetic associations
 overlaps <- get_overlaps(overwrite = default_overwrite, 
                          coloc_input_file = "data/targetage/coloc_ard_leads.parquet/part-00000-9479cf2c-da10-447a-ab81-7c1750b5bc78-c000.snappy.parquet",
                          overlap_input_file = "data/targetage/overlap_ard_leads.parquet/part-00000-5b27ad8f-95fb-4b3b-85a9-bc24c5e30ea1-c000.snappy.parquet")
+
+### Target details and genetic associations with each phenotype
+target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
+                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-16237769-f92d-48c3-b396-6d5f5d797719-c000.snappy.parquet",
+                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-b1ee0a40-e1b1-4ee6-9b41-fc41115d0a05-c000.snappy.parquet",
+                                                   go_input_file = "data/full_goterm_list.csv",
+                                                   diseases = diseases)
+
 
 ###########################################################################
 ###########################################################################
@@ -125,7 +133,7 @@ top_cluster_genes_summarised %>%
 ###########################################################################
 ###                                                                     ###
 ###                       SECTION 4:                                    ###
-###                   Tables etc for paper                              ###
+###                   GWAS summary information                          ###
 ###                                                                     ###
 ###########################################################################
 ###########################################################################
@@ -138,25 +146,17 @@ populations %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/
 ### Update SI table in Google Drive with GWAS and cluster details
 # The list of ARDs, number of GWAS studies, and number of (lead) variants, proportion with summary statistics, number of communities
 genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_diseases)
-update_gs_genetics_table(genetics_tables)
+#update_gs_genetics_table(genetics_tables)
 
 
 ###########################################################################
 ###########################################################################
 ###                                                                     ###
-###                       SECTION 4:                                    ###
+###                       SECTION 5:                                    ###
 ###          TargetAge genes annotations and tractability               ###
 ###                                                                     ###
 ###########################################################################
 ###########################################################################
-
-
-### Target details and genetic associations with each phenotype
-target_annotations <- get_associations_annotations(overwrite = default_overwrite, 
-                                                   annotations_input_file = "data/targetage/ard_annotations.parquet/part-00000-f3590b7c-ee8d-4add-ac67-b59df89b6a02-c000.snappy.parquet",
-                                                   associations_input_file = "data/targetage/ard_associations.parquet/part-00000-f300aece-6912-401d-8d61-13072f0d6162-c000.snappy.parquet",
-                                                   go_input_file = "data/full_goterm_list.csv",
-                                                   diseases = diseases)
 
 
 # all multimorbidity genes from clusters
@@ -229,18 +229,13 @@ enriched_hallmarks <- enrich_hallmarks(gene_sets)
 hallmarks_barplot <- plot_hallmarks_barplot(enriched_hallmarks, overwrite = default_overwrite)
 hallmarks_barplot_ta <- plot_mini_hallmarks_barplot(enriched_hallmarks, overwrite = default_overwrite)
 
-
 ## OT Tractability
 
-targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
-
-get_subset_annotations <- function(annotations, genes = targetage, field){
-    annotations %>% 
-    filter(targetId %in% genes) %>% 
-    dplyr::select(targetId, targetSymbol, all_of(field)) %>%
-    hoist(field) %>% 
-    unnest(field)
-}
+#targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
+targetage_tract <- targetage_annotations %>% 
+  filter(targetId %in% targetage) %>% 
+  dplyr::select(targetId, targetSymbol, all_of("tractability"))  %>% 
+  unnest("tractability")
 
 # N with approved drug:
 tractability_wide <- targetage_tract %>% group_by(targetSymbol, modality, id) %>% pivot_wider(names_from = "id", values_from = "value")
@@ -273,10 +268,16 @@ tractability_classifications_summary <- tractability_classifications_top %>%
   rename(top_category = "name") %>%
   mutate(modality = factor(modality, levels = c("SM", "AB", "PR", "OM")),
          top_category = factor(gsub("_", " ", top_category), levels = gsub("_", " ", classes)))
+save(tractability_classifications_top, file = paste0(default_save_dir, "target_tractability.Rda"))
+
+
+clinical_targets <- tractability_classifications_top %>% filter(name=="Clinical_Precedence") %>% group_by(targetSymbol) %>% count()
+discovery_precedence <- tractability_classifications_top %>% filter(! targetSymbol %in% clinical_targets$targetSymbol) %>% filter(name == "Discovery_Opportunity") %>% filter(modality == "SM")
+predicted_tractable <- tractability_classifications_top %>% filter(! targetSymbol %in% clinical_targets$targetSymbol) %>% filter(!targetSymbol %in% discovery_precedence$targetSymbol) %>% filter(name %in% c("Predicted_Tractable", "Predicted_Tractable_(H)", "Predicted_Tractable_(M/L)")) %>% filter(modality != "PR") %>% group_by(targetSymbol) %>% count()
 
 tractability_plot <- 
   tractability_classifications_summary %>% 
-  filter(modality != "OM") %>% 
+  filter(modality != "OC") %>% 
   ggplot(., aes(x=modality, y = n, fill = top_category, label = ifelse(n>10, paste0(top_category, " (", n, ")"), NA))) + 
   geom_col() + 
   geom_text(colour = "white", position = position_stack(vjust = 0.5), size = 3) + 
@@ -338,19 +339,36 @@ ggsave(simple_tractability_plot, width = 3, height = 2.5, file = paste0(default_
 
 library(patchwork)
 tract_fig <- hallmarks_barplot + tractability_plot + plot_annotation(tag_levels = 'a') + plot_layout(widths = c(0.65, 2.35))
-ggsave(tract_fig, width = 10.5, height = 4.1, dpi = 600, file = paste0(default_save_dir, "fig3.png"))
-ggsave(tract_fig, width = 10.5, height = 4.1, file = paste0(default_save_dir, "fig3.pdf"))
+ggsave(tract_fig, width = 12.1, height = 4.5, dpi = 600, file = paste0(default_save_dir, "fig3.png"))
+ggsave(tract_fig, width = 12.1, height = 4.5, file = paste0(default_save_dir, "fig3.pdf"))
 
 
+## Chemical Probes 
 
-
-
-probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
+#probes <- get_subset_annotations(target_annotations, targetage, "chemicalProbes")
+probes <- targetage_annotations %>% 
+  filter(targetId %in% targetage) %>% 
+  dplyr::select(targetId, targetSymbol, all_of("chemicalProbes"))  %>% 
+  unnest("chemicalProbes")
 
 probes %>% group_by(targetId, targetSymbol) %>% count()
 
-
-probes %>% filter(isHighQuality==TRUE) %>% group_by(targetId, targetSymbol)  %>% left_join(tractability_classifications_top)
-
+## 38 targets have high quality probes 
+high_quality_probes <- probes %>% filter(isHighQuality==TRUE) %>% group_by(targetId, targetSymbol) %>% count()
 top_any_modality <- tractability_classifications_long %>% ungroup() %>% group_by(targetId, targetSymbol) %>% filter(value==TRUE) %>% slice(which.min(priority)) %>% ungroup()
+
+## 11 have no clinical precedence
+high_quality_probes_tractability <- high_quality_probes %>% left_join(top_any_modality) 
+high_quality_probes_tractability %>% group_by(name) %>% count()
+
+## SI Probe Table 
+probe_si_table <- probes %>% 
+  filter(isHighQuality==TRUE) %>% 
+  left_join(top_any_modality) %>% 
+  select(targetId, targetSymbol, inchiKey, drugId, id, control, urls, tractability = name) %>% 
+  unnest(urls) %>% 
+  arrange(tractability, targetSymbol)
+
+write.csv(probe_si_table, paste0(default_save_dir,"SITable4.csv"))
+
 
