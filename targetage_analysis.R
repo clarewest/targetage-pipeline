@@ -20,6 +20,10 @@ diseases <- read.csv("data/full_disease_list.csv")
 ### Lead variants for genetic associations from all GWASs for age-related diseases/traits
 ard_leads <- get_lead_variants(overwrite = default_overwrite, input_file = "data/targetage/ard_leads.parquet/part-00000-682df92e-1d00-4977-9cd7-1834de53b5c2-c000.snappy.parquet")
 
+### GWAS studies
+gwas_ids <- ard_leads %>% select(c('studyId', 'trait_reported')) %>% unique()
+#write.csv(gwas_ids, paste0(default_save_dir,"SITable5.csv"))
+
 ### Diseases with GWAS evidence (some in `diseases` don't have any)
 d <- ard_leads$morbidity %>% unique()
 #save(d, file = "data/analysis/diseases_with_associations.Rda")
