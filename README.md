@@ -1,6 +1,15 @@
 # targetage-pipeline
 
-An analysis of age-related disease targets using Open Targets Platform and Open Targets Genetics.
+This repo contains the data and analysis to produce the TargetAge set of 995 targets with shared genetic links to age-related diseases and traits described in West et al., Integrative analysis of GWAS and co-localisation data suggests novel genes associated with age-related multimorbidity, medRxiv 2022.11.11.22282236 (https://doi.org/10.1101/2022.11.11.22282236).
+
+The data can be explored in our [TargetAge web application](https://targetage.shinyapps.io/TargetAge/), and the code for is in a [separate repo](https://github.com/clarewest/TargetAgeApp).
+
+The `data_deposit` directory contains a simplified version of the input and output data:
+- `full_disease_list.csv` - EFO codes for all age-related diseases and traits used to retrieve GWAS studies
+- `GWAS_accession_codes.csv` - GWAS accession codes for all GWAS studies used in the analysis
+- `genetics_table.Rda` - genetic data: details of each associated locus, lead variant, genomic positions, significance and effect size, L2G score for the most causal gene, and corresponding cluster information.
+
+This analysis of age-related disease targets uses Open Targets Platform and Open Targets Genetics.
 
 [Open Targets Platform](https://www.targetvalidation.org/) \[<span id="a1">[1](#f1)</span>\] aggregates data from a large range of sources, using "evidence" to make connections between "target" entities (a protein, protein complex, or RNA molecule) and "disease" entities (EFO terms). The evidence linking a target and disease is summarised as a target-disease association, with a score ranging from 0-1 to assist with prioritisation. Targets, diseases, and evidence are comprehensively annotated. 
 
