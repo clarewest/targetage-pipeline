@@ -143,6 +143,20 @@ top_cluster_genes_summarised %>%
 populations <- get_ancestries(ard_leads)
 populations %>% ungroup %>% count(single_population, ancestry) %>% mutate(p = n/sum(n)*100) %>% arrange(-p)
 
+### Look at source of GWAS 
+sources <- ard_leads %>% 
+  select(studyId) %>% 
+  distinct() %>%
+  mutate(source = case_when(
+    grepl("FINNGEN", studyId) ~ "FINNGEN",
+    grepl("SAIGE", studyId) ~ "UKBB",
+    grepl("GCST", studyId) ~ "GWAS catalog",
+    grepl("NEALE", studyId) ~ "UKBB",
+    TRUE ~ "OTHER"
+  ))
+
+sources %>% count(source) %>%mutate(p = n/sum(n)*100) %>% arrange(-p)
+
 ### Update SI table in Google Drive with GWAS and cluster details
 # The list of ARDs, number of GWAS studies, and number of (lead) variants, proportion with summary statistics, number of communities
 genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_diseases)
@@ -158,19 +172,20 @@ genetics_tables <- get_genetics_table(ard_leads, diseases, g_all, individual_dis
 ###########################################################################
 ###########################################################################
 
-
-# all multimorbidity genes from clusters
+# all multimorbidity genes from all clusters
 targetage_all <- top_cluster_genes_summarised$gene.id 
 
-## protein coding and has OT annotations
-targetage <- targetage_all[targetage_all %in% target_annotations$targetId]
+## TargetAge set of genes are subset that are protein coding and with OT annotations
+targetage <- targetage_all[targetage_all %in% subset(target_annotations, biotype == "protein_coding")$targetId]
 targetage_cluster_summarised = subset(top_cluster_genes_summarised, gene.id %in% targetage)
 
+# how many TargetAge genes are in multiple clusters
 targetage_cluster_summarised %>% 
   ungroup() %>% 
   count(n_clusters) %>% 
   mutate(prop = n/sum(n)*100)
 
+# get target annotations for the targetage set of genes
 targetage_annotations <- target_annotations %>% filter(targetId %in% targetage)
 
 #write.table(targetage_cluster_summarised, file = paste0(default_save_dir, "top_L2G_genes.txt"), sep = " ", row.names = FALSE, col.names = FALSE, quote = FALSE)
@@ -203,17 +218,19 @@ hallmarks_c_overlap = test_overlap(gene_sets, "CellAge", "Hallmarks")
 ##                  Enrichment                   ##
 ###################################################
 
-all_enriched <- perform_enrichment(overwrite = default_overwrite)
+## We don't perform enrichment because the gene set is too large
 
-top_enriched <- all_enriched %>% 
-  filter(set != "Reactome") %>% 
-  group_by(set, Cluster) %>% slice_min(p.adjust, n = 10)
-plot_enriched <- all_enriched %>% filter(ID %in% top_enriched$ID)
+#all_enriched <- perform_enrichment(overwrite = default_overwrite)
 
-ggplot(plot_enriched, aes(x=Cluster, y = reorder(Description, p.adjust))) + geom_point() + facet_wrap(~set, ncol = 1, strip.position = "right", scales = "free_y") + theme_bw()
+#top_enriched <- all_enriched %>% 
+#  filter(set != "Reactome") %>% 
+#  group_by(set, Cluster) %>% slice_min(p.adjust, n = 10)
+#plot_enriched <- all_enriched %>% filter(ID %in% top_enriched$ID)
 
-hallmark_terms <- read.csv("data/full_goterm_list.csv")
-clusterprofiler_enriched_hallmarks <- all_enriched %>% filter(ID %in% hallmark_terms$goId) %>% filter(p.adjust<0.05)
+#ggplot(plot_enriched, aes(x=Cluster, y = reorder(Description, p.adjust))) + geom_point() + facet_wrap(~set, ncol = 1, strip.position = "right", scales = "free_y") + theme_bw()
+
+#hallmark_terms <- read.csv("data/full_goterm_list.csv")
+#clusterprofiler_enriched_hallmarks <- all_enriched %>% filter(ID %in% hallmark_terms$goId) %>% filter(p.adjust<0.05)
 
 ###################################################
 ##                  Enrichment                   ##
@@ -231,7 +248,7 @@ hallmarks_barplot_ta <- plot_mini_hallmarks_barplot(enriched_hallmarks, overwrit
 
 ## OT Tractability
 
-#targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
+targetage_tract <- get_subset_annotations(targetage_annotations, targetage, "tractability")
 targetage_tract <- targetage_annotations %>% 
   filter(targetId %in% targetage) %>% 
   dplyr::select(targetId, targetSymbol, all_of("tractability"))  %>% 
