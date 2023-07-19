@@ -26,7 +26,8 @@ targetage = data_path+"targetage/"
 diseases = (spark.read.parquet(ot_platform+"diseases/", header=True)
             .withColumnRenamed("id","diseaseId")
             .withColumnRenamed("name","diseaseName")
-            )
+            )                     
+
 targets = (spark.read.parquet(ot_platform+"targets/")
            .withColumnRenamed("id","targetId")
            .withColumnRenamed("approvedSymbol", "targetSymbol")
@@ -52,6 +53,11 @@ ards = ards.toDF(*["diseaseId", "morbidity"]).filter(~col("diseaseId").contains(
 ardiseases = (ards.join(diseases, "diseaseId", "left")
               .select("morbidity","diseaseId","children", "description", "diseaseName", "therapeuticAreas", "descendants")
               )
+
+## Some terms changed between the Genetics Portal and Platform release
+obsolete_diseases = diseases.select("diseaseId", explode("obsoleteTerms").alias("obsoleteTerm"),"children", "description", "diseaseName", "therapeuticAreas", "descendants").withColumnRenamed("diseaseId","newDiseaseId")
+obsolete_ards = ards.join(obsolete_diseases, ards.diseaseId == obsolete_diseases.obsoleteTerm).drop("diseaseId", "obsoleteTerm").withColumnRenamed("newDiseaseId","diseaseId")
+
 
 # Therapeutic areas to exclude
 excluded_tas = ["OTAR_0000018", "OTAR_0000014", "MONDO_0045024"]
@@ -105,8 +111,11 @@ lit_count = (associations
              .withColumnRenamed("evidenceCount","literatureCount")
              )
 
+## Old and new ids for OT Platform
+all_ard_ids = obsolete_ards.select("diseaseId", "morbidity").union(ards)
+
 ## Targets with genetic associations 
-ard_associations = (ards
+ard_associations = (all_ard_ids
                     # targets associated with ARDs
                     .join(associations_wide,"diseaseId", "left")
                     # get targets with genetic associations with ARDs
