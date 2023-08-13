@@ -1,0 +1,116 @@
+File,Header,Description,Example
+genetics_table.csv,id,"Unique identifier for the genetic association, formed of [studyId].[lead_variantId]",GCST004147.16_75439257_G_A
+,cluster,Unique identifier for the cluster ,143
+,n_morbidities,Number of morbidities associated with the cluster,
+,morbidity,The high-level age-related disease or trait that corresponds to the GWAS,chronic obstructive pulmonary disease
+,has_sumstats,Boolean indicating whether full summary statistics are available for the study,TRUE
+,studyId,id for the GWAS analysis,GCST004147
+,lead_variantId,Lead variant ID formated as CHR_POSITION_REFALLELE_ALT_ALLELE,16_75439257_G_A
+,n_cases,Number of cases in the discovery sample,12550
+,trait_reported,"Full detail of the trait studied, as reported in the publication",Type 2 diabetes (adjusted for BMI)
+,direction,"Direction of effect of the alternative allele (one of +, -, NA)","""+"""
+,overall_community,"ID of the community of which the variant is a member, when detecting communities within the overall graph",65
+,community,"ID of the sub-cluster community of which the variant is a member, when detecting communities within the cluster",262
+,communities,Number of communities detected within the cluster,2
+,gene.symbol,The HGNC-approved official gene symbol ,SMG6
+,gene.id,Ensembl gene ID (the primary identifier used for Open Targets),ENSG00000153774
+,L2G,Locus-to-gene (L2G) score of the gene for the locus,0.8551864624
+,hasColoc,Association has evidence of colocalisation with xQTL levels for the target (boolean TRUE/FALSE),TRUE
+,distanceToLocus,Distance from locus to gene transcription start site (bp),25257
+,specificDiseaseName,EFO term name corresponding to the GWAS (NA if the same as the morbidity),BMI-adjusted adiponectin measurement
+,targetIds,targetId for all potentially causal (L2G>0.5) genes in the cluster (semicolon-separated list string),ENSG00000163281;ENSG00000177752
+,targetSymbols,targetSymbol for all potentially causal (L2G>0.5) genes in the cluster (semicolon-separated list string),GNPDA2;YIPF7
+,n_initial,Discovery sample size,58918
+,n_replication,Replication sample size,23520
+,ancestry_initial,"Discovery ancestry information (not available in CSV format, see note 7)",
+,ancestry_replication,"Replication ancestry information (not available in CSV format, see note 7)",
+,num_assoc_loci,Total number of associated loci identified in the GWAS,23
+,odds_ratio,Odds ratio for the lead variant ,1.12
+,oddsr_ci_lower,The lower limit of the 95% confidence interval for the odds ratio (for studies reporting odds ratio),1.084039742
+,oddsr_ci_upper,The upper limit of the 95% confidence interval for the odds ratio (for studies reporting odds ratio),1.157153148
+,beta,Beta coefficient for the lead variant,0.0439
+,beta_ci_lower,The lower limit of the 95% confidence interval for the beta coefficient (for studies reporting beta coefficient),0.03287429842
+,beta_ci_upper,The upper limit of the 95% confidence interval for the beta coefficient (for studies reporting beta coefficient),0.05492570158
+,lead_alt,Alternative allele as reported by Ensembl,A
+,lead_chrom,Chromosome location of the lead variant,16
+,lead_pos,Position of the lead variant ,75439257
+,lead_ref,Reference allele as reported by Ensembl,G
+,pval,p value for the lead variant ,1.00E-11
+,,,
+,,,
+targetage_annotation_table.csv,targetId,Ensembl gene ID (primary identifier used for Open Targets),ENSG00000070366
+,targetSymbol,The HGNC-approved official gene symbol ,SMG6
+,targetName,The HGNC-approved full gene name ,SMG6 nonsense mediated mRNA decay factor
+,biotype,"Biotype classification from Ensembl (note that all included targets are of the ""protein coding"" biotype)",protein coding
+,maxLiteratureEvidencePhenotype,The morbidity with the highest literature evidence count for the target,heart disease
+,maxLiteratureEvidenceCount,"The maximum literature evidence count for any morbidity. Literature evidence is at least one cooccurrence of the target with the morbidity within a sentence in a publication, as identified in the Europe PMC  corpus, see https://platform-docs.opentargets.org/evidence#europe-pmc ",4
+,chronic obstructive pulmonary disease,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,glaucoma,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,hypertension,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,rheumatoid arthritis,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,obesity,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,age-related macular degeneration,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,heart disease,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,osteoporosis,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,chronic kidney disease,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,atherosclerosis,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,longevity,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,lipid measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,lean body mass,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,grip strength measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,cognitive decline measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,delirium,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,heel bone mineral density,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,adult onset asthma,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,chronic pain,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,alzheimers disease,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,type 2 diabetes,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,osteoarthritis,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,parkinsons disease,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,metabolic syndrome,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,adiponectin measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,gait measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,healthspan,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,stroke,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,idiopathic pulmonary fibrosis,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,frailty measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,lewy body dementia,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,cartilage thickness measurement,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,neurodegeneration,The overall Open Targets genetic association score between the target and the disease/trait (NA if no genetic evidence of association above the threshold),0.75
+,HGNC,HGMC ID for the gene,17809
+,PDB,Protein Data Bank IDs for available protein structures (comma-separated list string),"2DOK, 2HWW, 2HWX, 4UM2"
+,GenAge.ID,GeneAge ID for the gene ,216
+,GenAge.URL,URL for the GenAge entry for the gene,https://genomics.senescence.info/genes/entry.php?hgnc=ESR1
+,CellAge.senescence_effect,"Effect of the gene on cellular senesence, as reported in CellAge (Induces or Inhibits)",Induces
+,n_hallmarks,Total number of high-level hallmarks of ageing for which the target is associated,2
+,goHallmarks,High-level hallmarks of ageing for which the target is associated (comma-separated string),"Epigenetic alteration, Nutrient signalling"
+,goHallmarkTerms,Specific GO terms for the hallmarks of ageing for which the target is annotated (comma-separated string),"histone modification, response to nutrient levels"
+,AB,"Tractability category for therapeutic antibody modality (H=high confidence, M/L=medium/low confidence)",Predicted_Tractable_(H)
+,OC,Tractability category for other clinical modalities ,Predicted_Tractable
+,PR,Tractability category for the Proteolysis Targeting Chimeras (PROTAC) modality ,Literature_Precedence
+,SM,Tractability category for small molecule modality ,Discovery_Opportunity
+,overallMultimorbidityCount,Overall number of morbidities for which the target has a genetic association score above 0.05 (rows 47-89),2
+,,,
+,,,
+,,,
+GWAS_study_ids.csv,studyId,ID for the GWAS analysis,GCST007516
+,"Description of the trait studied, as reported in the publication","Description of the trait studied, as reported in the publication",Type 2 diabetes (adjusted for BMI)
+,,,
+,,,
+,,,
+all_traits_details.csv,diseaseId,EFO term id ,EFO_0004502
+,diseaseName,EFO term name,adiponectin measurement
+,specificDiseaseId,EFO term id corresponding to the GWAS,EFO_0007737
+,specificDiseaseName,EFO term name corresponding to the GWAS,BMI-adjusted adiponectin measurement
+,n_gwas_studies,Total number of GWAS studies mapped to the specificDiseaseId,1
+,has_sumstats,Total number of GWAS studies mapped to the specificDiseaseId that have full summary statistics available,0
+,n_variants,Total number of significant associations identified across all GWAS for the specificDiseaseId,7
+,description,EFO term description ,Adiponection measurement that has been adjusted by subjects’ body mass index by performing linear regressions for adiponectin against BMI
+,,,
+Notes,,,
+"1. ""Morbidity"" and ""disease"" refer to the high-level ageing-related disease or traits (see rows 47-79), while ""specificDisease"" refers to the specific EFO term mapped to the GWAS, which may be a child term of the morbidity/disease",,,
+"3. For details on the sources of target information, see https://platform-docs.opentargets.org/target ",,,
+"4. Each ""study"" is an individual analysis, an individual publication may contain multiple studies",,,
+"5. All variants in Open Targets Genetics are notated using the format chr_pos_ref_alt, where ref and alt are the reference and alternate alleles as defined by Ensembl.  Coordinates are relative to the GRCh38 assembly also known as hg38.",,,
+"6. Missing values are represented as ""NA""",,,
+"7. Ancestry information (rows 25-26) cannot be represented in CSV format, refer to the .Rda format (R data object format) ",,,

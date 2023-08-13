@@ -6,8 +6,10 @@ The data can be explored in our [TargetAge web application](https://targetage.sh
 
 The `data_deposit` directory contains a simplified version of the input and output data:
 - `full_disease_list.csv` - EFO codes for all age-related diseases and traits used to retrieve GWAS studies
-- `GWAS_accession_codes.csv` - GWAS accession codes for all GWAS studies used in the analysis
-- `genetics_table.Rda` - genetic data: details of each associated locus, lead variant, genomic positions, significance and effect size, L2G score for the most causal gene, and corresponding cluster information.
+- `GWAS_accession_codes.csv` - the set of GWAS IDs and reported traits for the 1,394 studies used in this analysis
+- `genetics_table.Rda` and `genetics_table.csv` - genetic data: details of each associated locus, lead variant, genomic positions, significance and effect size, L2G score for the most causal gene, and corresponding cluster information.
+- `targetage_annotation_table.Rda` and `targetage_annotation_table.csv` - target data: the set of 995 genes identified in the analysis, annotated with the strength of the genetic link to each age-related trait (the Open Targets genetic association score), known links to ageing (GenAge, CellAge, and Hallmarks of Ageing), and tractability assessment.
+- `data_description_readme.csv` - description of data columns for all data files.
 
 This analysis of age-related disease targets uses Open Targets Platform and Open Targets Genetics.
 
